@@ -27,7 +27,6 @@ struct CalendarContainerView: View {
             Rectangle()
                 .fill(Color("mainColor800").opacity(0.2))
                 .frame(height: 5)
-                .padding(.bottom, 20)
 
             // MARK: - 탭에 따른 본문 콘텐츠 뷰 전환
             switch selectedTab {

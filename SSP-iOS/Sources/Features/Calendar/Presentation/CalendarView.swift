@@ -70,9 +70,13 @@ struct CalendarView: View {
     // MARK: - 날짜 셀 그리드 (주 단위로 렌더링)
     private var dayGrid: some View {
         LazyVStack(spacing: 0) {
-            ForEach(viewModel.daysInMonth.chunked(into: 7), id: \.self) { week in
+            ForEach(0..<viewModel.daysInMonth.chunked(into: 7).count, id: \.self) { weekIndex in
+                let week = viewModel.daysInMonth.chunked(into: 7)[weekIndex]
+                
                 HStack(spacing: 2) {
-                    ForEach(week, id: \.self) { date in
+                    ForEach(0..<week.count, id: \.self) { dayIndex in
+                        let date = week[dayIndex]
+                        
                         if Calendar.current.isDate(date, equalTo: Date.distantPast, toGranularity: .day) {
                             // 빈 칸 (해당 주에 날짜가 없는 셀)
                             Color.clear.frame(height: 80).frame(maxWidth: .infinity)

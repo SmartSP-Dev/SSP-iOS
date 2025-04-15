@@ -17,31 +17,23 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: "io.tuist.SSP-iOS",
-            infoPlist: .extendingDefault(
-                with: [
-                    "KAKAO_API_KEY": "$(KAKAO_NATIVE_APP_KEY)",
-                    "UILaunchScreen": [
-                        "UIColorName": "",
-                        "UIImageName": "",
-                    ],
-                    "UIAppFonts": [
-                        "Pretendard-Bold.otf"
-                    ],
-                    "CFBundleURLTypes": [
-                        [
-                            "CFBundleTypeRole": "Editor",
-                            "CFBundleURLSchemes": ["kakao$(KAKAO_NATIVE_APP_KEY)"]
-                        ]
-                    ],
-                    "LSApplicationQueriesSchemes": [
-                        "kakaokompassauth",
-                        "kakaolink",
-                        "kakaoplus",
-                        "kakaotalk"
-                    ],
-                    "NSCalendarsFullAccessUsageDescription": "캘린더 접근을 허용해주세요"
-                ]
-            ),
+            infoPlist: .extendingDefault(with: [
+                "UILaunchStoryboardName": "LaunchScreen",
+                "KAKAO_API_KEY": "$(KAKAO_NATIVE_APP_KEY)",
+                "CFBundleURLTypes": [
+                    [
+                        "CFBundleTypeRole": "Editor",
+                        "CFBundleURLSchemes": ["kakao$(KAKAO_NATIVE_APP_KEY)"]
+                    ]
+                ],
+                "LSApplicationQueriesSchemes": [
+                    "kakaokompassauth",
+                    "kakaolink",
+                    "kakaoplus",
+                    "kakaotalk"
+                ],
+                "NSCalendarsFullAccessUsageDescription": "캘린더 접근을 허용해주세요"
+            ]),
             sources: ["SSP-iOS/Sources/**"],
             resources: ["SSP-iOS/Resources/**"],
             entitlements: "SSP-iOS/Entitlements/SSP-iOS.entitlements",

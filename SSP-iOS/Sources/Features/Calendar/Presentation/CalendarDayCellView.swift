@@ -24,17 +24,32 @@ struct CalendarDayCellView: View {
         VStack(spacing: 4) {
             // MARK: - 날짜 숫자 표시 영역
             ZStack {
-                if isSelected {
-                    // 선택된 날짜 배경 (얇은 파란 원)
+                if isToday {
+                    // 오늘 날짜: 배경에 메인컬러 원, 텍스트는 흰색
+                    Circle()
+                        .fill(Color("mainColor800"))
+                        .frame(width: 23, height: 23)
+                    
+                    Text("\(Calendar.current.component(.day, from: date))")
+                        .font(.PretendardRegular13)
+                        .foregroundColor(.white)
+                }
+                else if isSelected {
+                    // 선택된 날짜: 파란색 반투명 원 배경 + 텍스트는 mainColor800
                     Circle()
                         .fill(Color.blue.opacity(0.3))
                         .frame(width: 28, height: 28)
-                }
 
-                // 날짜 숫자 (1, 2, ..., 31)
-                Text("\(Calendar.current.component(.day, from: date))")
-                    .font(.PretendardBold16)
-                    .foregroundColor(isToday ? .red : Color("mainColor800"))
+                    Text("\(Calendar.current.component(.day, from: date))")
+                        .font(.PretendardRegular13)
+                        .foregroundColor(Color("mainColor800"))
+                }
+                else {
+                    // 일반 날짜
+                    Text("\(Calendar.current.component(.day, from: date))")
+                        .font(.PretendardRegular13)
+                        .foregroundColor(Color("mainColor800"))
+                }
             }
             .frame(height: 28)
 
@@ -43,7 +58,7 @@ struct CalendarDayCellView: View {
                 .frame(maxHeight: .infinity, alignment: .top)
         }
         .padding(4)
-        .frame(height: 85, alignment: .top)
+        .frame(height: 90, alignment: .top)
     }
 
     // MARK: - 일정 리스트 뷰 분리 (추상화)
@@ -59,6 +74,7 @@ struct CalendarDayCellView: View {
                     .truncationMode(.tail)
                     .foregroundColor(.white)
                     .padding(.horizontal, 4)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(event.color)
                     .cornerRadius(4)
             }
@@ -70,7 +86,9 @@ struct CalendarDayCellView: View {
                     .foregroundColor(.gray)
                     .lineLimit(1)
                     .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }

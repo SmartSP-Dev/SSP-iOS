@@ -1,5 +1,6 @@
 import SwiftUI
 import KakaoSDKCommon
+import KakaoSDKAuth
 
 @main
 struct SSPIOSApp: App {
@@ -16,6 +17,12 @@ struct SSPIOSApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(loginViewModel: loginViewModel)
+                .onOpenURL { url in
+                    // 카카오톡 앱으로부터 돌아올 때 URL 처리
+                    if AuthApi.isKakaoTalkLoginUrl(url) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                }
         }
     }
 }
