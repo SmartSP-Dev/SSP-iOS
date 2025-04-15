@@ -38,7 +38,8 @@ let project = Project(
                         "kakaolink",
                         "kakaoplus",
                         "kakaotalk"
-                    ]
+                    ],
+                    "NSCalendarsFullAccessUsageDescription": "캘린더 접근을 허용해주세요"
                 ]
             ),
             sources: ["SSP-iOS/Sources/**"],
