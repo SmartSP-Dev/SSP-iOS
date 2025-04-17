@@ -13,4 +13,8 @@ struct CalendarEvent: Identifiable {
     let date: Date
     let title: String
     let color: Color
+    let startDate: Date
+    let endDate: Date
+    let isAllDay: Bool
+    let ekEventID: String   
 }

@@ -36,18 +36,12 @@ struct MainTabView: View {
                 Label("Profile", systemImage: selectedTab == 3 ? "person.crop.circle.fill" : "person.crop.circle")
             }
         }
-        .tint(.black)
+        .tint(Color("mainColor800"))
     }
 }
 
 #Preview {
     MainTabView()
-}
-
-struct StudyView: View {
-    var body: some View {
-        Text("Study View")
-    }
 }
 
 struct QuizView: View {

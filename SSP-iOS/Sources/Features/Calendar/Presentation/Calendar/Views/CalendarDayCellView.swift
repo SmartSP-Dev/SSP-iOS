@@ -37,8 +37,8 @@ struct CalendarDayCellView: View {
                 else if isSelected {
                     // 선택된 날짜: 파란색 반투명 원 배경 + 텍스트는 mainColor800
                     Circle()
-                        .fill(Color.blue.opacity(0.3))
-                        .frame(width: 28, height: 28)
+                        .fill(Color("mainColor800").opacity(0.3))
+                        .frame(width: 23, height: 23)
 
                     Text("\(Calendar.current.component(.day, from: date))")
                         .font(.PretendardRegular13)
@@ -51,14 +51,14 @@ struct CalendarDayCellView: View {
                         .foregroundColor(Color("mainColor800"))
                 }
             }
-            .frame(height: 28)
+            .frame(height: 23)
 
             // MARK: - 일정 목록 표시 영역
             eventListView(events)
                 .frame(maxHeight: .infinity, alignment: .top)
         }
         .padding(4)
-        .frame(height: 90, alignment: .top)
+        .frame(height: 80, alignment: .top)
     }
 
     // MARK: - 일정 리스트 뷰 분리 (추상화)
@@ -69,26 +69,26 @@ struct CalendarDayCellView: View {
             // 최대 2개의 일정만 표시
             ForEach(events.prefix(maxEventCount), id: \.id) { event in
                 Text(event.title)
-                    .font(.caption2)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                    .font(.PretendardRegular09)
                     .foregroundColor(.white)
-                    .padding(.horizontal, 4)
+                    .padding(.leading, 3)
+                    .frame(height: 12) // 고정 높이
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(event.color)
                     .cornerRadius(4)
+                    .lineLimit(1)
             }
 
             // 일정이 3개 이상일 경우 "+N개"로 추가 표시
             if events.count > maxEventCount {
                 Text("+\(events.count - maxEventCount)개")
-                    .font(.caption2)
+                    .font(.PretendardRegular09)
                     .foregroundColor(.gray)
                     .lineLimit(1)
-                    .truncationMode(.tail)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .frame(maxWidth: .infinity)
     }
+
 }

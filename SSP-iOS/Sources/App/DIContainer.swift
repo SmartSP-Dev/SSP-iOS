@@ -38,4 +38,10 @@ final class DIContainer {
     func makeMainTabViewModel() -> MainTabViewModel {
         return MainTabViewModel()
     }
+    
+    @MainActor
+    func makeRoutineViewModel() -> RoutineViewModel {
+        let repository = LocalRoutineRepository()
+        return RoutineViewModel(repository: repository)
+    }
 }

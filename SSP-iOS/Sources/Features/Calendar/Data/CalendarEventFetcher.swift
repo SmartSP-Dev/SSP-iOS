@@ -7,6 +7,7 @@
 
 import EventKit
 import Foundation
+import SwiftUI
 
 /// 시스템 기본 캘린더 앱의 이벤트 데이터를 가져오는 클래스
 /// EventKit 프레임워크를 통해 사용자의 캘린더에 접근
@@ -49,7 +50,11 @@ final class CalendarEventFetcher {
                 id: UUID(),
                 date: $0.startDate,
                 title: $0.title,
-                color: .blue // 나중에 EKCalendar 색상 매핑 가능
+                color: Color("mainColor800"),
+                startDate: $0.startDate,
+                endDate: $0.endDate,
+                isAllDay: $0.isAllDay,
+                ekEventID: $0.eventIdentifier
             )
         }
     }

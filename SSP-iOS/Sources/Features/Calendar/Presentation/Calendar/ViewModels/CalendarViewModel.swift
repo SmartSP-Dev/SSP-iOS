@@ -32,16 +32,37 @@ final class CalendarViewModel: ObservableObject {
     // MARK: - 초기화
     init(useCase: CalendarUseCase) {
         self.useCase = useCase
-        generateDaysInMonth()                        // 날짜 배열 생성
-        requestCalendarAccessAndLoadEvents()         // 권한 요청 + 일정 불러오기
+        generateDaysInMonth()
+        
+        let calendar = Calendar.current
+        let now = Date()
+        if calendar.isDate(now, equalTo: currentMonth, toGranularity: .month) {
+            selectedDate = now
+        } else if let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: currentMonth)) {
+            selectedDate = firstDay
+        }
+
+        requestCalendarAccessAndLoadEvents()
     }
 
     // MARK: - 월 변경 (이전 / 다음)
     func changeMonth(by value: Int) {
         guard let newDate = Calendar.current.date(byAdding: .month, value: value, to: currentMonth) else { return }
         currentMonth = newDate
-        generateDaysInMonth()                        // 새 달의 날짜 목록 재생성
-        requestCalendarAccessAndLoadEvents()         // 해당 월의 일정 불러오기
+        generateDaysInMonth()
+
+        // selectedDate 초기화 로직 추가
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: newDate)
+        if let firstDayOfMonth = calendar.date(from: components) {
+            if calendar.isDate(Date(), equalTo: newDate, toGranularity: .month) {
+                selectedDate = Date() // 오늘이 현재 월에 속하면 오늘 선택
+            } else {
+                selectedDate = firstDayOfMonth // 아니라면 월의 첫 날 선택
+            }
+        }
+
+        requestCalendarAccessAndLoadEvents()
     }
 
     // MARK: - 현재 월의 날짜 목록 생성

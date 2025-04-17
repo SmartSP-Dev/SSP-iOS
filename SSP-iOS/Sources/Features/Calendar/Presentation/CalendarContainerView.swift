@@ -32,10 +32,10 @@ struct CalendarContainerView: View {
             switch selectedTab {
             case .calendar:
                 // DIContainer에서 CalendarViewModel 주입
-                CalendarView(viewModel: DIContainer.shared.makeCalendarViewModel())
+                CalendarScreen(viewModel: DIContainer.shared.makeCalendarViewModel())
             case .routine:
                 // 루틴 화면
-                RoutineView()
+                RoutineView(viewModel: DIContainer.shared.makeRoutineViewModel())
             }
 
             Spacer()
@@ -90,8 +90,8 @@ struct CustomTabBar: View {
                 .foregroundColor(selected ? Color("mainColor800") : Color("mainColor400"))
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 12)
-        .padding(.bottom, 8)
+        .padding(.top, 2)
+        .padding(.bottom, 4)
     }
 
     // MARK: - 선택된 탭의 인디케이터 위치 계산

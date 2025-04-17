@@ -1,65 +1,36 @@
 //
-//  CalendarView.swift
+//  CalendarMainBody.swift
 //  SSP-iOS
 //
-//  Created by 황상환 on 4/14/25.
+//  Created by 황상환 on 4/16/25.
 //
 
 import SwiftUI
 
-/// 월간 달력을 보여주는 뷰
-/// - 상단: 월 전환 버튼
-/// - 중간: 요일 헤더
-/// - 하단: 날짜 셀 그리드 (주 단위)
-struct CalendarView: View {
-
-    // ViewModel 주입 (DIContainer 사용 권장)
+struct CalendarMainBody: View {
     @ObservedObject var viewModel: CalendarViewModel
-
-    // 요일 기호 (일, 월, 화, ...)
-    let weekdaySymbols = Calendar.current.shortStandaloneWeekdaySymbols
+    @GestureState private var dragOffset: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 15) {
-            monthHeader            // 상단 월 전환 헤더
-            weekdayHeader          // 요일 헤더
-            dayGrid                // 날짜 셀 그리드
-            Spacer()
+            weekdayHeader
+            dayGrid
+
+            if let selectedDate = viewModel.selectedDate {
+                eventList(for: selectedDate)
+            }
+
+            Spacer(minLength: 40)
         }
-        .padding(.top, 16)
+        .padding(.top, 8)
     }
 
-    // MARK: - 월 전환 헤더
-    private var monthHeader: some View {
-        HStack {
-            Spacer()
-            // 이전 달 이동
-            Button(action: { viewModel.changeMonth(by: -1) }) {
-                Image(systemName: "chevron.left")
-                    .foregroundStyle(Color("mainColor800"))
-            }
-            Spacer()
-            // 현재 선택된 월 표시
-            Text(viewModel.currentMonth, formatter: monthFormatter)
-                .font(.title2)
-                .foregroundStyle(Color("mainColor800"))
-                .fontWeight(.bold)
-            Spacer()
-            // 다음 달 이동
-            Button(action: { viewModel.changeMonth(by: 1) }) {
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Color("mainColor800"))
-            }
-            Spacer()
-        }
-    }
-
-    // MARK: - 요일 헤더 (일, 월, ...)
     private var weekdayHeader: some View {
-        HStack(spacing: 4) {
+        let weekdaySymbols = Calendar.current.shortStandaloneWeekdaySymbols
+        return HStack(spacing: 4) {
             ForEach(weekdaySymbols, id: \.self) { symbol in
                 Text(symbol)
-                    .font(.PretendardSemiBold16)
+                    .font(.PretendardMedium16)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(Color("mainColor800"))
             }
@@ -67,7 +38,6 @@ struct CalendarView: View {
         .padding(.horizontal, 2)
     }
 
-    // MARK: - 날짜 셀 그리드 (주 단위로 렌더링)
     private var dayGrid: some View {
         LazyVStack(spacing: 0) {
             ForEach(0..<viewModel.daysInMonth.chunked(into: 7).count, id: \.self) { weekIndex in
@@ -78,10 +48,8 @@ struct CalendarView: View {
                         let date = week[dayIndex]
                         
                         if Calendar.current.isDate(date, equalTo: Date.distantPast, toGranularity: .day) {
-                            // 빈 칸 (해당 주에 날짜가 없는 셀)
                             Color.clear.frame(height: 80).frame(maxWidth: .infinity)
                         } else {
-                            // 정상 날짜 셀
                             CalendarDayCellView(
                                 date: date,
                                 events: viewModel.events[date.onlyDate] ?? [],
@@ -97,7 +65,6 @@ struct CalendarView: View {
                 }
                 .padding(.horizontal, 4)
 
-                // 주 구분선
                 Rectangle()
                     .fill(Color.black.opacity(0.15))
                     .frame(height: 1)
@@ -106,12 +73,40 @@ struct CalendarView: View {
         }
     }
 
-    // MARK: - 월 텍스트 포맷터 ("2025년 4월")
-    private var monthFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 M월"
-        return formatter
+    @ViewBuilder
+    private func eventList(for date: Date) -> some View {
+        let events = viewModel.events[date.onlyDate] ?? []
+
+        VStack(alignment: .leading, spacing: 8) {
+            /// 날짜
+            Text(date.formattedFullDateKorean())
+                .font(.headline)
+                .foregroundStyle(Color("mainColor800"))
+                .padding(.horizontal)
+
+            /// 일정
+            if events.isEmpty {
+                Text("등록된 일정이 없습니다.")
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+            } else {
+                List {
+                    ForEach(events, id: \.id) { event in
+                        EventRowView(event: event, viewModel: viewModel)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                            .padding(.vertical, 4)
+                    }
+                    
+                }
+                .listStyle(.plain)
+                .frame(minHeight: CGFloat(events.count) * 80)
+            }
+        }
+        .padding(.top, 10)
+
     }
+
 }
 
 // MARK: - Array chunking (주 단위로 나누기)
@@ -123,3 +118,4 @@ extension Array {
         }
     }
 }
+
