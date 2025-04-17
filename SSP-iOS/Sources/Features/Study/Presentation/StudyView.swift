@@ -9,42 +9,83 @@ import SwiftUI
 
 struct StudyView: View {
     @StateObject private var viewModel = StudyViewModel()
+    @State private var isPresentingModal = false
+    @State private var isStudyingModeActive = false
+    @State private var isPresentingStartModal = false
+
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(spacing: 0) {
             HStack {
+                Spacer()
                 Text("루디")
-                    .font(.PretendardSemiBold38)
+                    .font(.PretendardExtraBold24)
                     .underline()
+                    .foregroundStyle(Color("mainColor800"))
+
                 Text("님 오늘도 공부를 시작해볼까요?")
                     .font(.PretendardBold16)
+                    .padding(.top, 12)
+                    .foregroundStyle(Color("mainColor800"))
+
+                Spacer()
             }
+            Spacer()
             
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("이번 달 학습량")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    Spacer()
-                    Button {
-                        // 과목 추가 액션
-                    } label: {
-                        Image(systemName: "plus")
-                            .padding(8)
-                            .background(Color.gray.opacity(0.2))
-                            .clipShape(Circle())
-                    }
+            SectionView(
+                title: "이번 달 학습량",
+                showsButton: true,
+                contentHeight: 200,
+                buttonAction: {
+                    // 과목 추가 로직
                 }
-                .padding(.bottom, 4)
-                
+            ) {
                 ForEach(viewModel.subjects) { subject in
                     SubjectCardView(subject: subject)
                 }
             }
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
-            .padding(.top)
+            Spacer()
+            
+            SectionView(
+                title: "이번 달 학습량",
+                showsButton: true,
+                contentHeight: 300,
+                buttonAction: {
+                    // 과목 추가 로직
+                }
+            ) {
+                ForEach(viewModel.subjects) { subject in
+                    SubjectCardView(subject: subject)
+                }
+            }
+            Spacer()
+            Spacer()
+            Button(action: {
+                isPresentingStartModal = true
+            }) {
+                Text("학습 기록 시작")
+                    .font(.PretendardBold24)
+                    .padding()
+                    .foregroundStyle(Color.white)
+                    .background(Color("mainColor800"))
+                    .clipShape(.buttonBorder)
+            }
+            .fullScreenCover(isPresented: $isStudyingModeActive) {
+                TimerStudyView(onEnd: {
+                    isStudyingModeActive = false
+                    viewModel.stopStudy()
+                }, viewModel: viewModel)
+            }
+            .sheet(isPresented: $isPresentingStartModal) {
+                StudyStartModalView(
+                    onStart: {
+                        viewModel.startStudy()
+                        isPresentingStartModal = false
+                        isStudyingModeActive = true // ✅ 전체 화면 전환
+                    }
+                )
+            }
+
             
             Spacer()
         }

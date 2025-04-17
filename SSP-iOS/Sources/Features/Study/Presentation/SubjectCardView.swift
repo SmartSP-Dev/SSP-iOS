@@ -19,7 +19,9 @@ struct SubjectCardView: View {
                 .font(.subheadline)
         }
         .padding()
-        .background(Color.blue.opacity(0.1))
+        .background(Color("mainColor400").opacity(0.1))
         .cornerRadius(12)
+        .shadow(color: .black.opacity(0.15), radius: 4, x: 2, y: 2)
+
     }
 }
