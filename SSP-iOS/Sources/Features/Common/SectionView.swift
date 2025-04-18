@@ -13,7 +13,7 @@ struct SectionView<Content: View>: View {
     let buttonAction: (() -> Void)?
     let contentHeight: CGFloat
     let content: () -> Content
-    
+
     init(
         title: String,
         showsButton: Bool = false,
@@ -27,36 +27,32 @@ struct SectionView<Content: View>: View {
         self.contentHeight = contentHeight
         self.content = content
     }
-    
+
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 12) {
+            // 헤더 영역
             HStack {
                 Text(title)
-                    .font(.PretendardBold20)
-                    .foregroundColor(Color("mainColor800"))
-                    .padding(.leading, 5)
+                    .font(.title3.bold())
+                    .foregroundColor(.black)
+
                 Spacer()
+
                 if showsButton, let action = buttonAction {
                     Button(action: action) {
                         Image(systemName: "plus")
-                            .foregroundColor(Color("mainColor800"))
-                            .padding(8)
-                            .background(Color.white)
+                            .font(.subheadline.bold())
+                            .foregroundColor(.white)
+                            .padding(5)
+                            .background(Color.black)
                             .clipShape(Circle())
                     }
-                    .padding(.trailing, 5)
                 }
             }
-            .padding(.top, 12)
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color("mainColor400"), lineWidth: 1)
-                    )
-                
+            .padding(.horizontal)
+
+            // 컨텐츠 영역
+            VStack {
                 ScrollView {
                     VStack(spacing: 12) {
                         content()
@@ -64,14 +60,16 @@ struct SectionView<Content: View>: View {
                     .padding()
                 }
             }
-            .frame(height: contentHeight - 40)
-            .padding(.top, 8)
-            
+            .frame(height: contentHeight)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
         }
-        .shadow(color: .black.opacity(0.2), radius: 8, x: 2, y: 2)
+        .frame(maxWidth: .infinity)
         .padding(.horizontal)
     }
 }
+
 
 
 #Preview {

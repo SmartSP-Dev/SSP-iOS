@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct WeeklyStudyRecord: Codable, Identifiable {
+    var id = UUID()
+    let subjectName: String
+    var totalMinutes: Int
+}
