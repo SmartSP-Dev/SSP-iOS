@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct StudySubject: Identifiable, Equatable {
-    let id = UUID()
+struct StudySubject: Identifiable, Codable, Equatable {
+    var id = UUID()
     var name: String
     var time: Int // 분 단위로 저장
 }

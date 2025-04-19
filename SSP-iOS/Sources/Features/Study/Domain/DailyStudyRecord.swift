@@ -8,7 +8,7 @@
 import Foundation
 
 struct DailyStudyRecord: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let date: Date
     let subjectName: String
     let minutes: Int

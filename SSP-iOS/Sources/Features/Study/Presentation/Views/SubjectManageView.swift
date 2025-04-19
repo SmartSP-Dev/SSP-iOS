@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SubjectManageView: View {
-    @ObservedObject var viewModel: StudyViewModel
+    @ObservedObject var viewModel: SubjectManageViewModel
     @State private var newSubjectName: String = ""
 
     var body: some View {
@@ -33,9 +33,9 @@ struct SubjectManageView: View {
                             Text("\(subject.time)분")
                                 .foregroundColor(.gray)
                                 .font(.subheadline)
-                            
+
                             Spacer()
-                            
+
                             // 삭제 버튼
                             Button(action: {
                                 viewModel.removeSubject(subject)
@@ -91,7 +91,7 @@ struct SubjectManageView: View {
 }
 
 #Preview {
-    let mockViewModel = StudyViewModel()
+    let mockViewModel = SubjectManageViewModel()
     mockViewModel.subjects = [
         StudySubject(name: "수학", time: 120),
         StudySubject(name: "영어", time: 90),

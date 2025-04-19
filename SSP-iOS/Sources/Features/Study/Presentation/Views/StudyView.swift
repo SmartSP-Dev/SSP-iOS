@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct StudyView: View {
-    @StateObject private var viewModel = StudyViewModel()
+    @StateObject private var timerViewModel = StudyTimerViewModel()
+    @StateObject private var subjectViewModel = SubjectManageViewModel()
+    @StateObject private var statsViewModel = StatisticsViewModel()
+
     @State private var isPresentingStartModal = false
     @State private var isStudyingModeActive = false
     @State private var isPresentingSubjectManageSheet = false
@@ -28,18 +31,22 @@ struct StudyView: View {
 
     private var mainContent: some View {
         VStack(spacing: 24) {
+            Spacer()
             greetingSection
+            Spacer()
 
             // 이번 주 통계
             SectionView(
                 title: "이번 주 통계",
                 showsButton: true,
                 contentHeight: 250,
+                isEmpty: statsViewModel.weeklyRecords.isEmpty,
+                emptyMessage: "이번 주 학습 기록이 아직 없어요!",
                 buttonAction: {
                     isPresentingSubjectManageSheet = true
                 }
             ) {
-                ForEach(viewModel.weeklyRecords) { record in
+                ForEach(statsViewModel.weeklyRecords) { record in
                     HStack {
                         Text(record.subjectName)
                             .font(.body.weight(.semibold))
@@ -54,20 +61,22 @@ struct StudyView: View {
                     .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
                 }
             }
+            .frame(maxWidth: .infinity)
             .sheet(isPresented: $isPresentingSubjectManageSheet) {
-                SubjectManageView(viewModel: viewModel)
+                SubjectManageView(viewModel: subjectViewModel)
             }
-
+            Spacer()
             // 이번 달 학습량 요약
             MonthlySummarySectionView(
-                daysStudied: viewModel.totalStudyDays,
-                totalMinutes: viewModel.totalMonthlyMinutes,
-                averageMinutes: viewModel.averageMinutesPerDay,
-                bestDay: viewModel.bestStudyDayFormatted,
-                bestDayMinutes: viewModel.bestStudyDayMinutes
+                daysStudied: statsViewModel.totalStudyDays,
+                totalMinutes: statsViewModel.totalMonthlyMinutes,
+                averageMinutes: statsViewModel.averageMinutesPerDay,
+                bestDay: statsViewModel.bestStudyDayFormatted,
+                bestDayMinutes: statsViewModel.bestStudyDayMinutes
             )
-
             startButton
+            Spacer()
+            Spacer()
         }
         .padding()
         .disabled(isPresentingStartModal)
@@ -76,9 +85,15 @@ struct StudyView: View {
             TimerStudyView(
                 onEnd: {
                     isStudyingModeActive = false
-                    viewModel.stopStudy()
+                    timerViewModel.stopStudy()
+                    if let subject = timerViewModel.selectedSubject {
+                        statsViewModel.completeStudy(
+                            subjectName: subject.name,
+                            elapsedSeconds: timerViewModel.elapsedSeconds
+                        )
+                    }
                 },
-                viewModel: viewModel
+                viewModel: timerViewModel
             )
         }
     }
@@ -86,7 +101,7 @@ struct StudyView: View {
     // MARK: - Greeting
 
     private var greetingSection: some View {
-        VStack(spacing: 4) {
+        HStack(spacing: 4) {
             Text("루디")
                 .font(.PretendardExtraBold24)
                 .underline()
@@ -95,6 +110,7 @@ struct StudyView: View {
             Text("님 오늘도 공부를 시작해볼까요?")
                 .font(.PretendardBold16)
                 .foregroundStyle(Color.black)
+                .padding(.top, 10)
         }
     }
 
@@ -105,7 +121,7 @@ struct StudyView: View {
             isPresentingStartModal = true
         }) {
             Text("학습 기록 시작")
-                .font(.PretendardBold24)
+                .font(.PretendardBold20)
                 .padding()
                 .foregroundStyle(.white)
                 .background(.black)
@@ -124,28 +140,45 @@ struct StudyView: View {
         StudyStartModalView(
             onStart: {
                 isPresentingStartModal = false
-                viewModel.startStudy()
+                timerViewModel.startStudy()
                 isStudyingModeActive = true
             },
             onCancel: {
                 isPresentingStartModal = false
             },
-            viewModel: viewModel
+            timerViewModel: timerViewModel,
+            subjectViewModel: subjectViewModel
         )
     }
 }
 
 #Preview {
-    let viewModel = StudyViewModel()
-    viewModel.weeklyRecords = [
+    let timerVM = StudyTimerViewModel()
+    let subjectVM = SubjectManageViewModel()
+    let statsVM = StatisticsViewModel()
+
+    // 예시 과목 추가
+    subjectVM.subjects = [
+        StudySubject(name: "수학", time: 120),
+        StudySubject(name: "영어", time: 90),
+        StudySubject(name: "과학", time: 45)
+    ]
+
+    // 예시 주간 기록 추가
+    statsVM.weeklyRecords = [
         WeeklyStudyRecord(subjectName: "수학", totalMinutes: 120),
         WeeklyStudyRecord(subjectName: "영어", totalMinutes: 60)
     ]
-    viewModel.totalStudyDays = 15
-    viewModel.totalMonthlyMinutes = 900
-    viewModel.averageMinutesPerDay = 60.0
-    viewModel.bestStudyDayFormatted = "4월 10일"
-    viewModel.bestStudyDayMinutes = 120
+
+    // 예시 일간 기록 추가
+    statsVM.studyRecords = [
+        DailyStudyRecord(date: Date().addingTimeInterval(-86400 * 2), subjectName: "수학", minutes: 90),
+        DailyStudyRecord(date: Date().addingTimeInterval(-86400), subjectName: "영어", minutes: 60),
+        DailyStudyRecord(date: Date(), subjectName: "과학", minutes: 45)
+    ]
 
     return StudyView()
+        .environmentObject(timerVM)
+        .environmentObject(subjectVM)
+        .environmentObject(statsVM)
 }

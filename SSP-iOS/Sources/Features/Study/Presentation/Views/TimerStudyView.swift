@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TimerStudyView: View {
     var onEnd: () -> Void
-    @ObservedObject var viewModel: StudyViewModel
+    @ObservedObject var viewModel: StudyTimerViewModel
 
     var body: some View {
         VStack(spacing: 40) {
@@ -50,12 +50,18 @@ struct TimerStudyView: View {
     }
 }
 
-//#Preview {
-//    TimerStudyView()
-//}
-
 private extension Int {
     func formattedTimeString() -> String {
         String(format: "%02d : %02d", self / 60, self % 60)
     }
+}
+
+#Preview("⏱️ 학습 타이머 화면") {
+    let viewModel = StudyTimerViewModel()
+    viewModel.elapsedSeconds = 153 // 예시: 02분 33초
+
+    return TimerStudyView(
+        onEnd: {},
+        viewModel: viewModel
+    )
 }
