@@ -29,9 +29,15 @@ struct StudyStartModalView: View {
                 }
             } label: {
                 HStack(spacing: 4) {
-                    Text(subjectViewModel.subjects[selectedIndex].name)
-                        .font(.PretendardMedium16)
-                        .foregroundColor(.black)
+                    if subjectViewModel.subjects.indices .contains(selectedIndex) {
+                        Text(subjectViewModel.subjects[selectedIndex].name)
+                            .font(.PretendardMedium16)
+                            .foregroundColor(.black)
+                    } else {
+                        Text("과목 없음")
+                            .font(.PretendardMedium16)
+                            .foregroundColor(.gray)
+                    }
 
                     Image(systemName: "chevron.down")
                         .foregroundColor(.gray)
@@ -44,14 +50,16 @@ struct StudyStartModalView: View {
             }
 
             Button("시작") {
+                guard subjectViewModel.subjects.indices.contains(selectedIndex) else { return }
                 timerViewModel.selectedSubject = subjectViewModel.subjects[selectedIndex]
                 onStart()
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.black)
+            .background(subjectViewModel.subjects.isEmpty ? Color.gray : Color.black)
             .foregroundColor(.white)
             .cornerRadius(8)
+            .disabled(subjectViewModel.subjects.isEmpty)
 
             Button("취소", action: onCancel)
                 .padding()

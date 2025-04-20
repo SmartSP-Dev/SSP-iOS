@@ -32,8 +32,8 @@ struct StudyView: View {
     private var mainContent: some View {
         VStack(spacing: 24) {
             Spacer()
-            greetingSection
             Spacer()
+            greetingSection
 
             // 이번 주 통계
             SectionView(

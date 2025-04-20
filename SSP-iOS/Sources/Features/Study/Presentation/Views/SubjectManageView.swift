@@ -10,6 +10,8 @@ import SwiftUI
 struct SubjectManageView: View {
     @ObservedObject var viewModel: SubjectManageViewModel
     @State private var newSubjectName: String = ""
+    @State private var showDeleteAlert = false
+    @State private var subjectToDelete: StudySubject?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,15 +22,14 @@ struct SubjectManageView: View {
                 .padding(.vertical, 20)
                 .background(Color.white)
 
-            // 과목 리스트
             ScrollView {
                 LazyVStack(spacing: 14) {
                     ForEach(viewModel.subjects) { subject in
                         HStack {
                             Text(subject.name)
                                 .font(.body.weight(.semibold))
-
-                            Spacer()
+                                .frame(width: 130, alignment: .leading)
+                                .multilineTextAlignment(.leading)
 
                             Text("\(subject.time)분")
                                 .foregroundColor(.gray)
@@ -36,9 +37,9 @@ struct SubjectManageView: View {
 
                             Spacer()
 
-                            // 삭제 버튼
                             Button(action: {
-                                viewModel.removeSubject(subject)
+                                subjectToDelete = subject
+                                showDeleteAlert = true
                             }) {
                                 Image(systemName: "trash")
                                     .foregroundColor(.red)
@@ -50,40 +51,46 @@ struct SubjectManageView: View {
                         .cornerRadius(12)
                         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
                     }
+
+                    // ⬇️ 과목 추가 입력창
+                    Divider()
+                        .padding(.top, 20)
+
+                    HStack(spacing: 12) {
+                        TextField("과목 이름", text: $newSubjectName)
+                            .padding(10)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(8)
+
+                        Button(action: {
+                            let subject = StudySubject(name: newSubjectName, time: 0)
+                            viewModel.addSubject(subject)
+                            newSubjectName = ""
+                        }) {
+                            Text("추가")
+                                .font(.subheadline.bold())
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(Color.black)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
+                        .disabled(newSubjectName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 30)
                 }
                 .padding(.horizontal)
                 .padding(.top, 10)
             }
-
-            // 과목 추가 입력 영역
-            VStack(spacing: 12) {
-                Divider()
-
-                HStack(spacing: 12) {
-                    TextField("과목 이름", text: $newSubjectName)
-                        .padding(10)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-
-                    Button(action: {
-                        let subject = StudySubject(name: newSubjectName, time: 0)
-                        viewModel.addSubject(subject)
-                        newSubjectName = ""
-                    }) {
-                        Text("추가")
-                            .font(.subheadline.bold())
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(Color.black)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-                    .disabled(newSubjectName.trimmingCharacters(in: .whitespaces).isEmpty)
+            .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert, presenting: subjectToDelete) { subject in
+                Button("삭제", role: .destructive) {
+                    viewModel.removeSubject(subject)
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 20)
+                Button("취소", role: .cancel) { }
+            } message: { subject in
+                Text("\"\(subject.name)\" 과목을 삭제하시겠습니까?\n학습한 시간도 같이 사라지게 됩니다.")
             }
-            .background(Color.white)
         }
         .background(Color.white)
         .ignoresSafeArea(edges: .bottom)
@@ -95,7 +102,8 @@ struct SubjectManageView: View {
     mockViewModel.subjects = [
         StudySubject(name: "수학", time: 120),
         StudySubject(name: "영어", time: 90),
-        StudySubject(name: "과학", time: 45)
+        StudySubject(name: "과학", time: 45),
+        StudySubject(name: "테스트", time: 45)
     ]
     return SubjectManageView(viewModel: mockViewModel)
 }
