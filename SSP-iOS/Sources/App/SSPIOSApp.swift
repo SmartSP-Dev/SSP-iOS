@@ -26,15 +26,3 @@ struct SSPIOSApp: App {
         }
     }
 }
-
-struct RootView: View {
-    @ObservedObject var loginViewModel: LoginViewModel
-
-    var body: some View {
-        if loginViewModel.isLoggedIn {
-            MainTabView()
-        } else {
-            LoginView(viewModel: loginViewModel)
-        }
-    }
-}
