@@ -9,11 +9,10 @@ import SwiftUI
 
 struct RootView: View {
     @ObservedObject var loginViewModel: LoginViewModel
-    @StateObject var router = NavigationRouter()
     @StateObject private var appRouter = DIContainer.shared.makeAppRouter()
 
     var body: some View {
-        NavigationStack(path: $router.path) {
+        NavigationStack(path: $appRouter.path) {
             Group {
                 if loginViewModel.isLoggedIn {
                     MainTabView()
@@ -23,8 +22,8 @@ struct RootView: View {
             }
             .navigationDestination(for: Route.self) { route in
                 switch route {
-//                case .quizList:
-//                    QuizListView()
+                case .quizList:
+                    QuizListView(viewModel: DIContainer.shared.makeQuizMainViewModel())
                 case .study:
                     StudyView()
                 default:
