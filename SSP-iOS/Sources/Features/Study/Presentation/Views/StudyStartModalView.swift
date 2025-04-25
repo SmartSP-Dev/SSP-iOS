@@ -49,21 +49,31 @@ struct StudyStartModalView: View {
                 .cornerRadius(8)
             }
 
-            Button("시작") {
+            Button(action: {
                 guard subjectViewModel.subjects.indices.contains(selectedIndex) else { return }
                 timerViewModel.selectedSubject = subjectViewModel.subjects[selectedIndex]
                 onStart()
+
+            }) {
+                Text("시작")
+                    .font(.PretendardMedium16)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(subjectViewModel.subjects.isEmpty ? Color.gray : Color.black)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
             }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(subjectViewModel.subjects.isEmpty ? Color.gray : Color.black)
-            .foregroundColor(.white)
-            .cornerRadius(8)
             .disabled(subjectViewModel.subjects.isEmpty)
 
-            Button("취소", action: onCancel)
-                .padding()
-                .foregroundColor(.red)
+            Button(action: onCancel) {
+                Text("취소")
+                    .font(.PretendardMedium16)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .foregroundColor(.red)
+                    .cornerRadius(8)
+            }
         }
         .padding()
         .frame(maxWidth: 300)

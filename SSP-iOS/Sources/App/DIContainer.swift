@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class DIContainer {
+final class DIContainer: ObservableObject {
     static let shared = DIContainer()
 
     // MARK: - 앱 전역 라우터

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab = 0
+    @EnvironmentObject private var container: DIContainer
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -25,7 +26,7 @@ struct MainTabView: View {
             }
 
             Tab(value: 2) {
-                QuizView()
+                QuizMainView(viewModel: container.makeQuizMainViewModel())
             } label: {
                 Label("Quiz", systemImage: selectedTab == 2 ? "questionmark.circle.fill" : "questionmark.circle")
             }
@@ -42,12 +43,7 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
-}
-
-struct QuizView: View {
-    var body: some View {
-        Text("Quiz View")
-    }
+        .environmentObject(DIContainer.shared)
 }
 
 struct ProfileView: View {

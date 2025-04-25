@@ -23,8 +23,12 @@ struct TimerStudyView: View {
             Text(viewModel.elapsedSeconds.formattedTimeString())
                 .font(.system(size: 48, weight: .bold))
 
-            if viewModel.isPaused {
-                Text("⏸️ 일시 정지 중")
+            if !viewModel.isPaused {
+                Text("")
+                    .foregroundColor(.white)
+                    .font(.subheadline)
+            } else {
+                Text("일시 정지 중")
                     .foregroundColor(.red)
                     .font(.subheadline)
             }
@@ -64,9 +68,10 @@ struct TimerStudyView: View {
 
             Spacer()
 
-            Text("※ '종료' 버튼은 길게 눌러야 작동합니다.")
+            Text("※ 학습 종료를 원하시면 종료 버튼 꾹 눌러주세요!!")
                 .font(.footnote)
                 .foregroundColor(.gray)
+                .padding(.bottom, 5)
         }
         .padding()
         .background(Color.white)

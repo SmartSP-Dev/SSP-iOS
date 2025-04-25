@@ -16,6 +16,7 @@ struct RootView: View {
             Group {
                 if loginViewModel.isLoggedIn {
                     MainTabView()
+                        .environmentObject(DIContainer.shared)
                 } else {
                     LoginView(viewModel: loginViewModel)
                 }
