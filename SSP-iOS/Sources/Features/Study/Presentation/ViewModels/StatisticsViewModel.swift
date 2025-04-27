@@ -44,7 +44,10 @@ final class StatisticsViewModel: ObservableObject {
     }
 
     var totalMonthlyMinutes: Int {
-        studyRecords.reduce(0) { $0 + $1.minutes }
+        let currentMonth = Calendar.current.component(.month, from: Date())
+        return studyRecords
+            .filter { Calendar.current.component(.month, from: $0.date) == currentMonth }
+            .reduce(0) { $0 + $1.minutes }
     }
 
     var averageMinutesPerDay: Double {

@@ -10,6 +10,7 @@ import SwiftUI
 struct TimerStudyView: View {
     var onEnd: () -> Void
     @ObservedObject var viewModel: StudyTimerViewModel
+    @EnvironmentObject var statisticsViewModel: StatisticsViewModel
 
     @State private var pressProgress: Double = 0
     @State private var pressTimer: Timer?
@@ -43,6 +44,10 @@ struct TimerStudyView: View {
                     .onLongPressGesture(minimumDuration: 2.0) {
                         let generator = UIImpactFeedbackGenerator(style: .medium)
                         generator.impactOccurred()
+                        
+                        if let subject = viewModel.selectedSubject {
+                            statisticsViewModel.completeStudy(subjectName: subject.name, elapsedSeconds: viewModel.elapsedSeconds)
+                        }
                         onEnd()
                     } onPressingChanged: { isPressing in
                         if isPressing {

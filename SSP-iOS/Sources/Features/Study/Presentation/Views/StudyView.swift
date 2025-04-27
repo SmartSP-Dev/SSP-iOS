@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StudyView: View {
+    let statisticsViewModel = StatisticsViewModel()
+
     @StateObject private var timerViewModel = StudyTimerViewModel()
     @StateObject private var subjectViewModel = SubjectManageViewModel()
     @StateObject private var statsViewModel = StatisticsViewModel()
@@ -95,6 +97,7 @@ struct StudyView: View {
                 },
                 viewModel: timerViewModel
             )
+            .environmentObject(statisticsViewModel)
         }
     }
 

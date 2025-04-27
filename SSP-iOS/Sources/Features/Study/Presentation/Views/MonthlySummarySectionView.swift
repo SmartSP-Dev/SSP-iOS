@@ -43,7 +43,7 @@ struct MonthlySummarySectionView: View {
     }
 }
 
-#Preview("✅ 데이터 있음") {
+#Preview("데이터 있음") {
     MonthlySummarySectionView(
         daysStudied: 17,
         totalMinutes: 980,
@@ -53,7 +53,7 @@ struct MonthlySummarySectionView: View {
     )
 }
 
-#Preview("❌ 데이터 없음") {
+#Preview("데이터 없음") {
     MonthlySummarySectionView(
         daysStudied: 0,
         totalMinutes: 0,
