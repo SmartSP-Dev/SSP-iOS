@@ -16,17 +16,16 @@ struct CreateQuizView: View {
     }
 
     var body: some View {
-        ScrollView {
+        ZStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 20) {
-                Spacer()
                 quizNoticeSection
-                Spacer()
                 fileAndKeywordSection
                 Spacer()
-                createQuizButtonSection
-                Spacer()
             }
-            .padding(.top)
+            .padding()
+
+            createQuizButtonSection
+                .padding()
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
         .navigationTitle("퀴즈 만들기")
