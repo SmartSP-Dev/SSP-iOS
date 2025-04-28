@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CreateQuizView: View {
     @StateObject private var viewModel: CreateQuizViewModel
+    @State private var isDocumentPickerPresented = false
 
     init(viewModel: CreateQuizViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -67,8 +68,10 @@ struct CreateQuizView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("PDF 또는 이미지 업로드")
                     .font(.subheadline)
+                Text(viewModel.fileURL?.lastPathComponent ?? "파일을 첨부해주세요")
+                    .font(.PretendardLight14)
                 Button(action: {
-                    // TODO: 파일 피커 연결
+                    isDocumentPickerPresented = true
                 }) {
                     Text(viewModel.fileURL == nil ? "업로드" : "파일 선택 완료")
                         .foregroundColor(.white)
@@ -76,6 +79,9 @@ struct CreateQuizView: View {
                         .padding()
                         .background(Color.black)
                         .cornerRadius(8)
+                }
+                .sheet(isPresented: $isDocumentPickerPresented) {
+                    DocumentPicker(fileURL: $viewModel.fileURL)
                 }
             }
 
