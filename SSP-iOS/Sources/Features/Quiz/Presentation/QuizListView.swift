@@ -41,6 +41,19 @@ struct QuizListView: View {
         .background(Color.white)
         .navigationTitle("내 퀴즈")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    DIContainer.shared.makeAppRouter().goBack()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                    Text("Back")
+                        .foregroundColor(.black)
+                }
+            }
+        }
         .onAppear {
             Task {
                 await viewModel.fetchAll()

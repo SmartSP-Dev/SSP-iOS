@@ -25,6 +25,8 @@ struct RootView: View {
                 switch route {
                 case .quizList:
                     QuizListView(viewModel: DIContainer.shared.makeQuizMainViewModel())
+                case .quizCreate:
+                    CreateQuizView(viewModel: DIContainer.shared.makeCreateQuizViewModel())
                 case .study:
                     StudyView()
                 default:

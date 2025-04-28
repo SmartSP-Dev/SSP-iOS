@@ -7,8 +7,8 @@
 
 import Foundation
 
-public enum QuizType: String, Codable {
-    case multipleChoice 
+public enum QuizType: String, Codable, CaseIterable {
+    case multipleChoice
     case ox
     case fillInTheBlank
 }

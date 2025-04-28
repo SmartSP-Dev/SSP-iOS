@@ -29,7 +29,7 @@ struct QuizMainView: View {
 
                 // 퀴즈 만들기 버튼
                 Button(action: {
-                    // TODO: 퀴즈 생성 모달 표시
+                    DIContainer.shared.makeAppRouter().navigate(to: .quizCreate)
                 }) {
                     Text("퀴즈 만들기")
                         .font(.body.weight(.bold))
@@ -59,7 +59,7 @@ struct QuizMainView: View {
 
                     // 더보기 버튼
                     Button(action: {
-                        // TODO: QuizListView로 이동
+                        DIContainer.shared.makeAppRouter().navigate(to: .quizList)
                     }) {
                         Text("더보기")
                             .font(.caption)

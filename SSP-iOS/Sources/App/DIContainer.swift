@@ -96,4 +96,10 @@ final class DIContainer: ObservableObject {
             fetchReviewTargetUseCase: fetchReviewQuizUseCase
         )
     }
+    
+    @MainActor
+    func makeCreateQuizViewModel() -> CreateQuizViewModel {
+        return CreateQuizViewModel(createQuizUseCase: DefaultCreateQuizUseCase(repository: quizRepository))
+    }
+
 }
