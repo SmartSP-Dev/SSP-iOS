@@ -14,11 +14,11 @@ struct RoutineCalendarView: View {
     var body: some View {
         let weekDates = generateWeekDates(from: Date(), offset: weekOffset)
 
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             // 상단 월 텍스트
             Text(monthText(for: weekDates.first ?? Date()))
                 .font(.subheadline)
-                .fontWeight(.medium)
+                .fontWeight(.semibold)
                 .frame(maxWidth: .infinity, alignment: .center)
 
             // 주간 달력 뷰 (좌우 스와이프)
@@ -29,7 +29,7 @@ struct RoutineCalendarView: View {
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 60)
+            .frame(height: 80)
         }
     }
 
@@ -37,29 +37,39 @@ struct RoutineCalendarView: View {
     func weekRow(for offset: Int) -> some View {
         let dates = generateWeekDates(from: Date(), offset: offset)
 
-        return HStack(spacing: 8) {
+        return HStack(spacing: 0) {
             ForEach(dates, id: \.self) { date in
-                VStack {
+                let isToday = viewModel.selectedDate.isSameDay(as: date)
+
+                VStack(spacing: 6) {
                     Text(weekdayFormatter.string(from: date))
+                        .font(.caption)
+                        .foregroundColor(.gray)
+
                     Text(dayFormatter.string(from: date))
+                        .font(.headline)
+                        .foregroundColor(isToday ? .white : .primary)
+                        .frame(width: 36, height: 36)
+                        .background(
+                            Circle()
+                                .fill(isToday ? Color.blue : Color.clear)
+                        )
 
                     Circle()
                         .fill(completionColor(for: date))
-                        .frame(width: 8, height: 8)
+                        .frame(width: 6, height: 6)
                 }
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     viewModel.selectedDate = date
                 }
-                .background(
-                    Circle()
-                        .fill(Color.blue.opacity(viewModel.selectedDate.isSameDay(as: date) ? 0.2 : 0))
-                )
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 12)
     }
 
-    // MARK: - 월 텍스트
+    // MARK: - 유틸
     private func monthText(for date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -67,7 +77,6 @@ struct RoutineCalendarView: View {
         return formatter.string(from: date)
     }
 
-    // MARK: - 주간 날짜 생성
     private func generateWeekDates(from base: Date, offset: Int) -> [Date] {
         let calendar = Calendar.current
         guard let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: base)?.start else { return [] }
@@ -78,7 +87,6 @@ struct RoutineCalendarView: View {
         }
     }
 
-    // MARK: - 달성도 색상
     private func completionColor(for date: Date) -> Color {
         let states = viewModel.repository.fetchCheckStates(for: date)
         guard !states.isEmpty else { return .gray.opacity(0.2) }
@@ -109,4 +117,8 @@ struct RoutineCalendarView: View {
         f.dateFormat = "EEE"
         return f
     }()
+}
+
+#Preview {
+    RoutineCalendarView(viewModel: RoutineViewModel(repository: DummyRoutineRepository()))
 }

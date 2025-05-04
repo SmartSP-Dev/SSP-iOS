@@ -42,7 +42,7 @@ final class RoutineViewModel: ObservableObject {
     }
 
     func addRoutine(title: String) {
-        let new = RoutineItem(id: UUID(), title: title, createdDate: Date()) // ✅ 생성일자 명시
+        let new = RoutineItem(id: UUID(), title: title, createdDate: Date()) // 생성일자 명시
         repository.addRoutineItem(new)
         fetchData()
     }

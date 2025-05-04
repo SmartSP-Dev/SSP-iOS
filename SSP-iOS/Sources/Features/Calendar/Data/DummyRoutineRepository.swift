@@ -5,25 +5,26 @@
 //  Created by 황상환 on 4/16/25.
 //
 
-//import Foundation
-//
-//final class DummyRoutineRepository: RoutineRepository {
-//    private let dummyRoutines: [RoutineItem] = [
-//        RoutineItem(id: UUID(), title: "🧘‍♀️ 명상하기"),
-//        RoutineItem(id: UUID(), title: "📖 책 읽기"),
-//        RoutineItem(id: UUID(), title: "🏃‍♂️ 운동하기")
-//    ]
-//
-//    func fetchRoutines() -> [RoutineItem] {
-//        dummyRoutines
-//    }
-//
-//    func fetchCheckStates(for date: Date) -> [UUID: Bool] {
-//        Dictionary(uniqueKeysWithValues: dummyRoutines.map { ($0.id, Bool.random()) })
-//    }
-//
-//    func toggleRoutineCheck(id: UUID, for date: Date) {}
-//    func addRoutine(title: String) {}
-//    func deleteRoutine(at indexSet: IndexSet) {}
-//    func saveAll() {}
-//}
+import Foundation
+
+final class DummyRoutineRepository: RoutineRepository {
+    private var dummyRoutines: [RoutineItem] = [
+        RoutineItem(id: UUID(), title: "아침 운동", createdDate: Date()),
+        RoutineItem(id: UUID(), title: "코딩 공부", createdDate: Date()),
+        RoutineItem(id: UUID(), title: "책 읽기", createdDate: Date())
+    ]
+
+    func fetchRoutines() -> [RoutineItem] {
+        return dummyRoutines
+    }
+
+    func fetchCheckStates(for date: Date) -> [UUID: Bool] {
+        return [dummyRoutines[0].id: true, dummyRoutines[1].id: false]
+    }
+
+    func toggleRoutineCheck(id: UUID, for date: Date) {}
+    func addRoutine(title: String) {}
+    func addRoutineItem(_ item: RoutineItem) {}
+    func deleteRoutine(at indexSet: IndexSet) {}
+    func saveAll() {}
+}
