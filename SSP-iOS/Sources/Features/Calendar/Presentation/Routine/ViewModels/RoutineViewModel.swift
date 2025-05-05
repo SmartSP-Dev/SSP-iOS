@@ -38,7 +38,7 @@ final class RoutineViewModel: ObservableObject {
 
     func toggleCheck(for id: UUID) {
         repository.toggleRoutineCheck(id: id, for: selectedDate)
-        checkStates[id]?.toggle()
+        loadCheckStates(for: selectedDate)
     }
 
     func addRoutine(title: String) {

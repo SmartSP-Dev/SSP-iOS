@@ -31,6 +31,7 @@ struct RoutineCalendarView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .frame(height: 80)
         }
+        .padding(.top, 10)
     }
 
     // MARK: - 주간 뷰

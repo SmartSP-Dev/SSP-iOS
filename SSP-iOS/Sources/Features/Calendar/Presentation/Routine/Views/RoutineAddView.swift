@@ -21,11 +21,22 @@ struct RoutineAddView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                ForEach(viewModel.routines) { item in
-                    Text(item.title)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 8).stroke(Color.blue.opacity(0.5), lineWidth: 1))
+                ForEach(Array(viewModel.routines.enumerated()), id: \.element.id) { index, item in
+                    HStack {
+                        Text(item.title)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Button(action: {
+                            withAnimation {
+                                viewModel.deleteRoutine(at: IndexSet(integer: index))
+                            }
+                        }) {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
+                        }
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 8).stroke(Color.blue.opacity(0.5), lineWidth: 1))
                 }
 
                 TextField("루틴 추가", text: $inputText)
@@ -38,7 +49,7 @@ struct RoutineAddView: View {
             Button(action: {
                 if !inputText.trimmingCharacters(in: .whitespaces).isEmpty {
                     viewModel.addRoutine(title: inputText)
-                    dismiss()
+                    inputText = ""
                 }
             }) {
                 Text("추가")
@@ -53,4 +64,8 @@ struct RoutineAddView: View {
             .padding(.bottom, 24)
         }
     }
+}
+
+#Preview {
+    RoutineAddView(viewModel: RoutineViewModel(repository: DummyRoutineRepository()))
 }
