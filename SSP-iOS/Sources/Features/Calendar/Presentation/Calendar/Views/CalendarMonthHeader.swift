@@ -10,6 +10,7 @@ import EventKit
 
 struct CalendarMonthHeader: View {
     @ObservedObject var viewModel: CalendarViewModel
+    @EnvironmentObject private var container: DIContainer
     @State private var showEventEditor = false
 
     var body: some View {
@@ -47,6 +48,14 @@ struct CalendarMonthHeader: View {
                 viewModel.requestCalendarAccessAndLoadEvents()
             }) {
                 EventEditView(startDate: viewModel.selectedDate ?? Date())
+            }
+            Button {
+                container.appRouter.navigate(to: .groupHome)
+            } label: {
+                Image(systemName: "person.3.sequence")
+                    .font(.title2)
+                    .foregroundStyle(Color("mainColor800"))
+                    .padding(.leading, 4)
             }
         }
         .padding(.horizontal, 16)

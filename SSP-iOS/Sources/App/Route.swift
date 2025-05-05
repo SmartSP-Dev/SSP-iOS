@@ -14,4 +14,5 @@ enum Route: Hashable {
     case study
     case calendar
     case login
+    case groupHome
 }

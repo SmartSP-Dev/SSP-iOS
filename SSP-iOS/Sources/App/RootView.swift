@@ -29,6 +29,8 @@ struct RootView: View {
                     CreateQuizView(viewModel: DIContainer.shared.makeCreateQuizViewModel())
                 case .study:
                     StudyView()
+                case .groupHome:
+                    GroupHomeView()
                 default:
                     EmptyView()
                 }
