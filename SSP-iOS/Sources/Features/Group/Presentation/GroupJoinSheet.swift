@@ -23,7 +23,19 @@ struct GroupJoinSheet: View {
                 .padding(.horizontal)
 
             Button("확인") {
-                let joinedGroup = ScheduleGroup(name: "참여한 그룹 (\(groupCode))", dateRange: "5월 11일 ~ 5월 17일")
+                // 임시: 오늘 기준 주간 날짜로 생성
+                let calendar = Calendar.current
+                let today = Date()
+                let weekday = calendar.component(.weekday, from: today)
+                let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: today)!
+                let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+
+                let joinedGroup = ScheduleGroup(
+                    name: "참여한 그룹 (\(groupCode))",
+                    startDate: startOfWeek,
+                    endDate: endOfWeek
+                )
+
                 onJoin(joinedGroup)
                 dismiss()
             }
@@ -41,11 +53,6 @@ struct GroupJoinSheet: View {
 
 #Preview {
     GroupJoinSheet { group in
-        print("참여 그룹: \(group.name)")
+        print("참여 그룹: \(group.name) \(group.dateRangeString)")
     }
 }
-
-
-//#Preview {
-//    GroupJoinSheet()
-//}

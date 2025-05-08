@@ -10,5 +10,12 @@ import Foundation
 struct ScheduleGroup: Identifiable {
     let id = UUID()
     let name: String
-    let dateRange: String
+    let startDate: Date
+    let endDate: Date
+
+    var dateRangeString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일"
+        return "\(formatter.string(from: startDate)) ~ \(formatter.string(from: endDate))"
+    }
 }

@@ -33,12 +33,13 @@ struct GroupHomeView: View {
                         VStack(alignment: .leading) {
                             Text(group.name)
                                 .font(.headline)
-                            Text("\(group.dateRange) 일정")
+                            Text("\(group.dateRangeString) 일정")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
                     }
                 }
+
                 .listStyle(.plain)
             }
             .padding()

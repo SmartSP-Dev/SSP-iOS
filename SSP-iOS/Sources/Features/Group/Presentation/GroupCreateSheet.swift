@@ -24,7 +24,7 @@ struct GroupCreateSheet: View {
                 .font(.caption)
                 .foregroundColor(.blue)
                 .padding(.horizontal)
-            
+
             DatePicker("날짜 선택", selection: $selectedDate, displayedComponents: .date)
                 .datePickerStyle(.compact)
 
@@ -35,14 +35,14 @@ struct GroupCreateSheet: View {
             Button("확인") {
                 let calendar = Calendar.current
                 let weekday = calendar.component(.weekday, from: selectedDate)
-                let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: selectedDate) ?? selectedDate // 월요일 기준
+                let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: selectedDate) ?? selectedDate
                 let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek) ?? selectedDate
 
-                let formatter = DateFormatter()
-                formatter.dateFormat = "M월 d일"
-
-                let range = "\(formatter.string(from: startOfWeek)) ~ \(formatter.string(from: endOfWeek))"
-                let group = ScheduleGroup(name: groupName.isEmpty ? "이름 없는 약속" : groupName, dateRange: range)
+                let group = ScheduleGroup(
+                    name: groupName.isEmpty ? "이름 없는 약속" : groupName,
+                    startDate: startOfWeek,
+                    endDate: endOfWeek
+                )
 
                 onCreate(group)
                 dismiss()
@@ -60,7 +60,13 @@ struct GroupCreateSheet: View {
 // MARK: - Preview
 
 #Preview {
-    GroupCreateSheet { group in
-        print("생성된 그룹: \(group.name) - \(group.dateRange)")
+    let calendar = Calendar.current
+    let today = Date()
+    let weekday = calendar.component(.weekday, from: today)
+    let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: today)!
+    let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+
+    return GroupCreateSheet { group in
+        print("생성된 그룹: \(group.name) - \(group.dateRangeString)")
     }
 }
