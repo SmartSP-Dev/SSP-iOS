@@ -70,7 +70,7 @@ struct GroupScheduleView: View {
                     "subjects": [
                         {
                             "subject": "데이터베이스응용",
-                            "times": ["16:30", "16:45", "17:00"]
+                            "times": ["16:00", "16:45", "18:00"]
                         }
                     ]
                 },
