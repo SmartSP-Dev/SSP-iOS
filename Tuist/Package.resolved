@@ -1,5 +1,5 @@
 {
-  "originHash" : "1fdf05eb26e8fbc256c911ee6f41aebf2b95c5f73e93e6ea8879eb68ea4e9fe2",
+  "originHash" : "304f76bfd43df3ccfec405811563cecd23e05fb81165d7c2f217178995123e36",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -17,6 +17,33 @@
       "state" : {
         "revision" : "bfe2fe42f730ccfe59e85f6e9eda2f4578e9a307",
         "version" : "2.24.0"
+      }
+    },
+    {
+      "identity" : "moya",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Moya/Moya.git",
+      "state" : {
+        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
+        "version" : "15.0.3"
+      }
+    },
+    {
+      "identity" : "reactiveswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+      "state" : {
+        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+        "version" : "6.7.0"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "5dd1907d64f0d36f158f61a466bab75067224893",
+        "version" : "6.9.0"
       }
     }
   ],

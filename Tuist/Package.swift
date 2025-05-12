@@ -6,6 +6,7 @@ import struct ProjectDescription.PackageSettings
 
 let packageSettings = PackageSettings(
     productTypes: [
+        "Moya": .framework,
         "Alamofire": .framework,
         "KakaoSDKAuth": .framework,
         "KakaoSDKCommon": .framework,
@@ -18,6 +19,7 @@ let packageSettings = PackageSettings(
 let package = Package(
     name: "SSP-iOS",
     dependencies: [
+        .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
         .package(url: "https://github.com/kakao/kakao-ios-sdk.git", from: "2.19.0")
     ]
 )
