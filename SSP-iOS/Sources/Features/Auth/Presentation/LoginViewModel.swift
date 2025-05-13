@@ -41,10 +41,18 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
     
     func loginWithKakao() async {
         do {
-            _ = try await kakaoUseCase.loginWithKakao()
+            let kakaoToken = try await kakaoUseCase.loginWithKakao()
+            let jwtToken = try await authNetworkService.loginWithKakao(token: kakaoToken)
+
+            // JWT 저장
+            KeychainManager.shared.saveAccessToken(jwtToken.accessToken)
+            KeychainManager.shared.saveRefreshToken(jwtToken.refreshToken)
+
+            print("JWT 저장 완료: \(jwtToken.accessToken)")
             isLoggedIn = true
         } catch {
             print("카카오 로그인 실패: \(error)")
         }
     }
+
 }

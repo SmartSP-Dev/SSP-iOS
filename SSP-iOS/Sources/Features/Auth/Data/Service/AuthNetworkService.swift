@@ -10,20 +10,27 @@ import Moya
 
 protocol AuthNetworkService {
     func loginWithApple(code: String) async throws -> AuthTokenResponse
+    func loginWithKakao(token: String) async throws -> AuthTokenResponse
 }
 
 final class DefaultAuthNetworkService: AuthNetworkService {
     private let provider = MoyaProvider<AuthAPI>()
 
     func loginWithApple(code: String) async throws -> AuthTokenResponse {
+        return try await sendRequest(.loginWithApple(code: code))
+    }
+
+    func loginWithKakao(token: String) async throws -> AuthTokenResponse {
+        return try await sendRequest(.loginWithKakao(token: token))
+    }
+
+    private func sendRequest(_ target: AuthAPI) async throws -> AuthTokenResponse {
         return try await withCheckedThrowingContinuation { continuation in
-            provider.request(.loginWithApple(code: code)) { result in
+            provider.request(target) { result in
                 switch result {
                 case .success(let response):
-                    // 서버에서 받은 응답 JSON 출력
-                    print("[Auth] 서버 응답 상태코드: \(response.statusCode)")
-                    print("[Auth] 서버 응답 body:")
-                    print(String(data: response.data, encoding: .utf8) ?? "응답 디코딩 실패")
+                    print("[Auth] 상태코드: \(response.statusCode)")
+                    print("[Auth] 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
 
                     do {
                         let token = try JSONDecoder().decode(AuthTokenResponse.self, from: response.data)
@@ -33,7 +40,6 @@ final class DefaultAuthNetworkService: AuthNetworkService {
                     }
 
                 case .failure(let error):
-                    print("Moya 통신 실패: \(error)")
                     continuation.resume(throwing: error)
                 }
             }
