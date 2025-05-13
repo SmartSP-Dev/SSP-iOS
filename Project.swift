@@ -54,7 +54,8 @@ let project = Project(
                 .external(name: "KakaoSDKAuth"),
                 .external(name: "KakaoSDKUser"),
                 .external(name: "KakaoSDKTalk"),
-                .external(name: "Moya")
+                .external(name: "Moya"),
+                .external(name: "KeychainAccess")
             ]
         )
     ]

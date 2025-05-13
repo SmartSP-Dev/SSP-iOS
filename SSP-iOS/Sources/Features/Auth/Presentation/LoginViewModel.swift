@@ -28,7 +28,11 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
         do {
             let code = try await authUseCase.loginWithApple()
             let token = try await authNetworkService.loginWithApple(code: code)
-            print("JWT AccessToken: \(token.accessToken)")
+            
+            // JWT 저장
+            KeychainManager.shared.saveAccessToken(token.accessToken)
+            KeychainManager.shared.saveRefreshToken(token.refreshToken)
+            print("JWT 저장 완료: \(token.accessToken)")
             isLoggedIn = true
         } catch {
             print("애플 로그인 실패: \(error)")
