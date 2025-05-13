@@ -16,15 +16,19 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
     @Published var isLoggedIn = false
     private let authUseCase: AuthUseCase
     private let kakaoUseCase: KakaoUseCase
+    private let authNetworkService: AuthNetworkService
 
-    init(authUseCase: AuthUseCase, kakaoUseCase: KakaoUseCase) {
+    init(authUseCase: AuthUseCase, kakaoUseCase: KakaoUseCase, authNetworkService: AuthNetworkService) {
         self.authUseCase = authUseCase
         self.kakaoUseCase = kakaoUseCase
+        self.authNetworkService = authNetworkService
     }
 
     func loginWithApple() async {
         do {
-            _ = try await authUseCase.loginWithApple()
+            let code = try await authUseCase.loginWithApple()
+            let token = try await authNetworkService.loginWithApple(code: code)
+            print("JWT AccessToken: \(token.accessToken)")
             isLoggedIn = true
         } catch {
             print("애플 로그인 실패: \(error)")

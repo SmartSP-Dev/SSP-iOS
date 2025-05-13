@@ -38,6 +38,9 @@ final class DIContainer: ObservableObject {
     /// Kakao 로그인 유즈케이스
     private lazy var kakaoUseCase = DefaultKakaoUseCase(repository: kakaoRepository)
 
+    private let authNetworkService = DefaultAuthNetworkService()
+
+    
     // MARK: - 달력 관련 의존성
 
     /// 달력 저장소
@@ -67,7 +70,11 @@ final class DIContainer: ObservableObject {
     /// 로그인 뷰모델 생성
     @MainActor
     func makeLoginViewModel() -> LoginViewModel {
-        return LoginViewModel(authUseCase: authUseCase, kakaoUseCase: kakaoUseCase)
+        return LoginViewModel(
+            authUseCase: authUseCase,
+            kakaoUseCase: kakaoUseCase,
+            authNetworkService: authNetworkService
+        )
     }
 
     /// 메인 탭 뷰모델 생성
