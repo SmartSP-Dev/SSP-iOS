@@ -82,20 +82,3 @@ struct StudyStartModalView: View {
         .shadow(radius: 10)
     }
 }
-
-#Preview {
-    let timerVM = StudyTimerViewModel()
-    let subjectVM = SubjectManageViewModel()
-    subjectVM.subjects = [
-        StudySubject(name: "수학", time: 120),
-        StudySubject(name: "영어", time: 90),
-        StudySubject(name: "과학", time: 45)
-    ]
-
-    return StudyStartModalView(
-        onStart: {},
-        onCancel: {},
-        timerViewModel: timerVM,
-        subjectViewModel: subjectVM
-    )
-}

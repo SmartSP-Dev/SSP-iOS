@@ -10,6 +10,7 @@ import Foundation
 final class StatisticsViewModel: ObservableObject {
     @Published var weeklyRecords: [WeeklyStudyRecord] = []
     @Published var studyRecords: [DailyStudyRecord] = []
+    @Published var monthlySummary: MonthlySummaryDTO?
 
     init() {
         loadWeeklyRecords()
@@ -81,4 +82,31 @@ final class StatisticsViewModel: ObservableObject {
     private func saveWeeklyRecords() {
         UserDefaults.standard.saveWeeklyRecords(weeklyRecords)
     }
+    
+    func loadWeeklyStudyFromServer() {
+        SubjectRepositoryImpl().fetchWeeklySubjects { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let records):
+                    self?.weeklyRecords = records
+                case .failure(let error):
+                    print("주간 통계 불러오기 실패: \(error)")
+                }
+            }
+        }
+    }
+    
+    func loadMonthlyStats() {
+        SubjectRepositoryImpl().fetchMonthlyStats { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let dto):
+                    self?.monthlySummary = dto
+                case .failure(let error):
+                    print("월간 통계 로딩 실패: \(error)")
+                }
+            }
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ import Foundation
 
 struct StudySubject: Identifiable, Codable, Equatable {
     var id = UUID()
+    var studyId: Int
     var name: String
-    var time: Int // 분 단위로 저장
+    var time: Int
 }

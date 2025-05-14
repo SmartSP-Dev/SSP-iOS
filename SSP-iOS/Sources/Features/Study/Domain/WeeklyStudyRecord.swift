@@ -12,3 +12,8 @@ struct WeeklyStudyRecord: Codable, Identifiable {
     let subjectName: String
     var totalMinutes: Int
 }
+
+struct WeeklySubjectDTO: Decodable {
+    let subject: String
+    let totalStudyTime: Int
+}

@@ -11,7 +11,9 @@ struct StudyView: View {
     let statisticsViewModel = StatisticsViewModel()
 
     @StateObject private var timerViewModel = StudyTimerViewModel()
-    @StateObject private var subjectViewModel = SubjectManageViewModel()
+    @StateObject private var subjectViewModel = SubjectManageViewModel(
+        repository: SubjectRepositoryImpl()
+    )
     @StateObject private var statsViewModel = StatisticsViewModel()
 
     @State private var isPresentingStartModal = false
@@ -27,6 +29,10 @@ struct StudyView: View {
                 startModal
             }
         }
+        .onAppear {
+           statsViewModel.loadWeeklyStudyFromServer()
+            statsViewModel.loadMonthlyStats()
+       }
     }
 
     // MARK: - Main Content
@@ -69,13 +75,23 @@ struct StudyView: View {
             }
             Spacer()
             // 이번 달 학습량 요약
-            MonthlySummarySectionView(
-                daysStudied: statsViewModel.totalStudyDays,
-                totalMinutes: statsViewModel.totalMonthlyMinutes,
-                averageMinutes: statsViewModel.averageMinutesPerDay,
-                bestDay: statsViewModel.bestStudyDayFormatted,
-                bestDayMinutes: statsViewModel.bestStudyDayMinutes
-            )
+            if let summary = statsViewModel.monthlySummary {
+                MonthlySummarySectionView(
+                    daysStudied: summary.studyDay,
+                    totalMinutes: summary.studyTime / 60,
+                    averageMinutes: summary.averageStudyTime.asMinutesDouble,
+                    bestDay: "-", // 서버에서 날짜 안 주는 경우
+                    bestDayMinutes: summary.maxStudyTime / 60
+                )
+            } else {
+                MonthlySummarySectionView(
+                    daysStudied: 0,
+                    totalMinutes: 0,
+                    averageMinutes: 0,
+                    bestDay: "-",
+                    bestDayMinutes: 0
+                )
+            }
             startButton
             Spacer()
             Spacer()
@@ -95,9 +111,10 @@ struct StudyView: View {
                         )
                     }
                 },
-                viewModel: timerViewModel
+                viewModel: timerViewModel,
+                subjectViewModel: subjectViewModel
             )
-            .environmentObject(statisticsViewModel)
+            .environmentObject(statsViewModel)
         }
     }
 
@@ -153,35 +170,4 @@ struct StudyView: View {
             subjectViewModel: subjectViewModel
         )
     }
-}
-
-#Preview {
-    let timerVM = StudyTimerViewModel()
-    let subjectVM = SubjectManageViewModel()
-    let statsVM = StatisticsViewModel()
-
-    // 예시 과목 추가
-    subjectVM.subjects = [
-        StudySubject(name: "수학", time: 120),
-        StudySubject(name: "영어", time: 90),
-        StudySubject(name: "과학", time: 45)
-    ]
-
-    // 예시 주간 기록 추가
-    statsVM.weeklyRecords = [
-        WeeklyStudyRecord(subjectName: "수학", totalMinutes: 120),
-        WeeklyStudyRecord(subjectName: "영어", totalMinutes: 60)
-    ]
-
-    // 예시 일간 기록 추가
-    statsVM.studyRecords = [
-        DailyStudyRecord(date: Date().addingTimeInterval(-86400 * 2), subjectName: "수학", minutes: 90),
-        DailyStudyRecord(date: Date().addingTimeInterval(-86400), subjectName: "영어", minutes: 60),
-        DailyStudyRecord(date: Date(), subjectName: "과학", minutes: 45)
-    ]
-
-    return StudyView()
-        .environmentObject(timerVM)
-        .environmentObject(subjectVM)
-        .environmentObject(statsVM)
 }

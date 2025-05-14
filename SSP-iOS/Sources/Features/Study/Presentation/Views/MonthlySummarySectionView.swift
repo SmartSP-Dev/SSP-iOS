@@ -26,7 +26,6 @@ struct MonthlySummarySectionView: View {
                 summaryRow(title: "1일 평균", value: String(format: "%.1f분", averageMinutes))
                 summaryRow(title: "최고 공부일", value: "\(bestDay) (\(bestDayMinutes)분)")
             }
-//            .padding(.horizontal, 5)
         }
     }
 

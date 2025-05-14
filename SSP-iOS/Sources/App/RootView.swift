@@ -22,7 +22,7 @@ struct RootView: View {
                 }
             }
             .onAppear {
-                if let token = UserDefaults.standard.string(forKey: "accessToken"), !token.isEmpty {
+                if let token = KeychainManager.shared.accessToken, !token.isEmpty {
                     loginViewModel.isLoggedIn = true
                 }
             }

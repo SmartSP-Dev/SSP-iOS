@@ -33,3 +33,17 @@ extension Date {
     }
     
 }
+
+extension Int {
+    var asMinutesString: String {
+        "\(self / 60)분"
+    }
+
+    var asMinutesDouble: Double {
+        Double(self) / 60.0
+    }
+
+    var asRoundedMinutesString: String {
+        String(format: "%.1f분", Double(self) / 60.0)
+    }
+}

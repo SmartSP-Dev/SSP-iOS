@@ -11,6 +11,8 @@ struct TimerStudyView: View {
     var onEnd: () -> Void
     @ObservedObject var viewModel: StudyTimerViewModel
     @EnvironmentObject var statisticsViewModel: StatisticsViewModel
+    @ObservedObject var subjectViewModel: SubjectManageViewModel
+
 
     @State private var pressProgress: Double = 0
     @State private var pressTimer: Timer?
@@ -46,9 +48,31 @@ struct TimerStudyView: View {
                         generator.impactOccurred()
                         
                         if let subject = viewModel.selectedSubject {
-                            statisticsViewModel.completeStudy(subjectName: subject.name, elapsedSeconds: viewModel.elapsedSeconds)
+                            let studyId = subject.studyId
+                            let elapsedTime = viewModel.elapsedSeconds
+                            let dateString = DateFormatter.yyyyMMdd.string(from: Date())  // "yyyy-MM-dd"
+
+                            let dto = StudyRecordRequestDTO(studyId: studyId, date: dateString, time: elapsedTime)
+                            SubjectRepositoryImpl().uploadRecord(dto) { result in
+                                switch result {
+                                case .success:
+                                    print("공부 기록 업로드 성공")
+
+                                    // 서버 최신 데이터 다시 불러오기
+                                    DispatchQueue.main.async {
+                                        statisticsViewModel.completeStudy(subjectName: subject.name, elapsedSeconds: elapsedTime)
+                                        subjectViewModel.loadSubjectsFromServer()
+                                        statisticsViewModel.loadWeeklyStudyFromServer()
+                                        statisticsViewModel.loadMonthlyStats()
+                                    }
+
+                                case .failure(let error):
+                                    print("기록 업로드 실패: \(error)")
+                                }
+                            }
                         }
                         onEnd()
+
                     } onPressingChanged: { isPressing in
                         if isPressing {
                             startPressTimer()
@@ -126,12 +150,12 @@ private extension Int {
     }
 }
 
-#Preview("학습 타이머 화면") {
-    let viewModel = StudyTimerViewModel()
-    viewModel.elapsedSeconds = 153 // 예시: 02분 33초
-
-    return TimerStudyView(
-        onEnd: {},
-        viewModel: viewModel
-    )
+extension DateFormatter {
+    static let yyyyMMdd: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
 }
+

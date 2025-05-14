@@ -31,7 +31,7 @@ struct SubjectManageView: View {
                                 .frame(width: 130, alignment: .leading)
                                 .multilineTextAlignment(.leading)
 
-                            Text("\(subject.time)분")
+                            Text(subject.time.asMinutesString)
                                 .foregroundColor(.gray)
                                 .font(.subheadline)
 
@@ -52,7 +52,7 @@ struct SubjectManageView: View {
                         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
                     }
 
-                    // ⬇️ 과목 추가 입력창
+                    // 과목 추가 입력창
                     Divider()
                         .padding(.top, 20)
 
@@ -63,7 +63,7 @@ struct SubjectManageView: View {
                             .cornerRadius(8)
 
                         Button(action: {
-                            let subject = StudySubject(name: newSubjectName, time: 0)
+                            let subject = StudySubject(studyId: -1, name: newSubjectName, time: 0)
                             viewModel.addSubject(subject)
                             newSubjectName = ""
                         }) {
@@ -85,7 +85,7 @@ struct SubjectManageView: View {
             }
             .alert("정말 삭제하시겠습니까?", isPresented: $showDeleteAlert, presenting: subjectToDelete) { subject in
                 Button("삭제", role: .destructive) {
-                    viewModel.removeSubject(subject)
+                    viewModel.deleteSubject(subject)
                 }
                 Button("취소", role: .cancel) { }
             } message: { subject in
@@ -97,13 +97,13 @@ struct SubjectManageView: View {
     }
 }
 
-#Preview {
-    let mockViewModel = SubjectManageViewModel()
-    mockViewModel.subjects = [
-        StudySubject(name: "수학", time: 120),
-        StudySubject(name: "영어", time: 90),
-        StudySubject(name: "과학", time: 45),
-        StudySubject(name: "테스트", time: 45)
-    ]
-    return SubjectManageView(viewModel: mockViewModel)
-}
+//#Preview {
+//    let mockViewModel = SubjectManageViewModel()
+//    mockViewModel.subjects = [
+//        StudySubject(name: "수학", time: 120),
+//        StudySubject(name: "영어", time: 90),
+//        StudySubject(name: "과학", time: 45),
+//        StudySubject(name: "테스트", time: 45)
+//    ]
+//    return SubjectManageView(viewModel: mockViewModel)
+//}

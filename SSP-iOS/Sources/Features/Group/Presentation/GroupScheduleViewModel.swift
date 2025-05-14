@@ -76,10 +76,10 @@ final class GroupScheduleViewModel: ObservableObject {
 
 struct WeekScheduleDTO: Decodable {
     let timePoint: String // 요일: "화"
-    let subjects: [SubjectDTO]
+    let subjects: [SubjectsDTO]
 }
 
-struct SubjectDTO: Decodable {
+struct SubjectsDTO: Decodable {
     let subject: String
     let times: [String] // 예: ["16:30", "16:45", ...]
 }
