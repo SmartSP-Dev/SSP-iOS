@@ -21,6 +21,11 @@ struct RootView: View {
                     LoginView(viewModel: loginViewModel)
                 }
             }
+            .onAppear {
+                if let token = UserDefaults.standard.string(forKey: "accessToken"), !token.isEmpty {
+                    loginViewModel.isLoggedIn = true
+                }
+            }
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .quizList:

@@ -33,6 +33,8 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
             KeychainManager.shared.saveAccessToken(token.accessToken)
             KeychainManager.shared.saveRefreshToken(token.refreshToken)
             print("JWT 저장 완료: \(token.accessToken)")
+            
+            UserDefaults.standard.set(token.accessToken, forKey: "accessToken")
             isLoggedIn = true
         } catch {
             print("애플 로그인 실패: \(error)")
@@ -47,8 +49,9 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
             // JWT 저장
             KeychainManager.shared.saveAccessToken(jwtToken.accessToken)
             KeychainManager.shared.saveRefreshToken(jwtToken.refreshToken)
-
             print("JWT 저장 완료: \(jwtToken.accessToken)")
+            
+            UserDefaults.standard.set(jwtToken.accessToken, forKey: "accessToken")
             isLoggedIn = true
         } catch {
             print("카카오 로그인 실패: \(error)")
