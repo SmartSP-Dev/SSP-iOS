@@ -24,7 +24,7 @@ struct MonthlySummarySectionView: View {
                 summaryRow(title: "총 학습 일수", value: "\(daysStudied)일")
                 summaryRow(title: "총 공부 시간", value: "\(totalMinutes)분")
                 summaryRow(title: "1일 평균", value: String(format: "%.1f분", averageMinutes))
-                summaryRow(title: "최고 공부일", value: "\(bestDay) (\(bestDayMinutes)분)")
+                summaryRow(title: "최고 공부일", value: "\(bestDay)일 (\(bestDayMinutes)분)")
             }
         }
     }

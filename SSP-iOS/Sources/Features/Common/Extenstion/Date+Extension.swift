@@ -47,3 +47,10 @@ extension Int {
         String(format: "%.1f분", Double(self) / 60.0)
     }
 }
+
+extension String {
+    var dayOnly: String {
+        let components = self.split(separator: "-")
+        return components.count == 3 ? String(components[2]) : "-"
+    }
+}

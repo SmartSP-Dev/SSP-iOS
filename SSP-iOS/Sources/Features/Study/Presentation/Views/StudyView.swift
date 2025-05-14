@@ -80,7 +80,7 @@ struct StudyView: View {
                     daysStudied: summary.studyDay,
                     totalMinutes: summary.studyTime / 60,
                     averageMinutes: summary.averageStudyTime.asMinutesDouble,
-                    bestDay: "-", // 서버에서 날짜 안 주는 경우
+                    bestDay: summary.maxStudyDay.dayOnly,
                     bestDayMinutes: summary.maxStudyTime / 60
                 )
             } else {

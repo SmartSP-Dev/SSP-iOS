@@ -12,4 +12,5 @@ struct MonthlySummaryDTO: Decodable {
     let studyTime: Int
     let averageStudyTime: Int
     let maxStudyTime: Int
+    let maxStudyDay: String
 }
