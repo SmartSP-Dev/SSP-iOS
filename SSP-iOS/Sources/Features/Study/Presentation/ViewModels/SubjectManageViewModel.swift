@@ -11,8 +11,8 @@ final class SubjectManageViewModel: ObservableObject {
     @Published var subjects: [StudySubject] = []
     private let repository: SubjectRepository
 
-    init(repository: SubjectRepository = SubjectRepositoryImpl()) {
-        self.repository = repository
+    init() {
+        self.repository = DIContainer.shared.subjectRepository
         loadSubjectsFromServer()
     }
 

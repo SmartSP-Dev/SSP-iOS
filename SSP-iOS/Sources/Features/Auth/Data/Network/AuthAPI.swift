@@ -11,6 +11,7 @@ import Moya
 enum AuthAPI {
     case loginWithApple(code: String)
     case loginWithKakao(token: String)
+    case refreshToken(token: String)
 }
 
 extension AuthAPI: TargetType {
@@ -24,12 +25,14 @@ extension AuthAPI: TargetType {
             return "/auth/login/apple"
         case .loginWithKakao:
             return "/auth/login/kakao/token"
+        case .refreshToken:
+            return "/auth/refresh"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .loginWithApple, .loginWithKakao:
+        case .loginWithApple, .loginWithKakao, .refreshToken:
             return .post
         }
     }
@@ -39,6 +42,8 @@ extension AuthAPI: TargetType {
         case .loginWithApple(let code):
             return .requestJSONEncodable(["code": code])
         case .loginWithKakao(let token):
+            return .requestJSONEncodable(["accessToken": token])
+        case .refreshToken(let token):
             return .requestJSONEncodable(["accessToken": token])
         }
     }

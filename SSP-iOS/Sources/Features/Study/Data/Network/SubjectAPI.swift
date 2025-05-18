@@ -67,7 +67,6 @@ extension SubjectAPI: TargetType {
         var headers = ["Content-Type": "application/json"]
         if let token = KeychainManager.shared.accessToken, !token.isEmpty {
             headers["Authorization"] = "Bearer \(token)"
-            print("HeaderToken : \(token)")
         }
         return headers
     }

@@ -11,9 +11,7 @@ struct StudyView: View {
     let statisticsViewModel = StatisticsViewModel()
 
     @StateObject private var timerViewModel = StudyTimerViewModel()
-    @StateObject private var subjectViewModel = SubjectManageViewModel(
-        repository: SubjectRepositoryImpl()
-    )
+    @StateObject private var subjectViewModel = SubjectManageViewModel()
     @StateObject private var statsViewModel = StatisticsViewModel()
 
     @State private var isPresentingStartModal = false

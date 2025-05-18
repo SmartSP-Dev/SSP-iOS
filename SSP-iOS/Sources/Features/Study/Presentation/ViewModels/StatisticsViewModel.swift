@@ -11,6 +11,8 @@ final class StatisticsViewModel: ObservableObject {
     @Published var weeklyRecords: [WeeklyStudyRecord] = []
     @Published var studyRecords: [DailyStudyRecord] = []
     @Published var monthlySummary: MonthlySummaryDTO?
+    private let repository = DIContainer.shared.subjectRepository
+    
 
     init() {
         loadWeeklyRecords()
@@ -84,7 +86,7 @@ final class StatisticsViewModel: ObservableObject {
     }
     
     func loadWeeklyStudyFromServer() {
-        SubjectRepositoryImpl().fetchWeeklySubjects { [weak self] result in
+        repository.fetchWeeklySubjects { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let records):
@@ -97,7 +99,7 @@ final class StatisticsViewModel: ObservableObject {
     }
     
     func loadMonthlyStats() {
-        SubjectRepositoryImpl().fetchMonthlyStats { [weak self] result in
+        repository.fetchMonthlyStats { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let dto):
@@ -108,5 +110,4 @@ final class StatisticsViewModel: ObservableObject {
             }
         }
     }
-
 }

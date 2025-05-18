@@ -14,8 +14,12 @@ protocol AuthNetworkService {
 }
 
 final class DefaultAuthNetworkService: AuthNetworkService {
-    private let provider = MoyaProvider<AuthAPI>()
+    private let provider: MoyaProvider<AuthAPI>
 
+    init(provider: MoyaProvider<AuthAPI>) {
+        self.provider = provider
+    }
+    
     func loginWithApple(code: String) async throws -> AuthTokenResponse {
         return try await sendRequest(.loginWithApple(code: code))
     }

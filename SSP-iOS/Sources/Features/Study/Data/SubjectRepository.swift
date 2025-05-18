@@ -49,13 +49,19 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.fetchSubjects(range: range)) { result in
             switch result {
             case .success(let response):
+                print("[API] 상태 코드: \(response.statusCode)")
+                print("[API] 응답 바디: \(String(data: response.data, encoding: .utf8) ?? "nil")")
+
                 do {
                     let subjects = try JSONDecoder().decode([SubjectDTO].self, from: response.data)
                     completion(.success(subjects))
                 } catch {
+                    print("[Decode 에러] \(error)")
                     completion(.failure(error))
                 }
+
             case .failure(let error):
+                print("[요청 실패] \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
