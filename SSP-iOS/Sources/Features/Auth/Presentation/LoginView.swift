@@ -72,6 +72,3 @@ struct LoginView<ViewModel: LoginViewModelProtocol>: View {
 
 
 
-#Preview {
-    LoginView(viewModel: MockLoginViewModel())
-}

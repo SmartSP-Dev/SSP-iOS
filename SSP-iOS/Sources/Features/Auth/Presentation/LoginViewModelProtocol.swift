@@ -14,4 +14,5 @@ protocol LoginViewModelProtocol: ObservableObject {
     var isLoggedIn: Bool { get set }
     func loginWithApple() async
     func loginWithKakao() async
+    func autoLoginIfNeeded() async
 }

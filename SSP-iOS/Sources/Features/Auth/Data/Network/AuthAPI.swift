@@ -44,7 +44,7 @@ extension AuthAPI: TargetType {
         case .loginWithKakao(let token):
             return .requestJSONEncodable(["accessToken": token])
         case .refreshToken(let token):
-            return .requestJSONEncodable(["accessToken": token])
+            return .requestJSONEncodable(["refreshToken": token])
         }
     }
 

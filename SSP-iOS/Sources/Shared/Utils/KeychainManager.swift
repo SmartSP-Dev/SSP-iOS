@@ -44,4 +44,10 @@ final class KeychainManager {
         try? keychain.remove(Key.accessToken.rawValue)
         try? keychain.remove(Key.refreshToken.rawValue)
     }
+    // MARK: - Vaild
+    func isAccessTokenValid() -> Bool {
+        guard let token = accessToken else { return false }
+        return !JWTDecoder.isExpired(token: token)
+    }
+
 }

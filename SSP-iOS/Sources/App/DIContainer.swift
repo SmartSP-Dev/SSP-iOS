@@ -39,25 +39,13 @@ final class DIContainer: ObservableObject {
     /// Kakao 로그인 유즈케이스
     private lazy var kakaoUseCase = DefaultKakaoUseCase(repository: kakaoRepository)
 
-    private lazy var authNetworkService = DefaultAuthNetworkService(provider: authProvider)
+    /// 로그인 네트워크 서비스
+    private lazy var authNetworkService = DefaultAuthNetworkService(provider: MoyaProvider<AuthAPI>())
 
-    // JWT 토큰 갱신을 위한 세션 저장소
-    private lazy var sessionRepository = DefaultSessionRepository()
-
-    // 인증 자동 재발급용 Interceptor
-    private lazy var authInterceptor = AuthInterceptor(sessionRepository: sessionRepository)
-
-    // Moya + Alamofire 커스텀 세션
-    private lazy var authSession: Session = {
-        Session(interceptor: authInterceptor)
-    }()
-
-    // 커스텀 세션을 사용하는 MoyaProvider (필요한 곳에서 사용)
-    private lazy var authProvider = MoyaProvider<AuthAPI>(session: authSession)
-    
-    private lazy var subjectProvider = MoyaProvider<SubjectAPI>(session: authSession)
+    /// 과목 저장소
+    private lazy var subjectProvider = MoyaProvider<SubjectAPI>()
     lazy var subjectRepository = SubjectRepositoryImpl(provider: subjectProvider)
-    
+
     // MARK: - 달력 관련 의존성
 
     /// 달력 저장소
@@ -120,7 +108,7 @@ final class DIContainer: ObservableObject {
             fetchReviewTargetUseCase: fetchReviewQuizUseCase
         )
     }
-    
+
     @MainActor
     func makeCreateQuizViewModel() -> CreateQuizViewModel {
         return CreateQuizViewModel(createQuizUseCase: DefaultCreateQuizUseCase(repository: quizRepository))

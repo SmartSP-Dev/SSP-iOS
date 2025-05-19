@@ -21,11 +21,14 @@ struct RootView: View {
                     LoginView(viewModel: loginViewModel)
                 }
             }
-//            .onAppear { // 자동 로그인
-//                if let token = KeychainManager.shared.accessToken, !token.isEmpty {
-//                    loginViewModel.isLoggedIn = true
-//                }
-//            }
+            .onAppear { // 자동 로그인
+                if let token = KeychainManager.shared.accessToken, !token.isEmpty {
+                    loginViewModel.isLoggedIn = true
+                }
+            }
+            .task {
+                await loginViewModel.autoLoginIfNeeded()
+            }
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .quizList:

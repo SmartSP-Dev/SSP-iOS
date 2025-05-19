@@ -36,6 +36,13 @@ final class DefaultAuthNetworkService: AuthNetworkService {
                     print("[Auth] 상태코드: \(response.statusCode)")
                     print("[Auth] 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
 
+                    guard (200..<300).contains(response.statusCode) else {
+                        continuation.resume(throwing: NSError(domain: "", code: response.statusCode, userInfo: [
+                            NSLocalizedDescriptionKey: "서버 응답 오류: \(response.statusCode)"
+                        ]))
+                        return
+                    }
+
                     do {
                         let token = try JSONDecoder().decode(AuthTokenResponse.self, from: response.data)
                         continuation.resume(returning: token)
