@@ -8,14 +8,9 @@
 import Foundation
 
 protocol RoutineRepository {
-    func fetchRoutines() -> [RoutineItem]
-    func fetchCheckStates(for date: Date) -> [UUID: Bool]
-
-    func toggleRoutineCheck(id: UUID, for date: Date)
-    func addRoutine(title: String)
-    func addRoutineItem(_ item: RoutineItem)
-    func deleteRoutine(at indexSet: IndexSet)
-
-    func saveAll()  // optional: 앱 종료 직전 저장용
+    func fetchRoutines(date: Date, completion: @escaping (Result<[Routine], Error>) -> Void)
+    func addRoutine(title: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func toggleRoutineCheck(routineId: Int, date: Date, completed: Bool, completion: @escaping (Result<Void, Error>) -> Void)
+    func deleteRoutine(routineId: Int, completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchSummary(completion: @escaping (Result<[RoutineSummaryDTO], Error>) -> Void)
 }
-

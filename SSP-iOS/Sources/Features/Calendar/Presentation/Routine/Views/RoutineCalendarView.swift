@@ -89,11 +89,15 @@ struct RoutineCalendarView: View {
     }
 
     private func completionColor(for date: Date) -> Color {
-        let states = viewModel.repository.fetchCheckStates(for: date)
-        guard !states.isEmpty else { return .gray.opacity(0.2) }
+        let calendar = Calendar.current
+        let routinesOnDate = viewModel.routines.filter {
+            calendar.isDate($0.startDate, inSameDayAs: date)
+        }
 
-        let checkedCount = states.values.filter { $0 }.count
-        let ratio = Double(checkedCount) / Double(states.count)
+        guard !routinesOnDate.isEmpty else { return .gray.opacity(0.2) }
+        
+        let checkedCount = routinesOnDate.filter { $0.isCompleted }.count
+        let ratio = Double(checkedCount) / Double(routinesOnDate.count)
 
         switch ratio {
         case 1.0:
@@ -120,6 +124,6 @@ struct RoutineCalendarView: View {
     }()
 }
 
-#Preview {
-    RoutineCalendarView(viewModel: RoutineViewModel(repository: DummyRoutineRepository()))
-}
+//#Preview {
+//    RoutineCalendarView(viewModel: RoutineViewModel(repository: DummyRoutineRepository()))
+//}

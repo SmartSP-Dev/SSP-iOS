@@ -8,59 +8,79 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class RoutineViewModel: ObservableObject {
-    @Published var routines: [RoutineItem] = []
-    @Published var checkStates: [UUID: Bool] = [:]
-    @Published var selectedDate: Date = Date() {
-        didSet {
-            loadCheckStates(for: selectedDate)
+    @Published var routines: [Routine] = []
+    @Published var selectedDate: Date = Date()
+    @Published var isLoading = false
+
+    private let repository: RoutineRepository
+
+    init(repository: RoutineRepository) {
+        self.repository = repository
+        Task {
+            await fetchRoutines(for: selectedDate)
         }
     }
 
-    let repository: RoutineRepository
-    private let currentDate: Date
+    func fetchRoutines(for date: Date) async {
+        isLoading = true
+        defer { isLoading = false }
 
-    init(repository: RoutineRepository, date: Date = Date()) {
-        self.repository = repository
-        self.currentDate = date
-        self.fetchData()
-        self.selectedDate = date  // 초기 날짜 반영
+        await withCheckedContinuation { continuation in
+            repository.fetchRoutines(date: date) { result in
+                switch result {
+                case .success(let fetched):
+                    self.routines = fetched
+                case .failure:
+                    self.routines = []
+                }
+                continuation.resume()
+            }
+        }
     }
 
-    func fetchData() {
-        routines = repository.fetchRoutines()
-        loadCheckStates(for: selectedDate)
+    func addRoutine(title: String) async {
+        await withCheckedContinuation { continuation in
+            repository.addRoutine(title: title) { _ in
+                Task {
+                    await self.fetchRoutines(for: self.selectedDate)
+                }
+                continuation.resume()
+            }
+        }
     }
 
-    func loadCheckStates(for date: Date) {
-        checkStates = repository.fetchCheckStates(for: date)
+    func toggleCheck(for routine: Routine) async {
+        let newCompleted = !routine.isCompleted
+        await withCheckedContinuation { continuation in
+            repository.toggleRoutineCheck(
+                routineId: routine.id,
+                date: selectedDate,
+                completed: newCompleted
+            ) { _ in
+                Task {
+                    await self.fetchRoutines(for: self.selectedDate)
+                }
+                continuation.resume()
+            }
+        }
     }
 
-    func toggleCheck(for id: UUID) {
-        repository.toggleRoutineCheck(id: id, for: selectedDate)
-        loadCheckStates(for: selectedDate)
+    func deleteRoutine(id: Int) async {
+        await withCheckedContinuation { continuation in
+            repository.deleteRoutine(routineId: id) { _ in
+                Task {
+                    await self.fetchRoutines(for: self.selectedDate)
+                }
+                continuation.resume()
+            }
+        }
     }
 
-    func addRoutine(title: String) {
-        let new = RoutineItem(id: UUID(), title: title, createdDate: Date()) // 생성일자 명시
-        repository.addRoutineItem(new)
-        fetchData()
-    }
-
-    func deleteRoutine(at indexSet: IndexSet) {
-        repository.deleteRoutine(at: indexSet)
-        fetchData()
-    }
-
-    func saveIfNeeded() {
-        repository.saveAll()
-    }
-
-    var visibleRoutines: [RoutineItem] {
-        routines.filter { $0.createdDate.isSameOrBefore(selectedDate) }
-    }
-
-    var checkStatesForSelectedDate: [UUID: Bool] {
-        checkStates
+    var completionRatio: Double {
+        guard !routines.isEmpty else { return 0 }
+        let done = routines.filter(\.isCompleted).count
+        return Double(done) / Double(routines.count)
     }
 }

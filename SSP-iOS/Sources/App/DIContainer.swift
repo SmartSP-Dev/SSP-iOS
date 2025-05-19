@@ -57,8 +57,11 @@ final class DIContainer: ObservableObject {
     // MARK: - 루틴 관련 의존성
 
     /// 로컬 루틴 저장소
-    private lazy var routineRepository = LocalRoutineRepository()
-
+    private lazy var routineRepository: RoutineRepository = {
+        let remoteDataSource = RoutineRemoteDataSourceImpl()
+        return RoutineRepositoryImpl(remote: remoteDataSource)
+    }()
+    
     // MARK: - 퀴즈 관련 의존성 (Service → Repository → UseCase)
 
     /// 퀴즈 저장소 구현체

@@ -77,6 +77,8 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
            await refreshTokensIfNeeded()
        } else {
            print("유효한 액세스 토큰 → 자동 로그인")
+           print("accessToken (유효):", KeychainManager.shared.accessToken ?? "없음")
+           print("refreshToken (유효):", KeychainManager.shared.refreshToken ?? "없음")
            isLoggedIn = true
        }
    }
@@ -92,7 +94,10 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
            let newTokens = try await sendRefreshRequest(refreshToken: refreshToken)
            KeychainManager.shared.saveAccessToken(newTokens.accessToken)
            KeychainManager.shared.saveRefreshToken(newTokens.refreshToken)
-           print("토큰 갱신 성공")
+           
+           print("새 accessToken:", newTokens.accessToken)
+           print("새 refreshToken:", newTokens.refreshToken)
+           
            isLoggedIn = true
        } catch {
            print("토큰 갱신 실패: \(error)")

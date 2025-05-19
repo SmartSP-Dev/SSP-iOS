@@ -23,10 +23,10 @@ struct RoutineView: View {
                     .font(.caption)
                     .foregroundColor(.gray)
 
-                ProgressView(value: completionRatio)
+                ProgressView(value: viewModel.completionRatio)
                     .progressViewStyle(LinearProgressViewStyle(tint: .blue))
 
-                Text("달성도 \(Int(completionRatio * 100))%")
+                Text("달성도 \(Int(viewModel.completionRatio * 100))%")
                     .font(.headline)
             }
             .padding(.horizontal)
@@ -37,20 +37,20 @@ struct RoutineView: View {
             // 3. 루틴 리스트
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(viewModel.visibleRoutines) { routine in
+                    ForEach(viewModel.routines) { routine in
                         RoutineCardView(
                             routine: routine,
-                            isChecked: viewModel.checkStatesForSelectedDate[routine.id] ?? false
-                        ) {
-                            viewModel.toggleCheck(for: routine.id)
-                        }
+                            toggleAction: {
+                                await viewModel.toggleCheck(for: routine)
+                            }
+                        )
                     }
 
-                    // 데모용 예시 루틴 (루틴 없을 경우)
-                    if viewModel.visibleRoutines.isEmpty {
-                        ForEach(sampleRoutineList) { item in
-                            RoutineCardView(routine: item, isChecked: false, toggleAction: {})
-                        }
+                    if viewModel.routines.isEmpty {
+                        Text("루틴이 없습니다. 추가해보세요!")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .padding()
                     }
                 }
                 .padding(.top, 12)
@@ -59,7 +59,6 @@ struct RoutineView: View {
             }
         }
         .overlay(
-            // 4. 플로팅 추가 버튼
             Button(action: {
                 isPresentingAddSheet = true
             }) {
@@ -77,24 +76,14 @@ struct RoutineView: View {
         .sheet(isPresented: $isPresentingAddSheet) {
             RoutineAddView(viewModel: viewModel)
         }
+        .onChange(of: viewModel.selectedDate) {
+            Task {
+                await viewModel.fetchRoutines(for: viewModel.selectedDate)
+            }
+        }
     }
-
-    // MARK: - 루틴 완료 비율
-    private var completionRatio: Double {
-        let total = viewModel.visibleRoutines.count
-        guard total > 0 else { return 0.0 }
-        let checked = viewModel.visibleRoutines.filter { viewModel.checkStates[$0.id] ?? false }.count
-        return Double(checked) / Double(total)
-    }
-
-    // MARK: - 루틴 예시 (없을 경우 보여줄 카드)
-    private let sampleRoutineList: [RoutineItem] = [
-        .init(id: UUID(), title: "영어 단어 암기", createdDate: Date()),
-        .init(id: UUID(), title: "30분 스트레칭", createdDate: Date()),
-        .init(id: UUID(), title: "독서 20쪽", createdDate: Date())
-    ]
 }
 
-#Preview {
-    RoutineView(viewModel: RoutineViewModel(repository: LocalRoutineRepository()))
-}
+//#Preview {
+//    RoutineView(viewModel: RoutineViewModel(repository: MockRoutineRepository()))
+//}

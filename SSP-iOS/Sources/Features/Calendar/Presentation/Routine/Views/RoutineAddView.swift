@@ -14,21 +14,21 @@ struct RoutineAddView: View {
 
     var body: some View {
         VStack {
-            Text("오늘의 루틴을 확인하세요!")
+            Text("루틴을 추가하고 삭제할 수 있어요")
                 .font(.title3)
                 .padding(.top, 32)
 
             Spacer()
 
             VStack(spacing: 12) {
-                ForEach(Array(viewModel.routines.enumerated()), id: \.element.id) { index, item in
+                ForEach(viewModel.routines) { routine in
                     HStack {
-                        Text(item.title)
+                        Text(routine.title)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         Button(action: {
-                            withAnimation {
-                                viewModel.deleteRoutine(at: IndexSet(integer: index))
+                            Task {
+                                await viewModel.deleteRoutine(id: routine.id)
                             }
                         }) {
                             Image(systemName: "trash")
@@ -47,8 +47,10 @@ struct RoutineAddView: View {
             Spacer()
 
             Button(action: {
-                if !inputText.trimmingCharacters(in: .whitespaces).isEmpty {
-                    viewModel.addRoutine(title: inputText)
+                Task {
+                    let trimmed = inputText.trimmingCharacters(in: .whitespaces)
+                    guard !trimmed.isEmpty else { return }
+                    await viewModel.addRoutine(title: trimmed)
                     inputText = ""
                 }
             }) {
@@ -67,5 +69,5 @@ struct RoutineAddView: View {
 }
 
 #Preview {
-    RoutineAddView(viewModel: RoutineViewModel(repository: DummyRoutineRepository()))
+    RoutineAddView(viewModel: RoutineViewModel(repository: MockRoutineRepository()))
 }

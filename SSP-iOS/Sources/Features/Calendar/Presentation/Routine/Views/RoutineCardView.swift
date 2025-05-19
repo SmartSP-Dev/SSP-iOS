@@ -8,20 +8,24 @@
 import SwiftUI
 
 struct RoutineCardView: View {
-    let routine: RoutineItem
-    let isChecked: Bool
-    let toggleAction: () -> Void
+    let routine: Routine
+    let toggleAction: () async -> Void
 
     var body: some View {
         HStack {
-            Image(systemName: isChecked ? "checkmark.circle.fill" : "circle")
-                .foregroundColor(isChecked ? .blue : .gray)
+            Image(systemName: routine.isCompleted ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(routine.isCompleted ? .blue : .gray)
                 .font(.title2)
-                .onTapGesture { toggleAction() }
+                .onTapGesture {
+                    Task {
+                        await toggleAction()
+                    }
+                }
 
             Text(routine.title)
                 .font(.body)
                 .foregroundColor(.primary)
+
             Spacer()
         }
         .padding()
