@@ -40,8 +40,7 @@ final class StatisticsViewModel: ObservableObject {
         studyRecords.append(record)
     }
 
-    // MARK: 통계 계산
-
+    // MARK: - 통계 계산
     var totalStudyDays: Int {
         Set(studyRecords.map { Calendar.current.startOfDay(for: $0.date) }).count
     }
@@ -75,7 +74,7 @@ final class StatisticsViewModel: ObservableObject {
         return summed.max(by: { $0.value < $1.value }).map { ($0.key, $0.value) }
     }
 
-    // MARK: 저장
+    // MARK: - 저장
 
     private func loadWeeklyRecords() {
         weeklyRecords = UserDefaults.standard.loadWeeklyRecords()

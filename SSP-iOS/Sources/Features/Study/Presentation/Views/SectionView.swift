@@ -121,7 +121,7 @@ struct SectionView<Content: View>: View {
     }
 }
 
-#Preview("❌ 데이터 없을 때") {
+#Preview("데이터 없을 때") {
     SectionView(
         title: "이번 주 통계",
         showsButton: true,

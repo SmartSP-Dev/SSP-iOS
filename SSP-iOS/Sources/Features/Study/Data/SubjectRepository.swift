@@ -28,6 +28,7 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.create(subject: name)) { result in
             switch result {
             case .success(let response):
+                print("과목 생성")
                 print("[Auth] 상태코드: \(response.statusCode)")
                 print("[Auth] 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
 
@@ -49,6 +50,7 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.fetchSubjects(range: range)) { result in
             switch result {
             case .success(let response):
+                print("과목 불러오기")
                 print("[API] 상태 코드: \(response.statusCode)")
                 print("[API] 응답 바디: \(String(data: response.data, encoding: .utf8) ?? "nil")")
 
@@ -71,6 +73,7 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.delete(id: id)) { result in
             switch result {
             case .success(let response):
+                print("과목 삭제")
                 if response.statusCode == 204 {
                     completion(.success(()))
                 } else {
@@ -86,6 +89,7 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.fetchSubjects(range: "week")) { result in
             switch result {
             case .success(let response):
+                print("week 과목 조회")
                 do {
                     let dtos = try JSONDecoder().decode([WeeklySubjectDTO].self, from: response.data)
                     let records = dtos.map {
@@ -105,6 +109,7 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.uploadRecord(dto)) { result in
             switch result {
             case .success(let response):
+                print("학습 기록 업로드")
                 if (200..<300).contains(response.statusCode) {
                     completion(.success(()))
                 } else {
@@ -120,6 +125,7 @@ final class SubjectRepositoryImpl: SubjectRepository {
         provider.request(.fetchMonthlyStats) { result in
             switch result {
             case .success(let response):
+                print("month 과목 조회")
                 do {
                     let dto = try JSONDecoder().decode(MonthlySummaryDTO.self, from: response.data)
                     completion(.success(dto))
