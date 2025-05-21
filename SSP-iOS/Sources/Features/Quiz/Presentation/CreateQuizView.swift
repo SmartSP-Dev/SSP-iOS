@@ -10,6 +10,7 @@ import SwiftUI
 struct CreateQuizView: View {
     @StateObject private var viewModel: CreateQuizViewModel
     @State private var isDocumentPickerPresented = false
+    @State private var showUnsupportedFileAlert = false
 
     init(viewModel: CreateQuizViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -51,7 +52,7 @@ struct CreateQuizView: View {
                 .font(.headline)
                 .padding(.horizontal)
 
-            Text("- 파일은 PDF 또는 이미지 파일만 지원됩니다.\n- 키워드는 문제를 생성하는 데 사용됩니다.\n- 문제 유형을 정확히 선택하세요.")
+            Text("- 파일은 jpg, jpeg, png, pdf 파일만 지원됩니다.\n- 키워드는 문제를 생성하는 데 사용됩니다.\n- 문제 유형을 정확히 선택하세요.")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding()
@@ -80,8 +81,24 @@ struct CreateQuizView: View {
                         .cornerRadius(8)
                 }
                 .sheet(isPresented: $isDocumentPickerPresented) {
-                    DocumentPicker(fileURL: $viewModel.fileURL)
+                    DocumentPicker(fileURL: $viewModel.fileURL, showUnsupportedFileAlert: $showUnsupportedFileAlert)
                 }
+                .alert(isPresented: $showUnsupportedFileAlert) {
+                    Alert(
+                        title: Text("지원하지 않는 파일 형식"),
+                        message: Text("jpg, jpeg, png, pdf 파일만 업로드할 수 있습니다."),
+                        dismissButton: .default(Text("확인"))
+                    )
+                }
+            }
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Text("퀴즈 이름")
+                    .font(.subheadline)
+                TextField("퀴즈 이름을 입력하세요", text: $viewModel.QuizTitle)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
             }
 
             VStack(alignment: .leading, spacing: 8) {

@@ -10,6 +10,7 @@ import UniformTypeIdentifiers
 
 struct DocumentPicker: UIViewControllerRepresentable {
     @Binding var fileURL: URL?
+    @Binding var showUnsupportedFileAlert: Bool  // 추가
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -32,7 +33,17 @@ struct DocumentPicker: UIViewControllerRepresentable {
         }
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            parent.fileURL = urls.first
+            guard let selectedURL = urls.first else { return }
+
+            let allowedExtensions = ["jpg", "jpeg", "png", "pdf"]
+            let fileExtension = selectedURL.pathExtension.lowercased()
+
+            if allowedExtensions.contains(fileExtension) {
+                parent.fileURL = selectedURL
+            } else {
+                parent.fileURL = nil
+                parent.showUnsupportedFileAlert = true
+            }
         }
     }
 }

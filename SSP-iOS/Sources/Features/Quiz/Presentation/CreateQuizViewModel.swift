@@ -9,6 +9,7 @@ import Foundation
 
 @MainActor
 final class CreateQuizViewModel: ObservableObject {
+    @Published var QuizTitle: String = ""
     @Published var keyword: String = ""
     @Published var selectedType: QuizType = .multipleChoice
     @Published var fileURL: URL? = nil
