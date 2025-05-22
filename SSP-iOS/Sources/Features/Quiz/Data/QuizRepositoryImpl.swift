@@ -6,14 +6,15 @@
 //
 
 import Foundation
+import Moya
 
 final class QuizRepositoryImpl: QuizRepositoryProtocol {
-    // 예시: 임시 로컬 데이터로 대응
+
     func fetchAllQuizzes() async throws -> [Quiz] {
-        return [
-            Quiz(id: "1", title: "운영체제 퀴즈", keyword: "CPU", type: .multipleChoice, createdAt: Date(), isReviewed: false, questionCount: 5),
-            Quiz(id: "2", title: "데이터베이스 퀴즈", keyword: "트랜잭션", type: .ox, createdAt: Date(), isReviewed: true, questionCount: 3)
-        ]
+        let provider = MoyaProvider<QuizAPI>()
+        let response = try await provider.request(.quizList)
+        let dtoList = try response.map([FetchQuizListResponse].self)
+        return dtoList.map { $0.toDomain() }
     }
 
     func fetchReviewTargetQuizzes() async throws -> [Quiz] {

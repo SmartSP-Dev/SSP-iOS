@@ -9,6 +9,10 @@ import SwiftUI
 
 struct QuizCardView: View {
     let quiz: Quiz
+    let viewModel: QuizSolveViewModel
+    let onDelete: (Quiz) -> Void
+
+    @State private var isDeleting = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -24,10 +28,6 @@ struct QuizCardView: View {
             }
 
             Text("키워드: \(quiz.keyword)")
-                .font(.subheadline)
-                .foregroundColor(.black)
-
-            Text("문제 수: \(quiz.questionCount)")
                 .font(.subheadline)
                 .foregroundColor(.black)
 
@@ -47,7 +47,9 @@ struct QuizCardView: View {
                     .cornerRadius(8)
             } else {
                 Button(action: {
-                    // TODO: 복습 진입 액션
+                    if let intId = Int(quiz.id) {
+                        DIContainer.shared.makeAppRouter().navigate(to: .quizSolve(quizId: intId))
+                    }
                 }) {
                     Text("복습하기")
                         .font(.caption)
@@ -58,6 +60,29 @@ struct QuizCardView: View {
                         .cornerRadius(8)
                 }
             }
+
+            // 삭제 버튼
+            Button(action: {
+                isDeleting = true
+                viewModel.deleteQuiz { success in
+                    isDeleting = false
+                    if success {
+                        onDelete(quiz)
+                    }
+                }
+            }) {
+                HStack {
+                    Image(systemName: "trash")
+                    Text(isDeleting ? "삭제 중..." : "삭제")
+                }
+                .font(.caption)
+                .foregroundColor(.red)
+                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity)
+                .background(Color.red.opacity(0.1))
+                .cornerRadius(8)
+            }
+            .disabled(isDeleting)
         }
         .padding()
         .background(Color.white)
@@ -70,31 +95,4 @@ struct QuizCardView: View {
         formatter.dateStyle = .short
         return formatter.string(from: date)
     }
-}
-
-
-#Preview {
-    VStack(spacing: 20) {
-        QuizCardView(quiz: Quiz(
-            id: "1",
-            title: "운영체제 기말 대비",
-            keyword: "프로세스",
-            type: .multipleChoice,
-            createdAt: Date(),
-            isReviewed: false,
-            questionCount: 5
-        ))
-        
-        QuizCardView(quiz: Quiz(
-            id: "2",
-            title: "데이터베이스 퀴즈",
-            keyword: "트랜잭션",
-            type: .ox,
-            createdAt: Date(),
-            isReviewed: true,
-            questionCount: 3
-        ))
-    }
-    .padding()
-    .background(Color.gray.opacity(0.2))
 }

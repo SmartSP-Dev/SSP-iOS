@@ -39,6 +39,8 @@ struct RootView: View {
                     StudyView()
                 case .groupHome:
                     GroupHomeView()
+                case .quizSolve(let id):
+                    QuizSolveView(viewModel: QuizSolveViewModel(quizId: id)) 
                 default:
                     EmptyView()
                 }

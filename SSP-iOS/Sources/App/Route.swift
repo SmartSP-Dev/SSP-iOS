@@ -15,4 +15,5 @@ enum Route: Hashable {
     case calendar
     case login
     case groupHome
+    case quizSolve(quizId: Int)
 }

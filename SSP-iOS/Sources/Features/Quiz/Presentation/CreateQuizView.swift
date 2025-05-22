@@ -11,20 +11,23 @@ struct CreateQuizView: View {
     @StateObject private var viewModel: CreateQuizViewModel
     @State private var isDocumentPickerPresented = false
     @State private var showUnsupportedFileAlert = false
+    @State private var showErrorAlert = false
+    @State private var isSuccess = false
 
     init(viewModel: CreateQuizViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 20) {
-                quizNoticeSection
-                fileAndKeywordSection
-                Spacer()
+        ScrollView {
+            ZStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 20) {
+                    quizNoticeSection
+                    fileAndKeywordSection
+                    Spacer()
+                }
+                .padding()
             }
-            .padding()
-
             createQuizButtonSection
                 .padding()
         }
@@ -52,7 +55,7 @@ struct CreateQuizView: View {
                 .font(.headline)
                 .padding(.horizontal)
 
-            Text("- 파일은 jpg, jpeg, png, pdf 파일만 지원됩니다.\n- 키워드는 문제를 생성하는 데 사용됩니다.\n- 문제 유형을 정확히 선택하세요.")
+            Text("- 파일은 jpg, jpeg, png, pdf 파일만 지원됩니다.\n- 파일 업로드 후 저장 버튼을 꼭 눌러주세요!\n- 키워드는 문제를 생성하는 데 사용됩니다.\n- 문제 유형을 정확히 선택하세요.")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding()
@@ -68,18 +71,74 @@ struct CreateQuizView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("PDF 또는 이미지 업로드")
                     .font(.subheadline)
+
                 Text(viewModel.fileURL?.lastPathComponent ?? "파일을 첨부해주세요")
                     .font(.PretendardLight14)
-                Button(action: {
-                    isDocumentPickerPresented = true
-                }) {
-                    Text(viewModel.fileURL == nil ? "업로드" : "파일 선택 완료")
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.black)
-                        .cornerRadius(8)
+
+                HStack(spacing: 10) {
+                    if viewModel.fileURL == nil {
+                        // 업로드 버튼
+                        Button(action: {
+                            isDocumentPickerPresented = true
+                        }) {
+                            Text("업로드")
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.black)
+                                .cornerRadius(8)
+                        }
+
+                        // 저장 버튼
+                        Button(action: {
+                            // 비어 있어도 저장 동작 정의가 있다면 호출
+                        }) {
+                            Text("저장")
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.gray)
+                                .cornerRadius(8)
+                        }
+                    } else {
+                        // 삭제 버튼
+                        Button(action: {
+                            viewModel.fileURL = nil
+                            viewModel.errorMessage = nil
+                        }) {
+                            Text("삭제")
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.red)
+                                .cornerRadius(8)
+                        }
+
+                        // 저장 버튼
+                        Button(action: {
+                            Task {
+                                await viewModel.uploadFile()
+                                if viewModel.errorMessage != nil {
+                                    isSuccess = false
+                                    showErrorAlert = true
+                                } else if viewModel.successMessage != nil {
+                                    isSuccess = true
+                                    showErrorAlert = true
+                                }
+                            }
+                        }) {
+                            Text("저장")
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.black)
+                                .cornerRadius(8)
+                        }
+                        .disabled(viewModel.fileURL == nil)
+                    }
                 }
+
+                // 파일 선택 시도 시 alert
                 .sheet(isPresented: $isDocumentPickerPresented) {
                     DocumentPicker(fileURL: $viewModel.fileURL, showUnsupportedFileAlert: $showUnsupportedFileAlert)
                 }
@@ -135,24 +194,35 @@ struct CreateQuizView: View {
         VStack(spacing: 20) {
             Button(action: {
                 Task {
-                    await viewModel.createQuiz()
+                    await viewModel.generateQuiz()
+                    if viewModel.errorMessage != nil {
+                        isSuccess = false
+                        showErrorAlert = true
+                    } else if viewModel.successMessage != nil {
+                        isSuccess = true
+                        showErrorAlert = true
+                    }
                 }
             }) {
                 Text("퀴즈 제작")
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.black)
+                    .background(isSuccess == false ? Color.gray : Color.black)
                     .cornerRadius(8)
             }
             .padding(.horizontal)
-
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-            }
+            .disabled(isSuccess == false)
+        }
+        .alert(isPresented: $showErrorAlert) {
+            Alert(
+                title: Text(isSuccess ? "업로드 성공" : "업로드 실패"),
+                message: Text(isSuccess ? (viewModel.successMessage ?? "") : (viewModel.errorMessage ?? "알 수 없는 오류")),
+                dismissButton: .default(Text("확인")) {
+                    viewModel.errorMessage = nil
+                    viewModel.successMessage = nil
+                }
+            )
         }
     }
 }

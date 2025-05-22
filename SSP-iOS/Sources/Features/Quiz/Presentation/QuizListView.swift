@@ -10,7 +10,6 @@ import SwiftUI
 struct QuizListView: View {
     @StateObject private var viewModel: QuizMainViewModel
 
-    /// 메인액터 충돌 피하기 위해 DIContainer에서 뷰 외부에서 주입받도록 강제
     init(viewModel: QuizMainViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -18,23 +17,8 @@ struct QuizListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("전체 퀴즈 목록")
-                    .font(.title2)
-                    .bold()
-                    .padding(.horizontal)
-
-                if viewModel.allQuizzes.isEmpty {
-                    Text("아직 생성된 퀴즈가 없어요.")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                } else {
-                    ForEach(viewModel.allQuizzes) { quiz in
-                        QuizCardView(quiz: quiz)
-                            .padding(.horizontal)
-                    }
-                }
+                titleSection
+                contentSection
             }
             .padding(.top)
         }
@@ -44,14 +28,7 @@ struct QuizListView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    DIContainer.shared.makeAppRouter().goBack()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
-                    Text("Back")
-                        .foregroundColor(.black)
-                }
+                backButton
             }
         }
         .onAppear {
@@ -60,4 +37,48 @@ struct QuizListView: View {
             }
         }
     }
+    private var titleSection: some View {
+        Text("전체 퀴즈 목록")
+            .font(.title2)
+            .bold()
+            .padding(.horizontal)
+    }
+
+    private var contentSection: some View {
+        if viewModel.allQuizzes.isEmpty {
+            return AnyView(
+                Text("아직 생성된 퀴즈가 없어요.")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .center)
+            )
+        } else {
+            return AnyView(
+                ForEach(viewModel.allQuizzes) { quiz in
+                    QuizCardView(
+                        quiz: quiz,
+                        viewModel: QuizSolveViewModel(quizId: Int(quiz.id) ?? -1),
+                        onDelete: { deletedQuiz in
+                            viewModel.allQuizzes.removeAll { $0.id == deletedQuiz.id }
+                        }
+                    )
+                    .padding(.horizontal)
+                }
+            )
+        }
+    }
+
+    private var backButton: some View {
+        Button(action: {
+            DIContainer.shared.makeAppRouter().goBack()
+        }) {
+            HStack(spacing: 4) {
+                Image(systemName: "chevron.left")
+                Text("Back")
+            }
+            .foregroundColor(.black)
+        }
+    }
+
 }

@@ -14,3 +14,21 @@ struct FetchQuizListResponse: Decodable {
     let questionType: String
     let createdAt: String 
 }
+
+extension FetchQuizListResponse {
+    func toDomain() -> Quiz {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let date = formatter.date(from: createdAt) ?? Date()
+
+        return Quiz(
+            id: "\(quizId)",
+            title: title,
+            keyword: keywords,
+            type: QuizType(from: questionType),
+            createdAt: date,
+            isReviewed: false,
+            questionCount: 0
+        )
+    }
+}

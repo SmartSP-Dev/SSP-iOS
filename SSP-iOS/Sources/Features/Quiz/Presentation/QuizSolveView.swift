@@ -7,37 +7,55 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct QuizSolveView: View {
-    @StateObject var viewModel = QuizSolveViewModel()
+    @StateObject var viewModel: QuizSolveViewModel
     @State private var showModal: Bool = false
 
     var body: some View {
+
         ZStack {
             mainContent
             if showModal {
                 answerModal
             }
         }
+        .task {
+            await viewModel.loadQuizDetail()
+        }
     }
 
     private var mainContent: some View {
-        VStack(alignment: .center, spacing: 24) {
-            if viewModel.isFinished {
-                Spacer()
-                Text("🎉 모든 문제를 푸셨습니다!")
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                Spacer()
-            } else {
-                VStack(spacing: 20) {
-                    questionTitle
-                    questionBody
-                    submitButton
+        if let result = viewModel.result {
+            AnyView(QuizResultSummaryView(result: result))
+        } else if viewModel.quizzes.isEmpty {
+            AnyView(
+                ProgressView("문제를 불러오는 중입니다...")
+                    .padding()
+            )
+        } else {
+            AnyView(
+                VStack(alignment: .center, spacing: 24) {
+                    if viewModel.isFinished {
+                        Button("퀴즈 제출") {
+                            Task {
+                                await viewModel.submitQuiz()
+                            }
+                        }
+                        .padding()
+                        .background(Color.black)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                    } else {
+                        questionTitle
+                        questionBody
+                        submitButton
+                    }
                 }
-            }
+                .padding()
+            )
         }
-        .padding()
     }
 
     private var questionTitle: some View {
@@ -52,7 +70,7 @@ struct QuizSolveView: View {
         switch viewModel.currentQuestion.type {
         case .multipleChoice:
             VStack(spacing: 12) {
-                ForEach(viewModel.currentQuestion.options, id: \ .self) { option in
+                ForEach(viewModel.currentQuestion.options.shuffled(), id: \.self) { option in
                     Button(action: {
                         viewModel.selectedAnswer = option
                     }) {
@@ -73,7 +91,7 @@ struct QuizSolveView: View {
 
         case .ox:
             HStack(spacing: 20) {
-                ForEach(["O", "X"], id: \ .self) { option in
+                ForEach(["O", "X"], id: \.self) { option in
                     Button(action: {
                         viewModel.selectedAnswer = option
                     }) {
@@ -120,15 +138,6 @@ struct QuizSolveView: View {
                     .font(.headline)
                     .foregroundColor(viewModel.selectedAnswer == viewModel.currentQuestion.answer ? .green : .red)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("정답: \(viewModel.currentQuestion.answer)")
-                        .bold()
-                    Text("해설: 이 문제는 예시 해설입니다. 실제 해설은 서버로부터 받아올 수 있습니다.")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-                .padding(.horizontal)
-
                 Button("다음 문제") {
                     viewModel.nextQuestion()
                     showModal = false
@@ -146,28 +155,4 @@ struct QuizSolveView: View {
             .shadow(radius: 10)
         }
     }
-}
-
-#Preview("객관식") {
-    QuizSolveView(viewModel: {
-        let vm = QuizSolveViewModel()
-        vm.quizzes = [MockQuizData.sampleQuestions[1]]
-        return vm
-    }())
-}
-
-#Preview("OX") {
-    QuizSolveView(viewModel: {
-        let vm = QuizSolveViewModel()
-        vm.quizzes = [MockQuizData.sampleQuestions[0]]
-        return vm
-    }())
-}
-
-#Preview("빈칸") {
-    QuizSolveView(viewModel: {
-        let vm = QuizSolveViewModel()
-        vm.quizzes = [MockQuizData.sampleQuestions[2]]
-        return vm
-    }())
 }

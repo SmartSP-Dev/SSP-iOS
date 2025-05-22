@@ -71,7 +71,7 @@ extension QuizAPI: TargetType {
                     "keyword": keyword,
                     "questionType": questionType
                 ],
-                encoding: URLEncoding.httpBody // ← x-www-form-urlencoded
+                encoding: URLEncoding.httpBody
             )
 
         case .quizSubmit(let request):
