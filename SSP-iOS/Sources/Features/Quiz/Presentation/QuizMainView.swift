@@ -19,11 +19,11 @@ struct QuizMainView: View {
             VStack(alignment: .leading, spacing: 24) {
                 
                 // 퀴즈 복습 요약
-                if !viewModel.reviewQuizzes.isEmpty {
+                if let summary = viewModel.quizWeekSummary {
                     QuizSummaryView(
-                        total: viewModel.reviewQuizzes.count,
-                        reviewed: viewModel.reviewQuizzes.filter { $0.isReviewed }.count,
-                        pending: viewModel.reviewQuizzes.filter { !$0.isReviewed }.count
+                        total: summary.total,
+                        reviewed: summary.reviewed,
+                        pending: summary.notReviewed
                     )
                 }
 
@@ -81,38 +81,8 @@ struct QuizMainView: View {
             Task {
                 await viewModel.fetchAll()
                 await viewModel.fetchReviewTarget()
+                await viewModel.fetchQuizSummary()
             }
         }
     }
-}
-
-
-// MARK: - Preview
-
-#Preview {
-    let dummyQuizzes: [Quiz] = [
-        .init(id: "1", title: "운영체제 기말 대비", keyword: "프로세스", type: .multipleChoice, createdAt: Date(), isReviewed: false, questionCount: 5),
-        .init(id: "2", title: "데이터베이스 퀴즈", keyword: "트랜잭션", type: .ox, createdAt: Date(), isReviewed: true, questionCount: 3)
-    ]
-    
-    let viewModel = QuizMainViewModel(
-        fetchAllQuizzesUseCase: DummyFetchAllQuizzesUseCase(result: dummyQuizzes),
-        fetchReviewTargetUseCase: DummyFetchReviewTargetQuizzesUseCase(result: [dummyQuizzes[0]])
-    )
-    
-    return QuizMainView(viewModel: viewModel)
-}
-
-// MARK: - Dummy UseCases for Preview
-
-final class DummyFetchAllQuizzesUseCase: FetchAllQuizzesUseCase {
-    private let result: [Quiz]
-    init(result: [Quiz]) { self.result = result }
-    func execute() async throws -> [Quiz] { result }
-}
-
-final class DummyFetchReviewTargetQuizzesUseCase: FetchReviewTargetQuizzesUseCase {
-    private let result: [Quiz]
-    init(result: [Quiz]) { self.result = result }
-    func execute() async throws -> [Quiz] { result }
 }

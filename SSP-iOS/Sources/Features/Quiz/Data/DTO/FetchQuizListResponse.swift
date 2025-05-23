@@ -12,7 +12,8 @@ struct FetchQuizListResponse: Decodable {
     let title: String
     let keywords: String
     let questionType: String
-    let createdAt: String 
+    let createdAt: String
+    let isReviewed: Bool
 }
 
 extension FetchQuizListResponse {
@@ -27,7 +28,7 @@ extension FetchQuizListResponse {
             keyword: keywords,
             type: QuizType(from: questionType),
             createdAt: date,
-            isReviewed: false,
+            isReviewed: isReviewed,
             questionCount: 0
         )
     }

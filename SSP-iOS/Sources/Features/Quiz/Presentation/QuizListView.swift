@@ -58,7 +58,11 @@ struct QuizListView: View {
                 ForEach(viewModel.allQuizzes) { quiz in
                     QuizCardView(
                         quiz: quiz,
-                        viewModel: QuizSolveViewModel(quizId: Int(quiz.id) ?? -1),
+                        viewModel: QuizSolveViewModel(
+                            quizId: Int(quiz.id) ?? -1,
+                            deleteQuizUseCase: DIContainer.shared.makeDeleteQuizUseCase(),
+                            fetchQuizDetailUseCase: DIContainer.shared.makeFetchQuizDetailUseCase()
+                        ),
                         onDelete: { deletedQuiz in
                             viewModel.allQuizzes.removeAll { $0.id == deletedQuiz.id }
                         }

@@ -27,26 +27,22 @@ struct QuizSolveView: View {
     }
 
     private var mainContent: some View {
-        if let result = viewModel.result {
-            AnyView(QuizResultSummaryView(result: result))
-        } else if viewModel.quizzes.isEmpty {
-            AnyView(
+        Group {
+            if let result = viewModel.result {
+                QuizResultSummaryView(result: result)
+            } else if viewModel.quizzes.isEmpty {
                 ProgressView("문제를 불러오는 중입니다...")
                     .padding()
-            )
-        } else {
-            AnyView(
+            } else {
                 VStack(alignment: .center, spacing: 24) {
                     if viewModel.isFinished {
-                        Button("퀴즈 제출") {
-                            Task {
-                                await viewModel.submitQuiz()
+                        Text("퀴즈 제출 중입니다...")
+                            .onAppear {
+                                Task {
+                                    try? await Task.sleep(nanoseconds: 1_000_000_000) // 1초 대기
+                                    await viewModel.submitQuiz()
+                                }
                             }
-                        }
-                        .padding()
-                        .background(Color.black)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
                     } else {
                         questionTitle
                         questionBody
@@ -54,7 +50,7 @@ struct QuizSolveView: View {
                     }
                 }
                 .padding()
-            )
+            }
         }
     }
 
@@ -70,7 +66,7 @@ struct QuizSolveView: View {
         switch viewModel.currentQuestion.type {
         case .multipleChoice:
             VStack(spacing: 12) {
-                ForEach(viewModel.currentQuestion.options.shuffled(), id: \.self) { option in
+                ForEach(viewModel.currentQuestion.options, id: \.self) { option in
                     Button(action: {
                         viewModel.selectedAnswer = option
                     }) {
@@ -98,8 +94,21 @@ struct QuizSolveView: View {
                         Text(option)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.blue.opacity(0.1))
+                            .background(
+                                viewModel.selectedAnswer == option
+                                ? Color.blue.opacity(0.4)
+                                : Color.blue.opacity(0.1)
+                            )
+                            .foregroundColor(
+                                viewModel.selectedAnswer == option
+                                ? .white
+                                : .black
+                            )
                             .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.blue, lineWidth: viewModel.selectedAnswer == option ? 2 : 1)
+                            )
                     }
                 }
             }

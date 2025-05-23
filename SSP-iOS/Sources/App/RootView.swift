@@ -40,7 +40,13 @@ struct RootView: View {
                 case .groupHome:
                     GroupHomeView()
                 case .quizSolve(let id):
-                    QuizSolveView(viewModel: QuizSolveViewModel(quizId: id)) 
+                    QuizSolveView(
+                        viewModel: QuizSolveViewModel(
+                            quizId: id,
+                            deleteQuizUseCase: DIContainer.shared.makeDeleteQuizUseCase(),
+                            fetchQuizDetailUseCase: DIContainer.shared.makeFetchQuizDetailUseCase()
+                        )
+                    )
                 default:
                     EmptyView()
                 }

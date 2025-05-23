@@ -64,7 +64,9 @@ struct QuizCardView: View {
             // 삭제 버튼
             Button(action: {
                 isDeleting = true
-                viewModel.deleteQuiz { success in
+                Task {
+                    isDeleting = true
+                    let success = await viewModel.deleteQuiz()
                     isDeleting = false
                     if success {
                         onDelete(quiz)

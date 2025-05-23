@@ -19,9 +19,11 @@ final class CreateQuizViewModel: ObservableObject {
     @Published var successMessage: String?
 
     private let createQuizUseCase: CreateQuizUseCase
+    private let uploadFileUseCase: UploadFileUseCase
 
-    init(createQuizUseCase: CreateQuizUseCase) {
+    init(createQuizUseCase: CreateQuizUseCase, uploadFileUseCase: UploadFileUseCase) {
         self.createQuizUseCase = createQuizUseCase
+        self.uploadFileUseCase = uploadFileUseCase
     }
     
     func uploadFile() async {
@@ -31,13 +33,7 @@ final class CreateQuizViewModel: ObservableObject {
         }
 
         do {
-            let fileData = try Data(contentsOf: fileURL)
-            let fileName = fileURL.lastPathComponent
-            let mimeType = mimeTypeForExtension(fileURL.pathExtension)
-
-            let provider = MoyaProvider<QuizAPI>()
-            _ = try await provider.request(.fileUpload(fileData: fileData, fileName: fileName, mimeType: mimeType))
-
+            try await uploadFileUseCase.execute(fileURL: fileURL)
             print("파일 업로드 성공")
             successMessage = "파일 업로드에 성공했습니다."
         } catch {
@@ -63,19 +59,20 @@ final class CreateQuizViewModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
 
+        let request = CreateQuizRequest(
+            title: QuizTitle,
+            keyword: keyword,
+            type: selectedType,
+            fileURL: fileURL
+        )
+
         do {
-            let provider = MoyaProvider<QuizAPI>()
-            _ = try await provider.request(.quizGenerate(
-                title: QuizTitle,
-                keyword: keyword,
-                questionType: selectedType.apiValue
-            ))
+            let _ = try await createQuizUseCase.execute(request: request)
             successMessage = "퀴즈가 성공적으로 생성되었습니다."
         } catch {
             errorMessage = "퀴즈 생성 요청 실패: \(error.localizedDescription)"
         }
     }
-
 }
 
 extension QuizType {

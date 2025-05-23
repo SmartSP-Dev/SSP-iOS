@@ -14,15 +14,24 @@ final class QuizSolveViewModel: ObservableObject {
     @Published var selectedAnswer: String? = nil
     @Published var userAnswers: [Int: String] = [:]
     @Published var isFinished = false
-    @Published var result: SubmitQuizResponse? = nil // 추가
+    @Published var result: SubmitQuizResponse? = nil
 
-
+    private let deleteQuizUseCase: DeleteQuizUseCase
+    private let fetchQuizDetailUseCase: FetchQuizDetailUseCase
+    
     let quizId: Int
     private let provider = MoyaProvider<QuizAPI>()
 
-    init(quizId: Int) {
+    init(
+        quizId: Int,
+        deleteQuizUseCase: DeleteQuizUseCase,
+        fetchQuizDetailUseCase: FetchQuizDetailUseCase
+    ) {
         self.quizId = quizId
+        self.deleteQuizUseCase = deleteQuizUseCase
+        self.fetchQuizDetailUseCase = fetchQuizDetailUseCase
     }
+
 
     var currentQuestion: QuizQuestion {
         quizzes[currentIndex]
@@ -31,15 +40,12 @@ final class QuizSolveViewModel: ObservableObject {
     @MainActor
     func loadQuizDetail() async {
         do {
-            let response = try await provider.request(.quizDetail(quizId: quizId))
-            let decoded = try response.map([QuizQuestion].self)
-            self.quizzes = decoded
+            self.quizzes = try await fetchQuizDetailUseCase.execute(quizId: quizId)
         } catch {
-            print("❌ 문제 불러오기 실패: \(error)")
+            print("문제 불러오기 실패: \(error)")
             self.quizzes = []
         }
     }
-
 
     func submitAnswer() {
         guard let answer = selectedAnswer else { return }
@@ -73,22 +79,18 @@ final class QuizSolveViewModel: ObservableObject {
         }
     }
     
-    func deleteQuiz(completion: @escaping (Bool) -> Void) {
+    func deleteQuiz() async -> Bool {
         guard quizId > 0 else {
-            completion(false)
-            return
-        }
+            print("잘못된 quizId: \(quizId)")
+            return false }
 
-        provider.request(.quizDelete(quizId: quizId)) { result in
-            switch result {
-            case .success:
-                print("퀴즈 삭제 성공")
-                completion(true)
-            case .failure(let error):
-                print("퀴즈 삭제 실패: \(error)")
-                completion(false)
-            }
+        do {
+            try await deleteQuizUseCase.execute(id: quizId)
+            print("퀴즈 삭제 성공")
+            return true
+        } catch {
+            print("퀴즈 삭제 실패: \(error)")
+            return false
         }
     }
-
 }

@@ -34,7 +34,7 @@ extension QuizAPI: TargetType {
         case .quizWeekCheck:
             return "/quiz/summary/week"
         case .quizDelete(let quizId):
-            return "/quiz/\(quizId)"
+            return "/quiz/delete/\(quizId)"
         case .quizSubmit:
             return "/quiz/submit"
         case .quizDetail(let quizId):

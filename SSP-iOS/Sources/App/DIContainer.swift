@@ -72,6 +72,13 @@ final class DIContainer: ObservableObject {
 
     /// 복습 대상 퀴즈 조회 유즈케이스
     private lazy var fetchReviewQuizUseCase = DefaultFetchReviewTargetQuizzesUseCase(repository: quizRepository)
+    
+    private lazy var deleteQuizUseCase = DefaultDeleteQuizUseCase(repository: quizRepository)
+    
+    private lazy var fetchQuizWeekSummaryUseCase = DefaultFetchQuizWeekSummaryUseCase(repository: quizRepository)
+    
+    private lazy var fetchQuizDetailUseCase = DefaultFetchQuizDetailUseCase(repository: quizRepository)
+
 
     // MARK: - ViewModel Factory
 
@@ -108,13 +115,25 @@ final class DIContainer: ObservableObject {
     func makeQuizMainViewModel() -> QuizMainViewModel {
         return QuizMainViewModel(
             fetchAllQuizzesUseCase: fetchAllQuizUseCase,
-            fetchReviewTargetUseCase: fetchReviewQuizUseCase
+            fetchReviewTargetUseCase: fetchReviewQuizUseCase,
+            fetchQuizWeekSummaryUseCase: fetchQuizWeekSummaryUseCase
         )
     }
 
     @MainActor
     func makeCreateQuizViewModel() -> CreateQuizViewModel {
-        return CreateQuizViewModel(createQuizUseCase: DefaultCreateQuizUseCase(repository: quizRepository))
+        return CreateQuizViewModel(
+            createQuizUseCase: DefaultCreateQuizUseCase(repository: quizRepository),
+            uploadFileUseCase: DefaultUploadFileUseCase(repository: quizRepository)
+            )
     }
-
+    
+    @MainActor
+    func makeDeleteQuizUseCase() -> DeleteQuizUseCase {
+        return deleteQuizUseCase
+    }
+    
+    func makeFetchQuizDetailUseCase() -> FetchQuizDetailUseCase {
+        return fetchQuizDetailUseCase
+    }
 }

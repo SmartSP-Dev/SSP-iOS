@@ -16,10 +16,17 @@ public protocol QuizRepositoryProtocol {
 
     // 퀴즈 생성 (GPT/OCR 등 처리 포함)
     func createQuiz(title: String, keyword: String, type: QuizType, fileURL: URL?) async throws -> Quiz
+    
+    func uploadFile(fileURL: URL) async throws
 
     // 퀴즈 복습 완료 처리
     func markQuizAsReviewed(id: String) async throws
 
     // 퀴즈 삭제
-    func deleteQuiz(id: String) async throws
+    func deleteQuiz(id: Int) async throws
+    
+    func fetchWeeklySummary() async throws -> FetchWeekQuizResponse
+    
+    func fetchQuizDetail(id: Int) async throws -> [QuizQuestion]
+
 }

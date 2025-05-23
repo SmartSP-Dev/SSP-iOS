@@ -8,18 +8,25 @@
 import Foundation
 import SwiftUI
 
-struct QuizQuestion: Decodable {
+public struct QuizQuestion: Decodable {
     let id: Int
     let questionTitle: String
-    let quizNumber: Int
     let correctAnswer: String
     let incorrectAnswers: [String]
     let questionType: String
+    let quizNumber: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case questionTitle = "questionTitle"
+        case correctAnswer = "correctAnswer"
+        case incorrectAnswers = "incorrectAnswers"
+        case questionType = "questionType"
+        case quizNumber = "quizNumber"
+    }
 
     var title: String { questionTitle }
-    var type: QuizType {
-        QuizType(from: questionType)
-    }
+    var type: QuizType { QuizType(from: questionType) }
     var answer: String { correctAnswer }
     var options: [String] { incorrectAnswers + [correctAnswer] }
 }

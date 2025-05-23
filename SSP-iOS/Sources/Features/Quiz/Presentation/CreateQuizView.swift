@@ -19,6 +19,15 @@ struct CreateQuizView: View {
     }
 
     var body: some View {
+        ZStack {
+            mainContent
+            if viewModel.isLoading {
+                loadingOverlay
+            }
+        }
+    }
+
+    private var mainContent: some View {
         ScrollView {
             ZStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 20) {
@@ -46,6 +55,25 @@ struct CreateQuizView: View {
                         .foregroundColor(.black)
                 }
             }
+        }
+    }
+
+    private var loadingOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+            VStack(spacing: 16) {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(1.5)
+                Text("퀴즈를 제작하는 데 약 10초-20초 정도 소요됩니다.")
+                    .foregroundColor(.white)
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(40)
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(16)
         }
     }
 
@@ -77,7 +105,6 @@ struct CreateQuizView: View {
 
                 HStack(spacing: 10) {
                     if viewModel.fileURL == nil {
-                        // 업로드 버튼
                         Button(action: {
                             isDocumentPickerPresented = true
                         }) {
@@ -89,10 +116,7 @@ struct CreateQuizView: View {
                                 .cornerRadius(8)
                         }
 
-                        // 저장 버튼
-                        Button(action: {
-                            // 비어 있어도 저장 동작 정의가 있다면 호출
-                        }) {
+                        Button(action: {}) {
                             Text("저장")
                                 .foregroundColor(.white)
                                 .padding()
@@ -101,7 +125,6 @@ struct CreateQuizView: View {
                                 .cornerRadius(8)
                         }
                     } else {
-                        // 삭제 버튼
                         Button(action: {
                             viewModel.fileURL = nil
                             viewModel.errorMessage = nil
@@ -114,7 +137,6 @@ struct CreateQuizView: View {
                                 .cornerRadius(8)
                         }
 
-                        // 저장 버튼
                         Button(action: {
                             Task {
                                 await viewModel.uploadFile()
@@ -137,8 +159,6 @@ struct CreateQuizView: View {
                         .disabled(viewModel.fileURL == nil)
                     }
                 }
-
-                // 파일 선택 시도 시 alert
                 .sheet(isPresented: $isDocumentPickerPresented) {
                     DocumentPicker(fileURL: $viewModel.fileURL, showUnsupportedFileAlert: $showUnsupportedFileAlert)
                 }
@@ -150,7 +170,7 @@ struct CreateQuizView: View {
                     )
                 }
             }
-            
+
             VStack(alignment: .leading, spacing: 8) {
                 Text("퀴즈 이름")
                     .font(.subheadline)
@@ -221,12 +241,14 @@ struct CreateQuizView: View {
                 dismissButton: .default(Text("확인")) {
                     viewModel.errorMessage = nil
                     viewModel.successMessage = nil
+                    if isSuccess {
+                        DIContainer.shared.makeAppRouter().goBack()
+                    }
                 }
             )
         }
     }
 }
-
 
 extension QuizType {
     var displayName: String {
@@ -235,19 +257,5 @@ extension QuizType {
         case .ox: return "O/X"
         case .fillInTheBlank: return "빈칸 채우기"
         }
-    }
-}
-
-//#Preview
-struct CreateQuizView_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateQuizView(viewModel: CreateQuizViewModel(createQuizUseCase: DummyCreateQuizUseCase()))
-    }
-}
-
-// Dummy for Preview
-final class DummyCreateQuizUseCase: CreateQuizUseCase {
-    func execute(request: CreateQuizRequest) async throws -> Quiz {
-        return Quiz(id: UUID().uuidString, title: "Test Quiz", keyword: request.keyword, type: request.type, createdAt: Date(), isReviewed: false, questionCount: 5)
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FetchWeekQuizResponse: Decodable {
+public struct FetchWeekQuizResponse: Decodable {
     let total: Int
     let reviewed: Int
     let notReviewed: Int
