@@ -12,7 +12,9 @@ struct CreateQuizView: View {
     @State private var isDocumentPickerPresented = false
     @State private var showUnsupportedFileAlert = false
     @State private var showErrorAlert = false
-    @State private var isSuccess = false
+    @State private var uploadSuccess = false
+    @State private var quizSuccess = false
+    @State private var isUploading = false
 
     init(viewModel: CreateQuizViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -23,6 +25,9 @@ struct CreateQuizView: View {
             mainContent
             if viewModel.isLoading {
                 loadingOverlay
+            }
+            if isUploading {
+                uploadOverlay
             }
         }
     }
@@ -139,12 +144,15 @@ struct CreateQuizView: View {
 
                         Button(action: {
                             Task {
+                                isUploading = true
                                 await viewModel.uploadFile()
+                                isUploading = false
+
                                 if viewModel.errorMessage != nil {
-                                    isSuccess = false
+                                    uploadSuccess = false
                                     showErrorAlert = true
                                 } else if viewModel.successMessage != nil {
-                                    isSuccess = true
+                                    uploadSuccess = true
                                     showErrorAlert = true
                                 }
                             }
@@ -216,10 +224,10 @@ struct CreateQuizView: View {
                 Task {
                     await viewModel.generateQuiz()
                     if viewModel.errorMessage != nil {
-                        isSuccess = false
+                        quizSuccess = false
                         showErrorAlert = true
                     } else if viewModel.successMessage != nil {
-                        isSuccess = true
+                        quizSuccess = true
                         showErrorAlert = true
                     }
                 }
@@ -228,26 +236,55 @@ struct CreateQuizView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(isSuccess == false ? Color.gray : Color.black)
+                    .background(
+                        viewModel.fileURL != nil &&
+                        !viewModel.QuizTitle.isEmpty &&
+                        !viewModel.keyword.isEmpty
+                        ? Color.black : Color.gray
+                    )
                     .cornerRadius(8)
             }
             .padding(.horizontal)
-            .disabled(isSuccess == false)
+            .disabled(
+                !(viewModel.fileURL != nil &&
+                  !viewModel.QuizTitle.isEmpty &&
+                  !viewModel.keyword.isEmpty)
+            )
         }
         .alert(isPresented: $showErrorAlert) {
             Alert(
-                title: Text(isSuccess ? "업로드 성공" : "업로드 실패"),
-                message: Text(isSuccess ? (viewModel.successMessage ?? "") : (viewModel.errorMessage ?? "알 수 없는 오류")),
+                title: Text(uploadSuccess || quizSuccess ? "업로드 성공" : "업로드 실패"),
+                message: Text(viewModel.successMessage ?? viewModel.errorMessage ?? "알 수 없는 오류"),
                 dismissButton: .default(Text("확인")) {
                     viewModel.errorMessage = nil
                     viewModel.successMessage = nil
-                    if isSuccess {
+                    if quizSuccess {
                         DIContainer.shared.makeAppRouter().goBack()
                     }
+                    uploadSuccess = false
+                    quizSuccess = false
                 }
             )
         }
     }
+    
+    private var uploadOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.4).ignoresSafeArea()
+            VStack(spacing: 16) {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(1.5)
+                Text("파일을 업로드 중입니다...")
+                    .foregroundColor(.white)
+                    .font(.body)
+            }
+            .padding(40)
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(16)
+        }
+    }
+
 }
 
 extension QuizType {
