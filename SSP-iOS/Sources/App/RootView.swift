@@ -47,6 +47,8 @@ struct RootView: View {
                             fetchQuizDetailUseCase: DIContainer.shared.makeFetchQuizDetailUseCase()
                         )
                     )
+                case .quizResult(let id):
+                    QuizResultView(quizId: id)
                 default:
                     EmptyView()
                 }

@@ -33,7 +33,6 @@ let project = Project(
                     "kakaotalk"
                 ],
                 "NSCalendarsFullAccessUsageDescription": "캘린더 접근을 허용해주세요",
-
                 "UIAppFonts": [
                     "Pretendard-Black.otf",
                     "Pretendard-Bold.otf",
@@ -44,7 +43,8 @@ let project = Project(
                     "Pretendard-Regular.otf",
                     "Pretendard-SemiBold.otf",
                     "Pretendard-Thin.otf"
-                ]
+                ],
+                "UIRequiresFullScreen": true
             ]),
             sources: ["SSP-iOS/Sources/**"],
             resources: ["SSP-iOS/Resources/**"],

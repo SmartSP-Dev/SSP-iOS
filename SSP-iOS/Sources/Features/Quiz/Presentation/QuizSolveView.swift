@@ -12,6 +12,7 @@ import SwiftUI
 struct QuizSolveView: View {
     @StateObject var viewModel: QuizSolveViewModel
     @State private var showModal: Bool = false
+    @State private var showExitAlert: Bool = false
 
     var body: some View {
 
@@ -51,6 +52,36 @@ struct QuizSolveView: View {
                 }
                 .padding()
             }
+        }
+        .navigationTitle("퀴즈 진행 중")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    if viewModel.result != nil {
+                        DIContainer.shared.makeAppRouter().goBack()
+                    } else {
+                        showExitAlert = true
+                    }
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                    Text("Back")
+                        .foregroundColor(.black)
+                }
+            }
+        }
+
+        .alert(isPresented: $showExitAlert) {
+            Alert(
+                title: Text("정말 나가시겠습니까?"),
+                message: Text("퀴즈는 저장되지 않습니다."),
+                primaryButton: .destructive(Text("나가기")) {
+                    DIContainer.shared.makeAppRouter().goBack()
+                },
+                secondaryButton: .cancel(Text("취소"))
+            )
         }
     }
 

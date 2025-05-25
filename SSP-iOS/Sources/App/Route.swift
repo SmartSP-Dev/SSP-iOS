@@ -16,4 +16,5 @@ enum Route: Hashable {
     case login
     case groupHome
     case quizSolve(quizId: Int)
+    case quizResult(quizId: Int)
 }

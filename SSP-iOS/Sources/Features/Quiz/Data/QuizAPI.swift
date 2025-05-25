@@ -16,6 +16,7 @@ enum QuizAPI {
     case quizDelete(quizId: Int)
     case quizSubmit(SubmitQuizRequest)
     case quizDetail(quizId: Int)
+    case quizResult(quizId: Int)
 }
 
 extension QuizAPI: TargetType {
@@ -39,12 +40,14 @@ extension QuizAPI: TargetType {
             return "/quiz/submit"
         case .quizDetail(let quizId):
             return "/quiz/\(quizId)"
+        case .quizResult(let id):
+            return "/quiz/result/\(id)"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .quizList, .quizWeekCheck, .quizDetail:
+        case .quizList, .quizWeekCheck, .quizDetail, .quizResult:
             return .get
         case .fileUpload, .quizGenerate, .quizSubmit:
             return .post
@@ -77,7 +80,7 @@ extension QuizAPI: TargetType {
         case .quizSubmit(let request):
             return .requestJSONEncodable(request)
 
-        case .quizList, .quizWeekCheck, .quizDetail, .quizDelete:
+        case .quizList, .quizWeekCheck, .quizDetail, .quizDelete, .quizResult:
             return .requestPlain
         }
     }

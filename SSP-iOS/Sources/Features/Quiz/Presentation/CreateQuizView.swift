@@ -71,7 +71,7 @@ struct CreateQuizView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                     .scaleEffect(1.5)
-                Text("퀴즈를 제작하는 데 약 10초-20초 정도 소요됩니다.")
+                Text("퀴즈를 제작하는 데 약 20초-30초 정도 소요됩니다.")
                     .foregroundColor(.white)
                     .font(.body)
                     .multilineTextAlignment(.center)

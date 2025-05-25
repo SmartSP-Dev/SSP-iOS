@@ -29,11 +29,16 @@ final class QuizRepositoryImpl: QuizRepositoryProtocol {
 
     func createQuiz(title: String, keyword: String, type: QuizType, fileURL: URL?) async throws -> Quiz {
         let provider = MoyaProvider<QuizAPI>()
-        let response =  try await provider.request(.quizGenerate(
+        let response = try await provider.request(.quizGenerate(
             title: title,
             keyword: keyword,
             questionType: type.apiValue
         ))
+
+        // 서버 응답 로그 출력
+        print("응답 상태 코드: \(response.statusCode)")
+        print("응답 본문:\n" + (String(data: response.data, encoding: .utf8) ?? "디코딩 실패"))
+
         let decoded = try response.map(QuizGenerateResponse.self)
 
         return Quiz(
@@ -46,6 +51,7 @@ final class QuizRepositoryImpl: QuizRepositoryProtocol {
             questionCount: decoded.quizzes.count
         )
     }
+
 
     func markQuizAsReviewed(id: String) async throws {
         // TODO: 실제 데이터 처리 로직

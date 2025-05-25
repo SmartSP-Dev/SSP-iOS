@@ -37,26 +37,32 @@ struct QuizCardView: View {
 
             Spacer()
 
-            if quiz.isReviewed {
-                Text("복습 완료")
-                    .font(.caption)
-                    .foregroundColor(.white)
-                    .padding(.vertical, 6)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.gray)
-                    .cornerRadius(8)
-            } else {
+            HStack(spacing: 8) {
                 Button(action: {
                     if let intId = Int(quiz.id) {
                         DIContainer.shared.makeAppRouter().navigate(to: .quizSolve(quizId: intId))
                     }
                 }) {
-                    Text("복습하기")
+                    Text("문제 풀기")
                         .font(.caption)
                         .foregroundColor(.white)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity)
                         .background(Color.black)
+                        .cornerRadius(8)
+                }
+
+                Button(action: {
+                    if let intId = Int(quiz.id) {
+                        DIContainer.shared.makeAppRouter().navigate(to: .quizResult(quizId: intId))
+                    }
+                }) {
+                    Text("결과 보기")
+                        .font(.caption)
+                        .foregroundColor(.black)
+                        .padding(.vertical, 6)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
                 }
             }

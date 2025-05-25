@@ -8,5 +8,5 @@
 import Foundation
 
 struct QuizGenerateResponse: Decodable {
-    let quizzes: [QuizQuestion]
+    let quizzes: [QuizGenerateQuestion]
 }
