@@ -16,6 +16,13 @@ struct GroupHomeView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 16) {
+                
+                HStack {
+                    Text("친구들과 약속을 잡아보세요!")
+                        .font(.PretendardBold24)
+                    Image(systemName: "info.circle")
+                        
+                }
                 HStack(spacing: 12) {
                     Button("그룹 참여하기") {
                         showJoinSheet = true
@@ -43,12 +50,6 @@ struct GroupHomeView: View {
                 .listStyle(.plain)
             }
             .padding()
-            .navigationTitle("친구들과 약속을 잡아보세요!")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Image(systemName: "info.circle")
-                }
-            }
             .sheet(isPresented: $showJoinSheet) {
                 GroupJoinSheet { newGroup in
                     groups.append(newGroup)
