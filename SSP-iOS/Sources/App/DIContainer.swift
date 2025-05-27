@@ -142,6 +142,9 @@ final class DIContainer: ObservableObject {
     
     @MainActor
     func makeTimetableLinkViewModel() -> TimetableLinkViewModel {
-        return TimetableLinkViewModel(useCase: saveTimetableLinkUseCase)
+        return TimetableLinkViewModel(
+            useCase: saveTimetableLinkUseCase,
+            repository: timetableRepository 
+        )
     }
 }

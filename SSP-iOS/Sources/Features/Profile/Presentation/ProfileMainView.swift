@@ -14,9 +14,6 @@ struct ProfileMainView: View {
     let university: String = "숭실대학교"
     let department: String = "컴퓨터학부"
 
-    // 서버에서 받은 시간표 데이터
-    let schedules: [ScheduleDay] = ScheduleDay.sampleData
-    
     @State private var rawTimetableLink: String = ""
     @State private var myTimetableLink: String? = nil
     @State private var isLinkEditPresented: Bool = false
@@ -42,7 +39,7 @@ struct ProfileMainView: View {
                         )
 
                         TimetableCardView(
-                            schedules: schedules,
+                            schedules: viewModel.schedules,
                             onEdit: {
                                 isLinkEditPresented = true
                             },
@@ -77,6 +74,8 @@ struct ProfileMainView: View {
                     rawLink: $viewModel.rawLink,
                     onSave: {
                         viewModel.saveLink()
+                        viewModel.fetchMyTimetable()
+                        isLinkEditPresented = false
                     },
                     onCancel: {
                         isLinkEditPresented = false
@@ -84,7 +83,9 @@ struct ProfileMainView: View {
                 )
             }
         }
-
+        .onAppear {
+            viewModel.fetchMyTimetable()
+        }
     }
 }
 

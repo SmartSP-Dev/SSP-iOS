@@ -9,4 +9,6 @@ import Foundation
 
 protocol TimetableRepository {
     func registerTimetable(_ url: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchMyTimetable(completion: @escaping (Result<[ScheduleDay], Error>) -> Void)
+
 }

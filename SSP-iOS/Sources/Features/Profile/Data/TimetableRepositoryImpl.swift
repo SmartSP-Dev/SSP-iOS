@@ -6,6 +6,7 @@
 //
 
 import Moya
+import Foundation
 
 final class TimetableRepositoryImpl: TimetableRepository {
     private let provider: MoyaProvider<TimetableAPI>
@@ -22,6 +23,22 @@ final class TimetableRepositoryImpl: TimetableRepository {
                     completion(.success(()))
                 } else {
                     completion(.failure(MoyaError.statusCode(response)))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchMyTimetable(completion: @escaping (Result<[ScheduleDay], Error>) -> Void) {
+        provider.request(.fetchMyTimetable) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(TimetableResponse.self, from: response.data)
+                    completion(.success(decoded.payload.schedules))
+                } catch {
+                    completion(.failure(error))
                 }
             case .failure(let error):
                 completion(.failure(error))

@@ -10,13 +10,19 @@ import Foundation
 @MainActor
 final class TimetableLinkViewModel: ObservableObject {
     private let saveUseCase: SaveTimetableLinkUseCase
+    private let repository: TimetableRepository
 
     @Published var rawLink: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    @Published var schedules: [ScheduleDay] = []
 
-    init(useCase: SaveTimetableLinkUseCase) {
+    init(
+        useCase: SaveTimetableLinkUseCase,
+        repository: TimetableRepository
+    ) {
         self.saveUseCase = useCase
+        self.repository = repository
     }
 
     func saveLink() {
@@ -30,6 +36,24 @@ final class TimetableLinkViewModel: ObservableObject {
                     print("링크 저장 성공")
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    func fetchMyTimetable() {
+        isLoading = true
+        errorMessage = nil
+
+        repository.fetchMyTimetable { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let schedules):
+                    self?.schedules = schedules
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    self?.schedules = []
                 }
             }
         }

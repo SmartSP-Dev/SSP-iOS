@@ -25,35 +25,46 @@ struct TimetableCardView: View {
                 }
             }
 
-            ForEach(schedules) { day in
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(day.timePoint)
-                        .font(.subheadline)
-                        .fontWeight(.bold)
+            if schedules.isEmpty {
+                Text("시간표를 입력해주세요!")
+                    .foregroundColor(.gray)
+                    .font(.caption)
+                    .padding(.vertical, 20)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .padding(.top, 8)
+            } else {
+                ForEach(schedules) { day in
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(day.timePoint)
+                            .font(.subheadline)
+                            .fontWeight(.bold)
 
-                    ForEach(day.subjects, id: \.subject) { subject in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(subject.titleLine)
-                                .font(.body)
-                                .fontWeight(.semibold)
+                        ForEach(day.subjects, id: \.subject) { subject in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(subject.titleLine)
+                                    .font(.body)
+                                    .fontWeight(.semibold)
 
-                            HStack {
-                                Text(subject.timeRange)
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                                Spacer()
-                                Text(subject.locationLine)
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+                                HStack {
+                                    Text(subject.timeRange)
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                    Spacer()
+                                    Text(subject.locationLine)
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
                             }
+                            .padding(8)
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .shadow(color: Color.black.opacity(0.05), radius: 1, x: 0, y: 1)
                         }
-                        .padding(8)
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(color: Color.black.opacity(0.05), radius: 1, x: 0, y: 1)
                     }
+                    .padding(.bottom, 6)
                 }
-                .padding(.bottom, 6)
             }
         }
         .padding()
@@ -64,7 +75,7 @@ struct TimetableCardView: View {
 
 #Preview {
     TimetableCardView(
-        schedules: ScheduleDay.sampleData,
+        schedules: [],
         onEdit: {},
         timetableLink: "https://example.com"
     )
