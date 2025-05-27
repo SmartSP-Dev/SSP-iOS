@@ -32,7 +32,7 @@ struct MainTabView: View {
             }
 
             Tab(value: 3) {
-                ProfileView()
+                ProfileMainView()
             } label: {
                 Label("Profile", systemImage: selectedTab == 3 ? "person.crop.circle.fill" : "person.crop.circle")
             }

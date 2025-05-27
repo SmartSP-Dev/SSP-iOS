@@ -17,49 +17,74 @@ struct ProfileMainView: View {
     // 서버에서 받은 시간표 데이터
     let schedules: [ScheduleDay] = ScheduleDay.sampleData
     
+    @State private var rawTimetableLink: String = ""
+    @State private var myTimetableLink: String? = nil
+    @State private var isLinkEditPresented: Bool = false
+
+
     @State private var isRoutineAlarmOn = true
     @State private var isQuizAlarmOn = false
+    
+    @StateObject var viewModel = DIContainer.shared.makeTimetableLinkViewModel()
+
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    ProfileCardView(
-                        name: name,
-                        email: email,
-                        provider: provider,
-                        university: university,
-                        department: department
-                    )
+        ZStack {
+            NavigationView {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        ProfileCardView(
+                            name: name,
+                            email: email,
+                            provider: provider,
+                            university: university,
+                            department: department
+                        )
 
-                    TimetableCardView(
-                        schedules: schedules,
-                        onEdit: {
-                            // 시간표 수정 화면으로 이동
-                            print("시간표 수정 tapped")
-                            // 예: DIContainer.shared.makeAppRouter().navigate(to: .timetableEdit)
-                        }
-                    )
-                    
-                    AlarmToggleSectionView(
-                        isRoutineAlarmOn: $isRoutineAlarmOn,
-                        isQuizAlarmOn: $isQuizAlarmOn
-                    )
+                        TimetableCardView(
+                            schedules: schedules,
+                            onEdit: {
+                                isLinkEditPresented = true
+                            },
+                            timetableLink: myTimetableLink
+                        )
+
+                        AlarmToggleSectionView(
+                            isRoutineAlarmOn: $isRoutineAlarmOn,
+                            isQuizAlarmOn: $isQuizAlarmOn
+                        )
+                    }
+                    .padding()
                 }
-                .padding()
-            }
-            .navigationTitle("프로필")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        // 프로필 수정
-                    } label: {
-                        Image(systemName: "pencil")
-                            .foregroundColor(.black)
+                .navigationTitle("프로필")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            // 프로필 수정
+                        } label: {
+                            Image(systemName: "pencil")
+                                .foregroundColor(.black)
+                        }
                     }
                 }
             }
+
+            if isLinkEditPresented {
+                Color.black.opacity(0.5) // 배경 dim
+                    .ignoresSafeArea()
+
+                TimetableLinkEditView(
+                    rawLink: $viewModel.rawLink,
+                    onSave: {
+                        viewModel.saveLink()
+                    },
+                    onCancel: {
+                        isLinkEditPresented = false
+                    }
+                )
+            }
         }
+
     }
 }
 

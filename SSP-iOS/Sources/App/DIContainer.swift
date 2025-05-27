@@ -78,6 +78,9 @@ final class DIContainer: ObservableObject {
     private lazy var fetchQuizWeekSummaryUseCase = DefaultFetchQuizWeekSummaryUseCase(repository: quizRepository)
     
     private lazy var fetchQuizDetailUseCase = DefaultFetchQuizDetailUseCase(repository: quizRepository)
+    
+    private lazy var timetableRepository = TimetableRepositoryImpl(provider: MoyaProvider<TimetableAPI>())
+    private lazy var saveTimetableLinkUseCase = DefaultSaveTimetableLinkUseCase(repository: timetableRepository)
 
 
     // MARK: - ViewModel Factory
@@ -135,5 +138,10 @@ final class DIContainer: ObservableObject {
     
     func makeFetchQuizDetailUseCase() -> FetchQuizDetailUseCase {
         return fetchQuizDetailUseCase
+    }
+    
+    @MainActor
+    func makeTimetableLinkViewModel() -> TimetableLinkViewModel {
+        return TimetableLinkViewModel(useCase: saveTimetableLinkUseCase)
     }
 }

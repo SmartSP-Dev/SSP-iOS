@@ -9,24 +9,20 @@ import SwiftUI
 
 struct TimetableCardView: View {
     let schedules: [ScheduleDay]
-    var onEdit: () -> Void // 수정 액션 콜백
+    var onEdit: () -> Void
+    var timetableLink: String? // 조회용 링크
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // 헤더 + 수정 버튼
             HStack {
                 Text("시간표 미리보기")
                     .font(.headline)
                 Spacer()
                 Button(action: onEdit) {
-                    HStack(spacing: 4) {
-//                        Image(systemName: "square.and.pencil")
-                        Text("수정")
-                            .font(.subheadline)
-                            .foregroundColor(.black)
-                    }
+                    Text("수정")
+                        .font(.subheadline)
+                        .foregroundColor(.black)
                 }
-                .foregroundColor(.blue)
             }
 
             ForEach(schedules) { day in
@@ -64,4 +60,12 @@ struct TimetableCardView: View {
         .background(Color(.systemGray6))
         .cornerRadius(12)
     }
+}
+
+#Preview {
+    TimetableCardView(
+        schedules: ScheduleDay.sampleData,
+        onEdit: {},
+        timetableLink: "https://example.com"
+    )
 }
