@@ -72,7 +72,6 @@ struct QuizSolveView: View {
                 }
             }
         }
-
         .alert(isPresented: $showExitAlert) {
             Alert(
                 title: Text("정말 나가시겠습니까?"),

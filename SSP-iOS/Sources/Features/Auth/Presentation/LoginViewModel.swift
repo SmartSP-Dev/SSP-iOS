@@ -79,7 +79,7 @@ final class LoginViewModel: ObservableObject, LoginViewModelProtocol {
            print("유효한 액세스 토큰 → 자동 로그인")
            print("accessToken (유효):", KeychainManager.shared.accessToken ?? "없음")
            print("refreshToken (유효):", KeychainManager.shared.refreshToken ?? "없음")
-//           isLoggedIn = true
+           isLoggedIn = true
        }
    }
 

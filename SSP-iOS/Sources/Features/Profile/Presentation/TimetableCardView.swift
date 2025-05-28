@@ -41,7 +41,7 @@ struct TimetableCardView: View {
                             .font(.subheadline)
                             .fontWeight(.bold)
 
-                        ForEach(day.subjects, id: \.subject) { subject in
+                        ForEach(day.subjects.sorted(by: { $0.times.first ?? "" < $1.times.first ?? "" }), id: \.subject) { subject in
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(subject.titleLine)
                                     .font(.body)

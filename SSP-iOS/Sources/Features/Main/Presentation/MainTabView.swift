@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab = 0
     @EnvironmentObject private var container: DIContainer
+    @ObservedObject var loginViewModel: LoginViewModel
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -32,18 +33,13 @@ struct MainTabView: View {
             }
 
             Tab(value: 3) {
-                ProfileMainView(profileViewModel: container.makeProfileViewModel())
+                ProfileMainView(profileViewModel: container.makeProfileViewModel(), loginViewModel: loginViewModel)
             } label: {
                 Label("Profile", systemImage: selectedTab == 3 ? "person.crop.circle.fill" : "person.crop.circle")
             }
         }
         .tint(Color("mainColor800"))
     }
-}
-
-#Preview {
-    MainTabView()
-        .environmentObject(DIContainer.shared)
 }
 
 struct ProfileView: View {

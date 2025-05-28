@@ -15,17 +15,17 @@ struct RootView: View {
         NavigationStack(path: $appRouter.path) {
             Group {
                 if loginViewModel.isLoggedIn {
-                    MainTabView()
+                    MainTabView(loginViewModel: loginViewModel)
                         .environmentObject(DIContainer.shared)
                 } else {
                     LoginView(viewModel: loginViewModel)
                 }
             }
-//            .onAppear { // 자동 로그인
-//                if let token = KeychainManager.shared.accessToken, !token.isEmpty {
-//                    loginViewModel.isLoggedIn = true
-//                }
-//            }
+            .onAppear { // 자동 로그인
+                if let token = KeychainManager.shared.accessToken, !token.isEmpty {
+                    loginViewModel.isLoggedIn = true
+                }
+            }
             .task {
                 await loginViewModel.autoLoginIfNeeded()
             }
