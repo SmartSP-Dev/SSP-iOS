@@ -32,7 +32,10 @@ struct ProfileMainView: View {
                                 department: profile.department.isEmpty ? "-" : profile.department
                             )
                         } else {
-                            ProgressView("로딩 중...")
+                            Text("상단의 버튼을 눌러 프로필을 설정해주세요.")
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                                .padding()
                         }
 
                         TimetableCardView(
