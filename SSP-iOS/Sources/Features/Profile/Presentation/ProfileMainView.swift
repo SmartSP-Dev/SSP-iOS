@@ -22,7 +22,8 @@ struct ProfileMainView: View {
     @State private var isRoutineAlarmOn = true
     @State private var isQuizAlarmOn = false
     
-    @StateObject var viewModel = DIContainer.shared.makeTimetableLinkViewModel()
+    @StateObject private var profileViewModel = DIContainer.shared.makeProfileViewModel()
+    @StateObject private var timetableViewModel = DIContainer.shared.makeTimetableLinkViewModel()
 
 
     var body: some View {
@@ -31,15 +32,15 @@ struct ProfileMainView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         ProfileCardView(
-                            name: name,
-                            email: email,
-                            provider: provider,
-                            university: university,
-                            department: department
+                            name: profileViewModel.profile?.name ?? "이름 없음",
+                            email: profileViewModel.profile?.email ?? "이메일 없음",
+                            provider: profileViewModel.profile?.provider ?? "Provider",
+                            university: profileViewModel.profile?.university ?? "-",
+                            department: profileViewModel.profile?.department ?? "-"
                         )
 
                         TimetableCardView(
-                            schedules: viewModel.schedules,
+                            schedules: timetableViewModel.schedules,
                             onEdit: {
                                 isLinkEditPresented = true
                             },
@@ -67,14 +68,13 @@ struct ProfileMainView: View {
             }
 
             if isLinkEditPresented {
-                Color.black.opacity(0.5) // 배경 dim
-                    .ignoresSafeArea()
+                Color.black.opacity(0.5).ignoresSafeArea()
 
                 TimetableLinkEditView(
-                    rawLink: $viewModel.rawLink,
+                    rawLink: $timetableViewModel.rawLink,
                     onSave: {
-                        viewModel.saveLink()
-                        viewModel.fetchMyTimetable()
+                        timetableViewModel.saveLink()
+                        timetableViewModel.fetchMyTimetable()
                         isLinkEditPresented = false
                     },
                     onCancel: {
@@ -84,7 +84,10 @@ struct ProfileMainView: View {
             }
         }
         .onAppear {
-            viewModel.fetchMyTimetable()
+            Task {
+                await profileViewModel.fetchProfile()
+            }
+            timetableViewModel.fetchMyTimetable()
         }
     }
 }

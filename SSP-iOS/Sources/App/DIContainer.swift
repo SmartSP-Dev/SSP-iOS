@@ -81,6 +81,10 @@ final class DIContainer: ObservableObject {
     
     private lazy var timetableRepository = TimetableRepositoryImpl(provider: MoyaProvider<TimetableAPI>())
     private lazy var saveTimetableLinkUseCase = DefaultSaveTimetableLinkUseCase(repository: timetableRepository)
+    
+    private lazy var memberRepository = MemberRepositoryImpl(provider: MoyaProvider<MemberAPI>())
+    private lazy var fetchMyProfileUseCase = DefaultFetchMyProfileUseCase(repository: memberRepository)
+
 
 
     // MARK: - ViewModel Factory
@@ -146,5 +150,9 @@ final class DIContainer: ObservableObject {
             useCase: saveTimetableLinkUseCase,
             repository: timetableRepository 
         )
+    }
+    @MainActor
+    func makeProfileViewModel() -> ProfileViewModel {
+        return ProfileViewModel(fetchProfileUseCase: fetchMyProfileUseCase)
     }
 }
