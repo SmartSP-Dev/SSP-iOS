@@ -10,7 +10,13 @@ struct TimetableLinkEditView: View {
             Text("시간표 링크 입력")
                 .font(.headline)
 
-            TextField("https://로 시작하는 링크", text: $rawLink)
+            Text("시간표를 전체공개로 설정하지 않으면\n정상적으로 불러올 수 없습니다.")
+                .font(.subheadline)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.red)
+                .padding(.horizontal)
+
+            TextField("에브리타임 시간표 링크를 입력하세요", text: $rawLink)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
 
@@ -44,5 +50,18 @@ struct TimetableLinkEditView: View {
         .cornerRadius(16)
         .shadow(radius: 10)
         .padding(.horizontal, 32)
+    }
+}
+
+struct TimetableLinkEditView_Previews: PreviewProvider {
+    @State static var sampleLink = ""
+
+    static var previews: some View {
+        TimetableLinkEditView(
+            rawLink: $sampleLink,
+            onSave: { print("저장됨") },
+            onCancel: { print("취소됨") }
+        )
+        .previewLayout(.sizeThatFits)
     }
 }

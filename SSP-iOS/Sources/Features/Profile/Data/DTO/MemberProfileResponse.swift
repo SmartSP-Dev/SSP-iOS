@@ -13,7 +13,7 @@ struct MemberProfileResponse: Codable {
     let name: String
     let university: String
     let department: String
-    let profileImage: String
+    let profileImage: String?
     let everytimeUrl: String?
     let provider: String
 }

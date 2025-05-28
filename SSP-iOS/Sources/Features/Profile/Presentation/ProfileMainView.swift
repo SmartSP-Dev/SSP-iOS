@@ -92,9 +92,11 @@ struct ProfileMainView: View {
                     onSave: { newName, newUniv, newDept in
                         Task {
                             await profileViewModel.updateProfile(name: newName, university: newUniv, department: newDept)
+                            await profileViewModel.fetchProfile()
                             isProfileEditPresented = false
                         }
                     },
+
                     onCancel: {
                         isProfileEditPresented = false
                     }
