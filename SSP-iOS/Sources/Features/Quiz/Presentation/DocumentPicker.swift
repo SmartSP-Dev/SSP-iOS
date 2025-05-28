@@ -39,11 +39,36 @@ struct DocumentPicker: UIViewControllerRepresentable {
             let fileExtension = selectedURL.pathExtension.lowercased()
 
             if allowedExtensions.contains(fileExtension) {
-                parent.fileURL = selectedURL
+                let fileManager = FileManager.default
+
+                // 보안 스코프 리소스 접근 시작
+                let accessGranted = selectedURL.startAccessingSecurityScopedResource()
+                defer {
+                    if accessGranted {
+                        selectedURL.stopAccessingSecurityScopedResource()
+                    }
+                }
+
+                // 복사 대상 경로 (임시 디렉토리)
+                let tempURL = fileManager.temporaryDirectory.appendingPathComponent(selectedURL.lastPathComponent)
+
+                do {
+                    if fileManager.fileExists(atPath: tempURL.path) {
+                        try fileManager.removeItem(at: tempURL)
+                    }
+
+                    try fileManager.copyItem(at: selectedURL, to: tempURL)
+                    parent.fileURL = tempURL
+                } catch {
+                    print("파일 복사 실패: \(error.localizedDescription)")
+                    parent.fileURL = nil
+                    parent.showUnsupportedFileAlert = true
+                }
             } else {
                 parent.fileURL = nil
                 parent.showUnsupportedFileAlert = true
             }
         }
+
     }
 }
