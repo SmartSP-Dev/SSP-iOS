@@ -15,23 +15,27 @@ struct TimetableLinkEditView: View {
                 .padding(.horizontal)
 
             HStack(spacing: 16) {
-                Button("취소") {
+                Button(action: {
                     onCancel()
+                }) {
+                    Text("취소")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                        .foregroundStyle(.black)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
-                .foregroundStyle(.black)
 
-                Button("저장") {
+                Button(action: {
                     onSave()
+                }) {
+                    Text("저장")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.black)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.black)
-                .foregroundColor(.white)
-                .cornerRadius(8)
             }
             .padding(.horizontal)
         }

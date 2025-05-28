@@ -41,21 +41,26 @@ final class TimetableLinkViewModel: ObservableObject {
         }
     }
 
-    func fetchMyTimetable() {
+    @MainActor
+    func fetchMyTimetable() async {
         isLoading = true
         errorMessage = nil
 
-        repository.fetchMyTimetable { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success(let schedules):
-                    self?.schedules = schedules
-                case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
-                    self?.schedules = []
+        await withCheckedContinuation { continuation in
+            repository.fetchMyTimetable { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.isLoading = false
+                    switch result {
+                    case .success(let schedules):
+                        self?.schedules = schedules
+                    case .failure(let error):
+                        self?.errorMessage = error.localizedDescription
+                        self?.schedules = []
+                    }
+                    continuation.resume()
                 }
             }
         }
     }
+
 }

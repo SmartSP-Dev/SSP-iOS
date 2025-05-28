@@ -14,9 +14,14 @@ final class ProfileViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let fetchProfileUseCase: FetchMyProfileUseCase
+    private let updateProfileUseCase: UpdateProfileUseCase
 
-    init(fetchProfileUseCase: FetchMyProfileUseCase) {
+    init(
+        fetchProfileUseCase: FetchMyProfileUseCase,
+        updateProfileUseCase: UpdateProfileUseCase
+    ) {
         self.fetchProfileUseCase = fetchProfileUseCase
+        self.updateProfileUseCase = updateProfileUseCase
     }
 
     func fetchProfile() async {
@@ -25,6 +30,21 @@ final class ProfileViewModel: ObservableObject {
 
         do {
             self.profile = try await fetchProfileUseCase.execute()
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
+    }
+
+    func updateProfile(name: String, university: String, department: String) async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            self.profile = try await updateProfileUseCase.execute(
+                name: name,
+                university: university,
+                department: department
+            )
         } catch {
             self.errorMessage = error.localizedDescription
         }

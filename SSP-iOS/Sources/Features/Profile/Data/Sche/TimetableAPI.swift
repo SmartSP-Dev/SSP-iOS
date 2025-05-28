@@ -29,9 +29,9 @@ extension TimetableAPI: TargetType {
 
     var method: Moya.Method {
         switch self {
-        case .registerTimetable:
-            return .post
-        case .fetchMyTimetable:
+//        case .registerTimetable:
+//            return .post
+        case .fetchMyTimetable, .registerTimetable:
             return .get
         }
     }
@@ -39,7 +39,7 @@ extension TimetableAPI: TargetType {
     var task: Task {
         switch self {
         case .registerTimetable(let link):
-            return .requestParameters(parameters: ["url": link], encoding: JSONEncoding.default)
+            return .requestParameters(parameters: ["url": link], encoding: URLEncoding.default) 
         case .fetchMyTimetable:
             return .requestPlain
         }

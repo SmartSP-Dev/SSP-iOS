@@ -10,9 +10,11 @@ import Moya
 
 protocol MemberRepository {
     func fetchMyProfile() async throws -> MemberProfileResponse
+    func updateProfile(name: String, university: String, department: String) async throws -> MemberProfileResponse
 }
 
 final class MemberRepositoryImpl: MemberRepository {
+    
     private let provider: MoyaProvider<MemberAPI>
 
     init(provider: MoyaProvider<MemberAPI>) {
@@ -21,6 +23,11 @@ final class MemberRepositoryImpl: MemberRepository {
 
     func fetchMyProfile() async throws -> MemberProfileResponse {
         let response = try await provider.request(.fetchMyProfile)
+        return try JSONDecoder().decode(MemberProfileResponse.self, from: response.data)
+    }
+    
+    func updateProfile(name: String, university: String, department: String) async throws -> MemberProfileResponse {
+        let response = try await provider.request(.updateProfile(name: name, university: university, department: department))
         return try JSONDecoder().decode(MemberProfileResponse.self, from: response.data)
     }
 }

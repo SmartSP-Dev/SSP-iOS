@@ -85,7 +85,9 @@ final class DIContainer: ObservableObject {
     private lazy var memberRepository = MemberRepositoryImpl(provider: MoyaProvider<MemberAPI>())
     private lazy var fetchMyProfileUseCase = DefaultFetchMyProfileUseCase(repository: memberRepository)
 
-
+    private var updateProfileUseCase: UpdateProfileUseCase {
+        DefaultUpdateProfileUseCase(repository: memberRepository)
+    }
 
     // MARK: - ViewModel Factory
 
@@ -153,6 +155,9 @@ final class DIContainer: ObservableObject {
     }
     @MainActor
     func makeProfileViewModel() -> ProfileViewModel {
-        return ProfileViewModel(fetchProfileUseCase: fetchMyProfileUseCase)
+        ProfileViewModel(
+            fetchProfileUseCase: fetchMyProfileUseCase,
+            updateProfileUseCase: updateProfileUseCase
+        )
     }
 }

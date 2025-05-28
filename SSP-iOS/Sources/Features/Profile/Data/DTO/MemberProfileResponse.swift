@@ -14,6 +14,6 @@ struct MemberProfileResponse: Codable {
     let university: String
     let department: String
     let profileImage: String
-    let everytimeUrl: String
+    let everytimeUrl: String?
     let provider: String
 }

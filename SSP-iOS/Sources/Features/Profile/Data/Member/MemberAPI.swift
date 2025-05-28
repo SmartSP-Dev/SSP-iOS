@@ -10,6 +10,7 @@ import Moya
 
 enum MemberAPI {
     case fetchMyProfile
+    case updateProfile(name: String, university: String, department: String)
 }
 
 extension MemberAPI: TargetType {
@@ -20,6 +21,8 @@ extension MemberAPI: TargetType {
         switch self {
         case .fetchMyProfile:
             return "/members/me"
+        case .updateProfile:
+            return "/members/me"
         }
     }
 
@@ -27,6 +30,8 @@ extension MemberAPI: TargetType {
         switch self {
         case .fetchMyProfile:
             return .get
+        case .updateProfile:
+            return .patch
         }
     }
 
@@ -34,6 +39,13 @@ extension MemberAPI: TargetType {
         switch self {
         case .fetchMyProfile:
             return .requestPlain
+        case let .updateProfile(name, university, department):
+            let parameters: [String: Any] = [
+                "name": name,
+                "university": university,
+                "department": department
+            ]
+            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         }
     }
 

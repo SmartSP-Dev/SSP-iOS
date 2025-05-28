@@ -13,7 +13,7 @@ struct ProfileCardView: View {
     let provider: String
     let university: String
     let department: String
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 16) {
@@ -63,14 +63,4 @@ struct ProfileCardView: View {
         .background(Color.black)
         .cornerRadius(12)
     }
-}
-
-#Preview {
-    ProfileCardView(
-        name: "홍길동",
-        email: "hong@example.com",
-        provider: "Kakao",
-        university: "숭실대학교",
-        department: "소프트웨어학부"
-    )
 }
