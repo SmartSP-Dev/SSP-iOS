@@ -34,7 +34,9 @@ struct GroupScheduleView: View {
             Text(viewModel.group.dateRangeString)
                 .font(.caption)
                 .foregroundColor(.gray)
-
+            .onAppear {
+                print("📌 전달된 busyFromEvent 개수:", viewModel.busyFromEvent.count)
+            }
             SlotGridView(
                 weekDates: weekDates,
                 hours: hours,

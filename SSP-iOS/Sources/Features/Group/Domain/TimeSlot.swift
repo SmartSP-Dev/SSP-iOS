@@ -13,14 +13,21 @@ struct TimeSlot: Hashable {
     let minute: Int
 
     init(date: Date, hour: Int, minute: Int = 0) {
-        self.date = date
+        self.date = Calendar.current.startOfDay(for: date) 
         self.hour = hour
         self.minute = minute
     }
-}
 
-enum SlotType {
-    case available
-    case busyFromSchedule
-    case busyFromEvent
+    static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
+        return Calendar.current.isDate(lhs.date, inSameDayAs: rhs.date)
+            && lhs.hour == rhs.hour
+            && lhs.minute == rhs.minute
+    }
+
+    func hash(into hasher: inout Hasher) {
+        let day = Calendar.current.startOfDay(for: date)
+        hasher.combine(day)
+        hasher.combine(hour)
+        hasher.combine(minute)
+    }
 }

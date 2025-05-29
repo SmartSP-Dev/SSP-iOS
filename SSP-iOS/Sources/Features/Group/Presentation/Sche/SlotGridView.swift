@@ -61,22 +61,22 @@ struct SlotGridView: View {
                                 HStack(spacing: spacing) {
                                     ForEach(weekDates, id: \.self) { date in
                                         let slot = TimeSlot(date: date, hour: hour, minute: minute)
-                                        Rectangle()
-                                            .fill(color(for: slot))
-                                            .frame(width: max(cellWidth, 1), height: 16)
-                                            .background(
-                                                GeometryReader { geo in
-                                                    Color.clear
-                                                        .onChange(of: geo.size) {
-                                                            let frame = geo.frame(in: .named("GridArea"))
-                                                            guard frame.width.isFinite, frame.height.isFinite, frame.width >= 0, frame.height >= 0 else { return }
-                                                            slotFrames[slot] = frame
-                                                        }
-                                                }
-                                            )
-                                            .onTapGesture {
-                                                onToggle(slot)
+                                        ZStack {
+                                            Rectangle()
+                                                .fill(color(for: slot))
+                                            GeometryReader { geo in
+                                                Color.clear
+                                                    .onAppear {
+                                                        let frame = geo.frame(in: .named("GridArea"))
+                                                        guard frame.width.isFinite, frame.height.isFinite, frame.width >= 0, frame.height >= 0 else { return }
+                                                        slotFrames[slot] = frame
+                                                    }
                                             }
+                                        }
+                                        .frame(width: max(cellWidth, 1), height: 16)
+                                        .onTapGesture {
+                                            onToggle(slot)
+                                        }
                                     }
                                 }
                             }

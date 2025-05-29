@@ -7,10 +7,7 @@
 
 import Foundation
 import SwiftUI
-
-// 시간표 데이터(JSON 형식)를 loadTimeTable()로 받아 busyFromSchedule로 변환
-// EventKit에서 받아온 일정은 loadEventKitSlots()를 통해 busyFromEvent로 저장
-// selectedSlots는 유저의 선택값이며, 드래그/터치로 토글 가능
+import EventKit
 
 final class GroupScheduleViewModel: ObservableObject {
     // MARK: - Input
@@ -21,35 +18,35 @@ final class GroupScheduleViewModel: ObservableObject {
     @Published var busyFromSchedule: Set<TimeSlot> = []
     @Published var busyFromEvent: Set<TimeSlot> = []
 
+    private let eventStore = EKEventStore()
+
     // MARK: - Init
     init(group: ScheduleGroup) {
         self.group = group
+        fetchCalendarEvents()
     }
 
     // MARK: - API
-    func loadTimeTable(from data: [WeekScheduleDTO]) {
-        var result: Set<TimeSlot> = []
 
-        for daySchedule in data {
-            guard let weekDayIndex = Self.weekdayIndex(for: daySchedule.timePoint),
-                  let date = Calendar.current.date(byAdding: .day, value: weekDayIndex, to: group.startDate) else { continue }
-
-            for subject in daySchedule.subjects {
-                for timeStr in subject.times {
-                    if let hour = Self.extractHour(from: timeStr) {
-                        let slot = TimeSlot(date: date, hour: hour)
-                        result.insert(slot)
-                    }
-                }
-            }
-        }
-
-        busyFromSchedule = result
-    }
-
-    func loadEventKitSlots(_ slots: Set<TimeSlot>) {
-        busyFromEvent = slots
-    }
+//    func loadTimeTable(from data: [WeekScheduleDTO]) {
+//        var result: Set<TimeSlot> = []
+//
+//        for daySchedule in data {
+//            guard let weekDayIndex = Self.weekdayIndex(for: daySchedule.timePoint),
+//                  let date = Calendar.current.date(byAdding: .day, value: weekDayIndex, to: group.startDate) else { continue }
+//
+//            for subject in daySchedule.subjects {
+//                for timeStr in subject.times {
+//                    if let hour = Self.extractHour(from: timeStr) {
+//                        let slot = TimeSlot(date: date, hour: hour)
+//                        result.insert(slot)
+//                    }
+//                }
+//            }
+//        }
+//
+//        busyFromSchedule = result
+//    }
 
     func toggle(_ slot: TimeSlot) {
         if selectedSlots.contains(slot) {
@@ -59,7 +56,74 @@ final class GroupScheduleViewModel: ObservableObject {
         }
     }
 
+    // MARK: - EventKit (Calendar)
+
+    private func fetchCalendarEvents() {
+        if #available(iOS 17, *) {
+            eventStore.requestFullAccessToEvents(completion: { granted, _ in
+                self.handleAccess(granted: granted)
+            })
+        } else {
+            eventStore.requestAccess(to: .event) { granted, _ in
+                self.handleAccess(granted: granted)
+            }
+        }
+    }
+
+    private func handleAccess(granted: Bool) {
+        guard granted else { return }
+
+        let predicate = self.eventStore.predicateForEvents(
+            withStart: self.group.startDate,
+            end: self.group.endDate,
+            calendars: nil
+        )
+
+        let events = self.eventStore.events(matching: predicate)
+        self.debugLog(events: events)
+        let slots = events.flatMap { Self.convertEventToSlots(event: $0) }
+
+        DispatchQueue.main.async {
+            self.busyFromEvent = Set(slots)
+        }
+    }
+
+    private static func convertEventToSlots(event: EKEvent) -> [TimeSlot] {
+        var slots: [TimeSlot] = []
+
+        guard var current = event.startDate, let end = event.endDate else {
+            return []
+        }
+
+        while current < end {
+            let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: current)
+
+            let hour = components.hour ?? 0
+            let minute = (components.minute ?? 0) < 30 ? 0 : 30
+
+            let dayOnly = Calendar.current.startOfDay(for: current)
+            let slot = TimeSlot(date: dayOnly, hour: hour, minute: minute)
+            slots.append(slot)
+
+            guard let next = Calendar.current.date(byAdding: .minute, value: 30, to: current) else {
+                break
+            }
+
+            current = next
+        }
+
+        return slots
+    }
+
+    private func debugLog(events: [EKEvent]) {
+        print("불러온 캘린더 이벤트 수: \(events.count)")
+        for event in events {
+            print("[\(event.title ?? "제목없음")] \(event.startDate ?? Date()) ~ \(event.endDate ?? Date())")
+        }
+    }
+
     // MARK: - Helpers
+
     private static func extractHour(from timeStr: String) -> Int? {
         let components = timeStr.split(separator: ":")
         guard let hour = components.first, let hourInt = Int(hour) else { return nil }
@@ -70,16 +134,4 @@ final class GroupScheduleViewModel: ObservableObject {
         let days = ["월": 0, "화": 1, "수": 2, "목": 3, "금": 4, "토": 5, "일": 6]
         return days[timePoint]
     }
-}
-
-// MARK: - Mock DTO
-
-struct WeekScheduleDTO: Decodable {
-    let timePoint: String // 요일: "화"
-    let subjects: [SubjectsDTO]
-}
-
-struct SubjectsDTO: Decodable {
-    let subject: String
-    let times: [String] // 예: ["16:30", "16:45", ...]
 }
