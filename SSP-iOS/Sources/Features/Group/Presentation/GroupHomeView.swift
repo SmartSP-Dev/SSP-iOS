@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct GroupHomeView: View {
+    @StateObject private var viewModel = DIContainer.shared.makeGroupHomeViewModel()
+
+    
     @State private var showJoinSheet = false
     @State private var showCreateSheet = false
-
-    @State private var groups: [ScheduleGroup] = []
 
     var body: some View {
         NavigationView {
@@ -35,12 +36,12 @@ struct GroupHomeView: View {
                     .buttonStyle(GroupActionButtonStyle())
                 }
 
-                List(groups) { group in
-                    NavigationLink(destination: GroupScheduleView(group: group)) {
+                List(viewModel.groups, id: \.groupId) { group in
+                    NavigationLink(destination: GroupScheduleView(group: group.toScheduleGroup())) {
                         VStack(alignment: .leading) {
-                            Text(group.name)
+                            Text(group.groupName)
                                 .font(.headline)
-                            Text("\(group.dateRangeString) 일정")
+                            Text("Group Key: \(group.groupKey)")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
@@ -51,15 +52,29 @@ struct GroupHomeView: View {
             }
             .padding()
             .sheet(isPresented: $showJoinSheet) {
-                GroupJoinSheet { newGroup in
-                    groups.append(newGroup)
+                GroupJoinSheet { groupKey in
+                    Task {
+                        let success = await viewModel.joinGroup(groupKey: groupKey)
+                        if success {
+                            await viewModel.fetchGroups()
+                        }
+                    }
                 }
             }
+
             .sheet(isPresented: $showCreateSheet) {
-                GroupCreateSheet { newGroup in
-                    groups.append(newGroup)
+                GroupCreateSheet { startDate, endDate, groupName in
+                    Task {
+                        await viewModel.createGroup(startDate: startDate, endDate: endDate, name: groupName)
+                    }
                 }
             }
+            .onAppear {
+                Task {
+                    await viewModel.fetchGroups()
+                }
+            }
+
         }
     }
 }

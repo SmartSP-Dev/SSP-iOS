@@ -11,7 +11,7 @@ struct GroupJoinSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var groupCode: String = ""
 
-    let onJoin: (ScheduleGroup) -> Void
+    let onJoin: (String) -> Void
 
     var body: some View {
         VStack(spacing: 20) {
@@ -23,20 +23,8 @@ struct GroupJoinSheet: View {
                 .padding(.horizontal)
 
             Button("확인") {
-                // 임시: 오늘 기준 주간 날짜로 생성
-                let calendar = Calendar.current
-                let today = Date()
-                let weekday = calendar.component(.weekday, from: today)
-                let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: today)!
-                let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-
-                let joinedGroup = ScheduleGroup(
-                    name: "참여한 그룹 (\(groupCode))",
-                    startDate: startOfWeek,
-                    endDate: endOfWeek
-                )
-
-                onJoin(joinedGroup)
+                guard !groupCode.isEmpty else { return }
+                onJoin(groupCode)
                 dismiss()
             }
             .padding(.horizontal)
@@ -49,10 +37,3 @@ struct GroupJoinSheet: View {
     }
 }
 
-// MARK: - Preview
-
-#Preview {
-    GroupJoinSheet { group in
-        print("참여 그룹: \(group.name) \(group.dateRangeString)")
-    }
-}

@@ -88,6 +88,12 @@ final class DIContainer: ObservableObject {
     private var updateProfileUseCase: UpdateProfileUseCase {
         DefaultUpdateProfileUseCase(repository: memberRepository)
     }
+    
+    private lazy var groupRepository = GroupRepositoryImpl(provider: MoyaProvider<GroupAPI>())
+    private lazy var fetchMyGroupsUseCase = DefaultFetchMyGroupsUseCase(repository: groupRepository)
+
+    private lazy var createGroupUseCase = DefaultCreateGroupUseCase(repository: groupRepository)
+    private lazy var joinGroupUseCase = DefaultJoinGroupUseCase(repository: groupRepository)
 
     // MARK: - ViewModel Factory
 
@@ -159,5 +165,19 @@ final class DIContainer: ObservableObject {
             fetchProfileUseCase: fetchMyProfileUseCase,
             updateProfileUseCase: updateProfileUseCase
         )
+    }
+    
+    @MainActor
+    func makeGroupHomeViewModel() -> GroupHomeViewModel {
+        return GroupHomeViewModel(
+            fetchMyGroupsUseCase: fetchMyGroupsUseCase,
+            createGroupUseCase: createGroupUseCase,
+            joinGroupUseCase: joinGroupUseCase
+        )
+    }
+    
+    @MainActor
+    func makeCreateGroupUseCase() -> CreateGroupUseCase {
+        return createGroupUseCase
     }
 }

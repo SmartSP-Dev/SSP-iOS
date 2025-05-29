@@ -13,7 +13,7 @@ struct GroupCreateSheet: View {
     @State private var groupName: String = ""
     @State private var selectedDate: Date = Date()
 
-    let onCreate: (ScheduleGroup) -> Void
+    let onCreate: (Date, Date, String) -> Void
 
     var body: some View {
         VStack(spacing: 16) {
@@ -37,16 +37,12 @@ struct GroupCreateSheet: View {
                 let weekday = calendar.component(.weekday, from: selectedDate)
                 let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: selectedDate) ?? selectedDate
                 let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek) ?? selectedDate
+                let name = groupName.isEmpty ? "이름 없는 약속" : groupName
 
-                let group = ScheduleGroup(
-                    name: groupName.isEmpty ? "이름 없는 약속" : groupName,
-                    startDate: startOfWeek,
-                    endDate: endOfWeek
-                )
-
-                onCreate(group)
+                onCreate(startOfWeek, endOfWeek, name)
                 dismiss()
             }
+
             .padding(.horizontal)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity)
@@ -57,16 +53,3 @@ struct GroupCreateSheet: View {
     }
 }
 
-// MARK: - Preview
-
-#Preview {
-    let calendar = Calendar.current
-    let today = Date()
-    let weekday = calendar.component(.weekday, from: today)
-    let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: today)!
-    let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-
-    return GroupCreateSheet { group in
-        print("생성된 그룹: \(group.name) - \(group.dateRangeString)")
-    }
-}
