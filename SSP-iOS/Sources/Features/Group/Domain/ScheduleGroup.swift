@@ -12,6 +12,7 @@ struct ScheduleGroup: Identifiable {
     let name: String
     let startDate: Date
     let endDate: Date
+    let groupKey: String
 
     var dateRangeString: String {
         let formatter = DateFormatter()

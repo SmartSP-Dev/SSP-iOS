@@ -33,10 +33,7 @@ struct GroupCreateSheet: View {
                 .padding(.horizontal)
 
             Button("확인") {
-                let calendar = Calendar.current
-                let weekday = calendar.component(.weekday, from: selectedDate)
-                let startOfWeek = calendar.date(byAdding: .day, value: -(weekday - 2), to: selectedDate) ?? selectedDate
-                let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek) ?? selectedDate
+                let (startOfWeek, endOfWeek) = selectedDate.weekBounds()
                 let name = groupName.isEmpty ? "이름 없는 약속" : groupName
 
                 onCreate(startOfWeek, endOfWeek, name)

@@ -90,6 +90,11 @@ final class DIContainer: ObservableObject {
     }
     
     private lazy var groupRepository = GroupRepositoryImpl(provider: MoyaProvider<GroupAPI>())
+    
+    var exposedGroupRepository: GroupRepository {
+        return groupRepository
+    }
+    
     private lazy var fetchMyGroupsUseCase = DefaultFetchMyGroupsUseCase(repository: groupRepository)
 
     private lazy var createGroupUseCase = DefaultCreateGroupUseCase(repository: groupRepository)

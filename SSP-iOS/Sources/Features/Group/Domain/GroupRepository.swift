@@ -11,5 +11,6 @@ protocol GroupRepository {
     func fetchMyGroups() async throws -> [GroupResponseDTO]
     func createGroup(startDate: String, endDate: String, groupName: String) async throws -> GroupResponseDTO
     func joinGroup(groupKey: String) async throws -> Bool
-
+    func fetchGroupMembers(groupKey: String) async throws -> [GroupMemberDTO]
+    func fetchGroupTimetable(groupKey: String) async throws -> [TimeBlockDTO]
 }

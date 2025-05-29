@@ -36,6 +36,15 @@ final class GroupRepositoryImpl: GroupRepository {
         let result = try response.map(GroupJoinResponseDTO.self)
         return result.successed
     }
+    
+    func fetchGroupMembers(groupKey: String) async throws -> [GroupMemberDTO] {
+        let response = try await provider.request(.fetchGroupMembers(groupKey: groupKey))
+        return try response.map([GroupMemberDTO].self)
+    }
 
+    func fetchGroupTimetable(groupKey: String) async throws -> [TimeBlockDTO] {
+        let response = try await provider.request(.fetchGroupTimetable(groupKey: groupKey))
+        return try response.map([TimeBlockDTO].self)
+    }
 
 }

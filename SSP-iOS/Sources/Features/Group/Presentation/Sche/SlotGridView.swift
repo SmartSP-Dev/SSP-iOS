@@ -25,10 +25,11 @@ struct SlotGridView: View {
             let totalWidth = geometry.size.width
             let timeLabelWidth: CGFloat = 36
             let spacing: CGFloat = 1
-            let columnCount = weekDates.count
+            let columnCount = max(weekDates.count, 1)
             let totalSpacing = spacing * CGFloat(columnCount - 1)
-            let cellWidth = (totalWidth - timeLabelWidth - totalSpacing) / CGFloat(columnCount)
-
+            let safeColumnCount = max(columnCount, 1)
+            let cellWidth = max(1, (totalWidth - timeLabelWidth - totalSpacing) / CGFloat(safeColumnCount))
+            
             LazyVStack(spacing: 1) {
                 // Header
                 HStack(spacing: spacing) {
@@ -62,12 +63,13 @@ struct SlotGridView: View {
                                         let slot = TimeSlot(date: date, hour: hour, minute: minute)
                                         Rectangle()
                                             .fill(color(for: slot))
-                                            .frame(width: cellWidth, height: 16)
+                                            .frame(width: max(cellWidth, 1), height: 16)
                                             .background(
                                                 GeometryReader { geo in
                                                     Color.clear
-                                                        .onAppear {
+                                                        .onChange(of: geo.size) {
                                                             let frame = geo.frame(in: .named("GridArea"))
+                                                            guard frame.width.isFinite, frame.height.isFinite, frame.width >= 0, frame.height >= 0 else { return }
                                                             slotFrames[slot] = frame
                                                         }
                                                 }

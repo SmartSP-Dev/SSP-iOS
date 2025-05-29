@@ -32,6 +32,15 @@ extension Date {
         self < other || isSameDay(as: other)
     }
     
+    func weekBounds() -> (startOfWeek: Date, endOfWeek: Date) {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: self)
+        let startOffset = -(weekday - 2)
+        let startOfWeek = calendar.date(byAdding: .day, value: startOffset, to: self)!
+        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+        return (startOfWeek, endOfWeek)
+    }
+
 }
 
 extension Int {
@@ -54,3 +63,4 @@ extension String {
         return components.count == 3 ? String(components[2]) : "-"
     }
 }
+

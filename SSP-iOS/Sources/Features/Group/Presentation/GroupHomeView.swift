@@ -37,7 +37,7 @@ struct GroupHomeView: View {
                 }
 
                 List(viewModel.groups, id: \.groupId) { group in
-                    NavigationLink(destination: GroupScheduleView(group: group.toScheduleGroup())) {
+                    NavigationLink(destination: GroupAvailabilityView(group: group.toScheduleGroup())) {
                         VStack(alignment: .leading) {
                             Text(group.groupName)
                                 .font(.headline)

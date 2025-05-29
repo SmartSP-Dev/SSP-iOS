@@ -15,10 +15,15 @@ struct GroupResponseDTO: Decodable {
 
 extension GroupResponseDTO {
     func toScheduleGroup() -> ScheduleGroup {
+        let today = Date()  
+        let (start, end) = today.weekBounds()
+
         return ScheduleGroup(
             name: groupName,
-            startDate: Date(), // 실제 API에 날짜 추가되면 교체
-            endDate: Date()
+            startDate: start,
+            endDate: end,
+            groupKey: groupKey
         )
     }
 }
+
