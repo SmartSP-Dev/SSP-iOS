@@ -13,10 +13,14 @@ struct RoutineAddView: View {
     @State private var inputText: String = ""
 
     var body: some View {
-        VStack {
+        VStack (alignment: .center) {
             Text("루틴을 추가하고 삭제할 수 있어요")
                 .font(.title3)
                 .padding(.top, 32)
+            Text("과거의 루틴은 삭제가 불가능해요!\n루틴을 삭제할 경우 금일 기준으로 반영됩니다!")
+                .font(.subheadline)
+                .padding(.top, 5)
+                .multilineTextAlignment(.center)
 
             Spacer()
 

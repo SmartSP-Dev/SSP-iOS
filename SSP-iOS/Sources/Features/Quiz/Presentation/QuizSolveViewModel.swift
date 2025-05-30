@@ -71,8 +71,10 @@ final class QuizSolveViewModel: ObservableObject {
 
         do {
             let response = try await provider.request(.quizSubmit(body))
-            self.result = try response.map(SubmitQuizResponse.self)
-            self.isFinished = true
+            await MainActor.run {
+                self.result = result
+                self.isFinished = true
+            }
             print("퀴즈 제출 성공")
         } catch {
             print("퀴즈 제출 실패: \(error)")

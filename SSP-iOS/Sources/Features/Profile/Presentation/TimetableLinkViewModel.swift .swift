@@ -29,6 +29,7 @@ final class TimetableLinkViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         saveUseCase.executeRegister(link: rawLink) { [weak self] result in
+            print("executeRegister 응답 도착: \(result)")
             DispatchQueue.main.async {
                 self?.isLoading = false
                 switch result {

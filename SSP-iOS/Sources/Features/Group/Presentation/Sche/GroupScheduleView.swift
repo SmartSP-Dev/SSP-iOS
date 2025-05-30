@@ -47,6 +47,28 @@ struct GroupScheduleView: View {
                 onToggle: { viewModel.toggle($0) }
             )
 
+            HStack {
+                HStack(spacing: 4) {
+                    Rectangle()
+                        .fill(Color.blue.opacity(0.2))
+                        .frame(width: 12, height: 12)
+                        .cornerRadius(2)
+                    Text("에타 시간표")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+
+                HStack(spacing: 4) {
+                    Rectangle()
+                        .fill(Color.pink.opacity(0.2))
+                        .frame(width: 12, height: 12)
+                        .cornerRadius(2)
+                    Text("달력 일정")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
+
             Button("시간 저장하기") {
                 Task {
                     await viewModel.saveUserSchedule(groupKey: group.groupKey)
@@ -59,7 +81,7 @@ struct GroupScheduleView: View {
             .foregroundColor(.white)
             .cornerRadius(10)
         }
-        .padding(.horizontal, 10)
+        .padding()
         .navigationTitle("시간 선택")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

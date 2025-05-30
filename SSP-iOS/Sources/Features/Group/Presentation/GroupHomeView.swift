@@ -76,6 +76,18 @@ struct GroupHomeView: View {
             }
 
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    DIContainer.shared.makeAppRouter().goBack()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                    Text("Back")
+                        .foregroundColor(.black)
+                }
+            }
+        }
     }
 }
 

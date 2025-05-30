@@ -54,7 +54,7 @@ struct SlotGridView: View {
                     HStack(spacing: spacing) {
                         Text("\(hour)시")
                             .font(.caption2)
-                            .frame(width: timeLabelWidth, height: 32)
+                            .frame(width: timeLabelWidth, height: 28)
                             .background(Color.gray.opacity(0.15))
 
                         VStack(spacing: 1) {
@@ -74,7 +74,7 @@ struct SlotGridView: View {
                                                     }
                                             }
                                         }
-                                        .frame(width: max(cellWidth, 1), height: 16)
+                                        .frame(width: max(cellWidth, 1), height: 14)
                                         .onTapGesture {
                                             onToggle(slot)
                                         }
