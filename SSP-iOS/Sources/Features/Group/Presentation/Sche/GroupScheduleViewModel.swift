@@ -17,24 +17,28 @@ final class GroupScheduleViewModel: ObservableObject {
     @Published var selectedSlots: Set<TimeSlot> = []
     @Published var busyFromSchedule: Set<TimeSlot> = []
     @Published var busyFromEvent: Set<TimeSlot> = []
-
+    @Published var calendarSlots: Set<TimeSlot> = []
+    
     private let eventStore = EKEventStore()
 
     private let fetchUserScheduleUseCase: FetchUserScheduleUseCase
     private let saveUserScheduleUseCase: SaveUserScheduleUseCase
     private let fetchGroupTimetableUseCase: FetchGroupTimetableUseCase
+    private let timetableRepository: TimetableRepository
 
     // MARK: - Init
     init(
         group: ScheduleGroup,
         fetchUserScheduleUseCase: FetchUserScheduleUseCase,
         saveUserScheduleUseCase: SaveUserScheduleUseCase,
-        fetchGroupTimetableUseCase: FetchGroupTimetableUseCase
+        fetchGroupTimetableUseCase: FetchGroupTimetableUseCase,
+        timetableRepository: TimetableRepository
     ) {
         self.group = group
         self.fetchUserScheduleUseCase = fetchUserScheduleUseCase
         self.saveUserScheduleUseCase = saveUserScheduleUseCase
         self.fetchGroupTimetableUseCase = fetchGroupTimetableUseCase
+        self.timetableRepository = timetableRepository
     }
 
     // MARK: - API
@@ -150,6 +154,60 @@ final class GroupScheduleViewModel: ObservableObject {
         for event in events {
             print("[\(event.title ?? "제목없음")] \(event.startDate ?? Date()) ~ \(event.endDate ?? Date())")
         }
+    }
+    
+    func loadMyCalendarSchedule() async {
+        await withCheckedContinuation { continuation in
+            timetableRepository.fetchMyTimetable { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let scheduleDays):
+                        print("에타 시간표 수신: \(scheduleDays)")
+                        self?.calendarSlots = self?.convertScheduleDaysToTimeSlots(
+                            scheduleDays,
+                            referenceDate: self?.group.startDate ?? Date()
+                        ) ?? []
+                        print("변환된 calendarSlots: \(self?.calendarSlots ?? [])")
+
+                    case .failure(let error):
+                        print("에타 시간표 불러오기 실패: \(error)")
+                    }
+
+                    continuation.resume()
+                }
+            }
+        }
+    }
+
+    func convertScheduleDaysToTimeSlots(_ scheduleDays: [ScheduleDay], referenceDate: Date) -> Set<TimeSlot> {
+        var result: Set<TimeSlot> = []
+
+        // 한글 요일 → 영문 요일 매핑
+        let dayMap: [String: String] = [
+            "일": "SUN", "월": "MON", "화": "TUE", "수": "WED",
+            "목": "THU", "금": "FRI", "토": "SAT"
+        ]
+
+        for day in scheduleDays {
+            guard let englishDay = dayMap[day.timePoint],  // 한글 → 영문 변환
+                  let baseDate = referenceDate.getDateOfWeek(dayOfWeek: englishDay) else {
+                continue
+            }
+
+            for subject in day.subjects {
+                for time in subject.times {
+                    let parts = time.split(separator: ":")
+                    guard parts.count == 2,
+                          let hour = Int(parts[0]),
+                          let minute = Int(parts[1]) else { continue }
+
+                    let slot = TimeSlot(date: baseDate, hour: hour, minute: minute)
+                    result.insert(slot)
+                }
+            }
+        }
+
+        return result
     }
 
     // MARK: - Helpers

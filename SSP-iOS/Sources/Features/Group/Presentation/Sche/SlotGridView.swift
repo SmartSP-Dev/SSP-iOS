@@ -13,8 +13,9 @@ struct SlotGridView: View {
     let selectedSlots: Set<TimeSlot>
     let busyFromSchedule: Set<TimeSlot>
     let busyFromEvent: Set<TimeSlot>
+    let busyFromCalendar: Set<TimeSlot>
     let onToggle: (TimeSlot) -> Void
-
+    
     @GestureState private var isDragging = false
     @State private var dragLocation: CGPoint? = nil
     @State private var isErasing: Bool? = nil
@@ -123,6 +124,8 @@ struct SlotGridView: View {
     private func color(for slot: TimeSlot) -> Color {
         if selectedSlots.contains(slot) {
             return .black.opacity(0.7)
+        } else if busyFromCalendar.contains(slot) {
+            return .blue.opacity(0.2)  
         } else if busyFromEvent.contains(slot) {
             return .pink.opacity(0.2)
         } else if busyFromSchedule.contains(slot) {
@@ -131,6 +134,7 @@ struct SlotGridView: View {
             return .gray.opacity(0.1)
         }
     }
+
 
     private static let dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -145,23 +149,4 @@ struct SlotGridView: View {
         df.dateFormat = "E"
         return df
     }()
-}
-
-// MARK: - Preview
-
-#Preview {
-    let calendar = Calendar.current
-    let today = Date()
-    let startOfWeek = calendar.date(byAdding: .day, value: -(calendar.component(.weekday, from: today) - 2), to: today)!
-    let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-    let weekDates = (0...6).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: startOfWeek) }
-
-    return SlotGridView(
-        weekDates: weekDates,
-        hours: Array(8...22),
-        selectedSlots: [],
-        busyFromSchedule: [],
-        busyFromEvent: [],
-        onToggle: { _ in }
-    )
 }

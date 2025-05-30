@@ -41,8 +41,9 @@ struct GroupScheduleView: View {
                 weekDates: weekDates,
                 hours: hours,
                 selectedSlots: viewModel.selectedSlots,
-                busyFromSchedule: [], // 명시적으로 비워도 됨
+                busyFromSchedule: [],
                 busyFromEvent: viewModel.busyFromEvent,
+                busyFromCalendar: viewModel.calendarSlots,
                 onToggle: { viewModel.toggle($0) }
             )
 
@@ -65,6 +66,7 @@ struct GroupScheduleView: View {
             Task {
                 viewModel.fetchCalendarEvents()
                 await viewModel.fetchUserSchedule(groupKey: group.groupKey)
+                await viewModel.loadMyCalendarSchedule()
             }
         }
     }

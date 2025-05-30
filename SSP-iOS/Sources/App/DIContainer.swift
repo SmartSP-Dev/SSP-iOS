@@ -197,7 +197,8 @@ final class DIContainer: ObservableObject {
             group: group,
             fetchUserScheduleUseCase: fetchUserScheduleUseCase,
             saveUserScheduleUseCase: saveUserScheduleUseCase,
-            fetchGroupTimetableUseCase: fetchGroupTimetableUseCase
+            fetchGroupTimetableUseCase: fetchGroupTimetableUseCase,
+            timetableRepository: timetableRepository
         )
     }    
 }
