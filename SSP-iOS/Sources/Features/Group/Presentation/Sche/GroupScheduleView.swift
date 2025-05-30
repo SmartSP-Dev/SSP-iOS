@@ -68,7 +68,9 @@ struct GroupScheduleView: View {
                         .foregroundColor(.gray)
                 }
             }
-
+            
+            Spacer()
+            
             Button("시간 저장하기") {
                 Task {
                     await viewModel.saveUserSchedule(groupKey: group.groupKey)

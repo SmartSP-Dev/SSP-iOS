@@ -118,7 +118,7 @@ struct SlotGridView: View {
                     }
             )
         }
-        .frame(height: 550)
+        .frame(height: 500)
     }
 
     private func color(for slot: TimeSlot) -> Color {
@@ -134,7 +134,6 @@ struct SlotGridView: View {
             return .gray.opacity(0.1)
         }
     }
-
 
     private static let dateFormatter: DateFormatter = {
         let df = DateFormatter()

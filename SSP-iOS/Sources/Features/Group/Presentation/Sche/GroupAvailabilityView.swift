@@ -48,6 +48,8 @@ struct GroupAvailabilityView: View {
                 slotCountMap: viewModel.slotCountMap
             )
 
+            Spacer()
+            
             Button("내 시간 수정하기") {
                 isEditingSchedule = true
             }
@@ -123,7 +125,7 @@ struct ScheduleSlotGrid: View {
             }
             
         }
-        .frame(height: 550)
+        .frame(height: 500)
     }
 
     private func grayFor(count: Int) -> Color {
