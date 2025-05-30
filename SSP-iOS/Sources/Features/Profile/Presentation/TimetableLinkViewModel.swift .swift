@@ -34,6 +34,9 @@ final class TimetableLinkViewModel: ObservableObject {
                 switch result {
                 case .success:
                     print("링크 저장 성공")
+                    Task {
+                        await self?.fetchMyTimetable()
+                    }
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }

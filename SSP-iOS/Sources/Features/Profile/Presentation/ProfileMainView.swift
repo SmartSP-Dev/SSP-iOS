@@ -131,6 +131,14 @@ struct ProfileMainView: View {
                 )
                 .zIndex(2)
             }
+            
+            if timetableViewModel.isLoading {
+                Color.black.opacity(0.3).ignoresSafeArea()
+                ProgressView("데이터 불러오는 중...")
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(12)
+            }
         }
         .onAppear {
             Task {

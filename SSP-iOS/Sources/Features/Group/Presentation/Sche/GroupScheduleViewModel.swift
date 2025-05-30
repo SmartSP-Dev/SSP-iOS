@@ -53,7 +53,7 @@ final class GroupScheduleViewModel: ObservableObject {
                 })
             }
         } catch {
-            print("❌ 그룹 시간표 불러오기 실패:", error)
+            print("그룹 시간표 불러오기 실패:", error)
         }
     }
 
@@ -73,12 +73,12 @@ final class GroupScheduleViewModel: ObservableObject {
     func saveUserSchedule(groupKey: String?) async {
         guard let groupKey else { return }
         let blocks = selectedSlots.map { UserTimeBlockDTO(from: $0) }
-        print("📤 저장 요청 바디: \(blocks)")
+        print("저장 요청 바디: \(blocks)")
         do {
             try await saveUserScheduleUseCase.execute(groupKey: groupKey, blocks: blocks)
-            print("✅ 시간표 저장 성공")
+            print("시간표 저장 성공")
         } catch {
-            print("❌ 시간표 저장 실패:", error)
+            print("시간표 저장 실패:", error)
         }
     }
 
