@@ -99,6 +99,11 @@ final class DIContainer: ObservableObject {
 
     private lazy var createGroupUseCase = DefaultCreateGroupUseCase(repository: groupRepository)
     private lazy var joinGroupUseCase = DefaultJoinGroupUseCase(repository: groupRepository)
+    
+    private lazy var fetchUserScheduleUseCase = DefaultFetchUserScheduleUseCase(repository: groupRepository)
+    private lazy var saveUserScheduleUseCase = DefaultSaveUserScheduleUseCase(repository: groupRepository)
+
+    private lazy var fetchGroupTimetableUseCase = DefaultFetchGroupTimetableUseCase(repository: groupRepository)
 
     // MARK: - ViewModel Factory
 
@@ -185,4 +190,14 @@ final class DIContainer: ObservableObject {
     func makeCreateGroupUseCase() -> CreateGroupUseCase {
         return createGroupUseCase
     }
+    
+    @MainActor
+    func makeGroupScheduleViewModel(group: ScheduleGroup) -> GroupScheduleViewModel {
+        GroupScheduleViewModel(
+            group: group,
+            fetchUserScheduleUseCase: fetchUserScheduleUseCase,
+            saveUserScheduleUseCase: saveUserScheduleUseCase,
+            fetchGroupTimetableUseCase: fetchGroupTimetableUseCase
+        )
+    }    
 }

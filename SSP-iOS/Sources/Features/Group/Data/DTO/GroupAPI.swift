@@ -14,14 +14,16 @@ enum GroupAPI {
     case fetchGroupMembers(groupKey: String)
     case fetchGroupTimetable(groupKey: String)
     case joinGroup(groupKey: String)
-
+    case fetchUserSchedule(groupKey: String)
+    case saveUserSchedule(groupKey: String, timeBlocks: [UserTimeBlockDTO])
 }
+
 
 extension GroupAPI: TargetType {
     var baseURL: URL {
         return URL(string: "https://leeyj.xyz")!
     }
-
+    
     var path: String {
         switch self {
         case .createGroup:
@@ -34,18 +36,22 @@ extension GroupAPI: TargetType {
             return "/when2meet/groups/\(groupKey)/timetable"
         case .joinGroup(let groupKey):
             return "/when2meet/groups/\(groupKey)/members"
+        case .fetchUserSchedule(let groupKey):
+            return "/when2meet/groups/\(groupKey)/usertimeblock"
+        case .saveUserSchedule(let groupKey, _):
+            return "/when2meet/groups/\(groupKey)/timetable"
         }
     }
-
+    
     var method: Moya.Method {
         switch self {
-        case .createGroup, .joinGroup:
+        case .createGroup, .joinGroup, .saveUserSchedule:
             return .post
-        case .fetchMyGroups, .fetchGroupMembers, .fetchGroupTimetable:
+        case .fetchMyGroups, .fetchGroupMembers, .fetchGroupTimetable, .fetchUserSchedule:
             return .get
         }
     }
-
+    
     var task: Task {
         switch self {
         case let .createGroup(startDate, endDate, groupName):
@@ -57,9 +63,12 @@ extension GroupAPI: TargetType {
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         case .fetchMyGroups, .fetchGroupMembers, .fetchGroupTimetable, .joinGroup:
             return .requestPlain
+        case .fetchUserSchedule:
+            return .requestPlain
+        case let .saveUserSchedule(_, timeBlocks):
+            return .requestJSONEncodable(["timeBlocks": timeBlocks])
         }
     }
-
     var headers: [String : String]? {
         var headers = ["Content-Type": "application/json"]
         if let token = KeychainManager.shared.accessToken, !token.isEmpty {
@@ -67,12 +76,13 @@ extension GroupAPI: TargetType {
         }
         return headers
     }
-
+    
     var validationType: ValidationType {
         return .successCodes
     }
-
+    
     var sampleData: Data {
         return Data()
     }
+    
 }

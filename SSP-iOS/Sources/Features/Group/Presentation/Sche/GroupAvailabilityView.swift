@@ -60,6 +60,11 @@ struct GroupAvailabilityView: View {
         .navigationDestination(isPresented: $isEditingSchedule) {
             GroupScheduleView(group: viewModel.group)
         }
+        .onAppear {
+            Task {
+                await viewModel.fetchTimetable()
+            }
+        }
     }
 }
 

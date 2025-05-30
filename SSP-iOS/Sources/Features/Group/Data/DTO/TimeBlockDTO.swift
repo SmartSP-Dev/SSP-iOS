@@ -7,6 +7,10 @@
 
 import Foundation
 
+struct TimeBlockResponseDTO: Decodable {
+    let timeBlocks: [TimeBlockDTO]
+}
+
 struct TimeBlockDTO: Decodable {
     let dayOfWeek: String // 예: "MON"
     let time: String      // 예: "08:00"

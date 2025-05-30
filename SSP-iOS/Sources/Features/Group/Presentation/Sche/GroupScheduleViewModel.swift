@@ -20,33 +20,63 @@ final class GroupScheduleViewModel: ObservableObject {
 
     private let eventStore = EKEventStore()
 
+    private let fetchUserScheduleUseCase: FetchUserScheduleUseCase
+    private let saveUserScheduleUseCase: SaveUserScheduleUseCase
+    private let fetchGroupTimetableUseCase: FetchGroupTimetableUseCase
+
     // MARK: - Init
-    init(group: ScheduleGroup) {
+    init(
+        group: ScheduleGroup,
+        fetchUserScheduleUseCase: FetchUserScheduleUseCase,
+        saveUserScheduleUseCase: SaveUserScheduleUseCase,
+        fetchGroupTimetableUseCase: FetchGroupTimetableUseCase
+    ) {
         self.group = group
-        fetchCalendarEvents()
+        self.fetchUserScheduleUseCase = fetchUserScheduleUseCase
+        self.saveUserScheduleUseCase = saveUserScheduleUseCase
+        self.fetchGroupTimetableUseCase = fetchGroupTimetableUseCase
     }
 
     // MARK: - API
 
-//    func loadTimeTable(from data: [WeekScheduleDTO]) {
-//        var result: Set<TimeSlot> = []
-//
-//        for daySchedule in data {
-//            guard let weekDayIndex = Self.weekdayIndex(for: daySchedule.timePoint),
-//                  let date = Calendar.current.date(byAdding: .day, value: weekDayIndex, to: group.startDate) else { continue }
-//
-//            for subject in daySchedule.subjects {
-//                for timeStr in subject.times {
-//                    if let hour = Self.extractHour(from: timeStr) {
-//                        let slot = TimeSlot(date: date, hour: hour)
-//                        result.insert(slot)
-//                    }
-//                }
-//            }
-//        }
-//
-//        busyFromSchedule = result
-//    }
+    func loadGroupSchedule() async {
+        do {
+            let groupSlots = try await fetchGroupTimetableUseCase.execute(groupKey: group.groupKey)
+            print("그룹 시간표 응답: \(groupSlots)")
+            DispatchQueue.main.async {
+                self.busyFromSchedule = Set(groupSlots.compactMap {
+                    $0.toTimeSlot(reference: self.group.startDate)
+                })
+            }
+        } catch {
+            print("❌ 그룹 시간표 불러오기 실패:", error)
+        }
+    }
+
+    func fetchUserSchedule(groupKey: String?) async {
+        guard let groupKey else { return }
+        do {
+            let blocks = try await fetchUserScheduleUseCase.execute(groupKey: groupKey)
+            print("내 시간표 응답: \(blocks)")
+            DispatchQueue.main.async {
+                self.selectedSlots = Set(blocks.compactMap { $0.toTimeSlot(reference: self.group.startDate) })
+            }
+        } catch {
+            print("내 시간표 불러오기 실패:", error)
+        }
+    }
+
+    func saveUserSchedule(groupKey: String?) async {
+        guard let groupKey else { return }
+        let blocks = selectedSlots.map { UserTimeBlockDTO(from: $0) }
+        print("📤 저장 요청 바디: \(blocks)")
+        do {
+            try await saveUserScheduleUseCase.execute(groupKey: groupKey, blocks: blocks)
+            print("✅ 시간표 저장 성공")
+        } catch {
+            print("❌ 시간표 저장 실패:", error)
+        }
+    }
 
     func toggle(_ slot: TimeSlot) {
         if selectedSlots.contains(slot) {
@@ -58,7 +88,7 @@ final class GroupScheduleViewModel: ObservableObject {
 
     // MARK: - EventKit (Calendar)
 
-    private func fetchCalendarEvents() {
+    func fetchCalendarEvents() {
         if #available(iOS 17, *) {
             eventStore.requestFullAccessToEvents(completion: { granted, _ in
                 self.handleAccess(granted: granted)

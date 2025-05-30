@@ -22,6 +22,8 @@ final class GroupAvailabilityViewModel: ObservableObject {
     func fetchTimetable() async {
         do {
             let blocks = try await groupRepository.fetchGroupTimetable(groupKey: group.groupKey)
+            print("✅ 그룹 전체 시간표 응답: \(blocks)")
+            
             var map: [TimeSlot: Int] = [:]
             for block in blocks {
                 if let slot = block.toTimeSlot(reference: group.startDate) {
@@ -30,7 +32,8 @@ final class GroupAvailabilityViewModel: ObservableObject {
             }
             self.slotCountMap = map
         } catch {
-            print("시간표 로딩 실패: \(error)")
+            print("❌ 그룹 전체 시간표 로딩 실패: \(error)")
         }
     }
+
 }

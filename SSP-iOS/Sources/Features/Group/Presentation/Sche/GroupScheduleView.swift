@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct GroupScheduleView: View {
+    let group: ScheduleGroup
     @StateObject private var viewModel: GroupScheduleViewModel
 
     private let hours = Array(8...22)
 
     init(group: ScheduleGroup) {
-        _viewModel = StateObject(wrappedValue: GroupScheduleViewModel(group: group))
+        self.group = group
+        _viewModel = StateObject(wrappedValue: DIContainer.shared.makeGroupScheduleViewModel(group: group))
     }
 
     private var weekDates: [Date] {
@@ -34,20 +36,21 @@ struct GroupScheduleView: View {
             Text(viewModel.group.dateRangeString)
                 .font(.caption)
                 .foregroundColor(.gray)
-            .onAppear {
-                print("📌 전달된 busyFromEvent 개수:", viewModel.busyFromEvent.count)
-            }
+
             SlotGridView(
                 weekDates: weekDates,
                 hours: hours,
                 selectedSlots: viewModel.selectedSlots,
-                busyFromSchedule: viewModel.busyFromSchedule,
+                busyFromSchedule: [], // 명시적으로 비워도 됨
                 busyFromEvent: viewModel.busyFromEvent,
                 onToggle: { viewModel.toggle($0) }
             )
 
             Button("시간 저장하기") {
-                print("선택된 시간: \(viewModel.selectedSlots)")
+                Task {
+                    await viewModel.saveUserSchedule(groupKey: group.groupKey)
+
+                }
             }
             .padding()
             .frame(maxWidth: .infinity)
@@ -58,7 +61,12 @@ struct GroupScheduleView: View {
         .padding(.horizontal, 10)
         .navigationTitle("시간 선택")
         .navigationBarTitleDisplayMode(.inline)
-
+        .onAppear {
+            Task {
+                viewModel.fetchCalendarEvents()
+                await viewModel.fetchUserSchedule(groupKey: group.groupKey)
+            }
+        }
     }
 }
 

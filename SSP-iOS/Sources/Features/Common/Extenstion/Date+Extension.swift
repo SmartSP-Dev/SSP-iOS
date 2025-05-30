@@ -40,7 +40,24 @@ extension Date {
         let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
         return (startOfWeek, endOfWeek)
     }
+    
+    func toDayOfWeekString() -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "E"
+            formatter.locale = Locale(identifier: "en_US_POSIX")
 
+            let weekday = formatter.string(from: self).uppercased()
+            switch weekday {
+            case "SUN": return "SUN"
+            case "MON": return "MON"
+            case "TUE": return "TUE"
+            case "WED": return "WED"
+            case "THU": return "THU"
+            case "FRI": return "FRI"
+            case "SAT": return "SAT"
+            default: return "MON"
+            }
+        }
 }
 
 extension Int {
@@ -64,3 +81,22 @@ extension String {
     }
 }
 
+extension Date {
+    func getDateOfWeek(dayOfWeek: String) -> Date? {
+        let calendar = Calendar.current
+        guard let weekdayIndex = Self.dayOfWeekIndex(for: dayOfWeek.uppercased()) else {
+            return nil
+        }
+
+        let currentWeekday = calendar.component(.weekday, from: self)
+
+        // 몇 일 차이나는지 계산
+        let difference = weekdayIndex - currentWeekday
+        return calendar.date(byAdding: .day, value: difference, to: self)
+    }
+
+    private static func dayOfWeekIndex(for day: String) -> Int? {
+        let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+        return days.firstIndex(of: day).map { $0 + 1 }  // Sunday = 1 in iOS
+    }
+}

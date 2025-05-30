@@ -44,7 +44,20 @@ final class GroupRepositoryImpl: GroupRepository {
 
     func fetchGroupTimetable(groupKey: String) async throws -> [TimeBlockDTO] {
         let response = try await provider.request(.fetchGroupTimetable(groupKey: groupKey))
-        return try response.map([TimeBlockDTO].self)
+        let decoded = try response.map(TimeBlockResponseDTO.self)
+        print("그룹 시간표 응답 디코딩 완료: \(decoded.timeBlocks)")
+        return decoded.timeBlocks
+    }
+    
+    func fetchUserSchedule(groupKey: String) async throws -> [UserTimeBlockDTO] {
+        let response = try await provider.request(.fetchUserSchedule(groupKey: groupKey))
+        return try response.map(UserTimeBlockResponseDTO.self).timeBlocks
+    }
+
+    func saveUserSchedule(groupKey: String, timeBlocks: [UserTimeBlockDTO]) async throws {
+        let requestBody = timeBlocks
+        print(">>> timeBlocks JSON to be sent: \(requestBody)")
+        _ = try await provider.request(.saveUserSchedule(groupKey: groupKey, timeBlocks: requestBody))
     }
 
 }

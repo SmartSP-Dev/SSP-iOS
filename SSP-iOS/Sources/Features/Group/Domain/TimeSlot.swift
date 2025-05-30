@@ -31,3 +31,20 @@ struct TimeSlot: Hashable {
         hasher.combine(minute)
     }
 }
+
+extension TimeSlot {
+    func toTimeBlockDict() -> [String: String] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E" // e.g., "Mon"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+
+        let weekday = Calendar.current.component(.weekday, from: date)
+        let dayOfWeek = ["SUN","MON","TUE","WED","THU","FRI","SAT"][weekday - 1]
+        let timeString = String(format: "%02d:%02d", hour, minute)
+
+        return [
+            "dayOfWeek": dayOfWeek,
+            "time": timeString
+        ]
+    }
+}
