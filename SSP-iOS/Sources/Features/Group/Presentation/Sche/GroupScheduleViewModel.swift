@@ -162,7 +162,6 @@ final class GroupScheduleViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let scheduleDays):
-                        print("에타 시간표 수신: \(scheduleDays)")
                         self?.calendarSlots = self?.convertScheduleDaysToTimeSlots(
                             scheduleDays,
                             referenceDate: self?.group.startDate ?? Date()

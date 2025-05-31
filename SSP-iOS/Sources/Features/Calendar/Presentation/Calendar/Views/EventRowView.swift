@@ -33,7 +33,7 @@ struct EventRowView: View {
 
                     Text(event.title)
                         .font(.PretendardSemiBold16)
-                        .foregroundStyle(Color("mainColor800"))
+                        .foregroundStyle(Color.black)
                 }
 
                 Spacer()
@@ -41,7 +41,7 @@ struct EventRowView: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color("mainColor800").opacity(0.3), lineWidth: 1)
+                    .stroke(Color.black.opacity(0.3), lineWidth: 1)
             )
             .contentShape(Rectangle())
             .padding(.horizontal)

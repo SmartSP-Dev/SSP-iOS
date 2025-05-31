@@ -21,7 +21,7 @@ struct CalendarMonthHeader: View {
 
             Text(viewModel.currentMonth, formatter: monthOnlyFormatter)
                 .font(.PretendardBold24)
-                .foregroundStyle(Color("mainColor800"))
+                .foregroundStyle(Color.black)
 
             Button(action: { viewModel.changeMonth(by: 1) }) {
                 Image(systemName: "chevron.right")
@@ -42,7 +42,7 @@ struct CalendarMonthHeader: View {
             } label: {
                 Image(systemName: "plus.circle")
                     .font(.title2)
-                    .foregroundStyle(Color("mainColor800"))
+                    .foregroundStyle(Color.black)
             }
             .sheet(isPresented: $showEventEditor, onDismiss: {
                 viewModel.requestCalendarAccessAndLoadEvents()
@@ -54,7 +54,7 @@ struct CalendarMonthHeader: View {
             } label: {
                 Image(systemName: "person.3.sequence")
                     .font(.title2)
-                    .foregroundStyle(Color("mainColor800"))
+                    .foregroundStyle(Color.black)
                     .padding(.leading, 4)
             }
         }

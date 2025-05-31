@@ -32,7 +32,7 @@ struct CalendarMainBody: View {
                 Text(symbol)
                     .font(.PretendardMedium16)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color("mainColor800"))
+                    .foregroundStyle(Color.black)
             }
         }
         .padding(.horizontal, 2)
@@ -81,7 +81,7 @@ struct CalendarMainBody: View {
             /// 날짜
             Text(date.formattedFullDateKorean())
                 .font(.headline)
-                .foregroundStyle(Color("mainColor800"))
+                .foregroundStyle(Color.black)
                 .padding(.horizontal)
 
             /// 일정

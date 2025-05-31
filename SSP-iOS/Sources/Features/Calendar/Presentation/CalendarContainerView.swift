@@ -25,7 +25,7 @@ struct CalendarContainerView: View {
 
             // MARK: - 탭 하단 구분선
             Rectangle()
-                .fill(Color("mainColor800").opacity(0.2))
+                .fill(Color.black.opacity(0.2))
                 .frame(height: 5)
 
             // MARK: - 탭에 따른 본문 콘텐츠 뷰 전환
@@ -68,7 +68,7 @@ struct CustomTabBar: View {
                 let tabWidth = geometry.size.width / CGFloat(tabs.count)
 
                 Rectangle()
-                    .fill(Color("mainColor800")) // 메인 테마 색상
+                    .fill(Color.black) // 메인 테마 색상
                     .frame(width: tabWidth * 0.6, height: 4)
                     .cornerRadius(2)
                     .offset(x: tabOffset(for: selectedTab, totalWidth: geometry.size.width))
@@ -87,7 +87,7 @@ struct CustomTabBar: View {
             Text(title)
                 .font(.PretendardBold20)
                 .fontWeight(selected ? .bold : .regular)
-                .foregroundColor(selected ? Color("mainColor800") : Color("mainColor400"))
+                .foregroundColor(selected ? Color.black : Color.black.opacity(0.2))
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 2)
