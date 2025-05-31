@@ -5,7 +5,8 @@ import KakaoSDKAuth
 @main
 struct SSPIOSApp: App {
     @StateObject private var loginViewModel = DIContainer.shared.makeLoginViewModel()
-
+    private let appRouter = DIContainer.shared.makeAppRouter()
+    
     init() {
         if let kakaoKey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_API_KEY") as? String {
             KakaoSDK.initSDK(appKey: kakaoKey)
@@ -17,6 +18,7 @@ struct SSPIOSApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(loginViewModel: loginViewModel)
+                .environmentObject(appRouter)
                 .onOpenURL { url in
                     // 카카오톡 앱으로부터 돌아올 때 URL 처리
                     if AuthApi.isKakaoTalkLoginUrl(url) {

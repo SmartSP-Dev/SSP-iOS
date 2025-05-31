@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct GroupAvailabilityView: View {
+    @EnvironmentObject var router: NavigationRouter
     @StateObject private var viewModel: GroupAvailabilityViewModel
     @State private var showEdit = false
     @State private var isEditingSchedule = false
@@ -51,7 +52,7 @@ struct GroupAvailabilityView: View {
             Spacer()
             
             Button("내 시간 수정하기") {
-                isEditingSchedule = true
+                router.navigate(to: .groupSchedule(group: viewModel.group))
             }
             .padding()
             .frame(maxWidth: .infinity)
@@ -59,12 +60,22 @@ struct GroupAvailabilityView: View {
             .cornerRadius(10)
         }
         .padding()
-        .navigationDestination(isPresented: $isEditingSchedule) {
-            GroupScheduleView(group: viewModel.group)
-        }
         .onAppear {
             Task {
                 await viewModel.fetchTimetable()
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    router.goBack()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                    Text("Back")
+                        .foregroundColor(.black)
+                }
             }
         }
     }

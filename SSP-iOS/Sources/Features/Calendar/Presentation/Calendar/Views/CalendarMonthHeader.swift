@@ -60,6 +60,7 @@ struct CalendarMonthHeader: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        .padding(.top, 10)
     }
 
     private var monthOnlyFormatter: DateFormatter {

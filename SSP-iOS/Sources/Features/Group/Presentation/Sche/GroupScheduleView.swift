@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct GroupScheduleView: View {
+    @EnvironmentObject var router: NavigationRouter
     let group: ScheduleGroup
     @StateObject private var viewModel: GroupScheduleViewModel
 
@@ -91,6 +92,19 @@ struct GroupScheduleView: View {
                 viewModel.fetchCalendarEvents()
                 await viewModel.fetchUserSchedule(groupKey: group.groupKey)
                 await viewModel.loadMyCalendarSchedule()
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    router.goBack()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                    Text("Back")
+                        .foregroundColor(.black)
+                }
             }
         }
     }

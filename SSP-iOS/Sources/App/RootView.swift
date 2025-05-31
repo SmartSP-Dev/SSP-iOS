@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     @ObservedObject var loginViewModel: LoginViewModel
-    @StateObject private var appRouter = DIContainer.shared.makeAppRouter()
+    @EnvironmentObject var appRouter: NavigationRouter
 
     var body: some View {
         NavigationStack(path: $appRouter.path) {
@@ -49,6 +49,10 @@ struct RootView: View {
                     )
                 case .quizResult(let id):
                     QuizResultView(quizId: id)
+                case .groupAvailability(let group):
+                    GroupAvailabilityView(group: group)
+                case .groupSchedule(let group):
+                    GroupScheduleView(group: group)
                 default:
                     EmptyView()
                 }

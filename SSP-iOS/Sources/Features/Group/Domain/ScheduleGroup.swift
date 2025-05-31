@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ScheduleGroup: Identifiable {
+struct ScheduleGroup: Identifiable, Equatable, Hashable {
     let id = UUID()
     let name: String
     let startDate: Date
