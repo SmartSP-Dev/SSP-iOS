@@ -16,6 +16,7 @@ enum GroupAPI {
     case joinGroup(groupKey: String)
     case fetchUserSchedule(groupKey: String)
     case saveUserSchedule(groupKey: String, timeBlocks: [UserTimeBlockDTO])
+    case getWeightAndMembers(groupKey: String, dayOfWeek: String, time: String)
 }
 
 
@@ -40,12 +41,14 @@ extension GroupAPI: TargetType {
             return "/when2meet/groups/\(groupKey)/usertimeblock"
         case .saveUserSchedule(let groupKey, _):
             return "/when2meet/groups/\(groupKey)/timetable"
+        case let .getWeightAndMembers(groupKey, _, _):
+            return "/when2meet/groups/\(groupKey)/timetable/weightAndMembers"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .createGroup, .joinGroup, .saveUserSchedule:
+        case .createGroup, .joinGroup, .saveUserSchedule, .getWeightAndMembers:
             return .post
         case .fetchMyGroups, .fetchGroupMembers, .fetchGroupTimetable, .fetchUserSchedule:
             return .get
@@ -67,8 +70,14 @@ extension GroupAPI: TargetType {
             return .requestPlain
         case let .saveUserSchedule(_, timeBlocks):
             return .requestJSONEncodable(["timeBlocks": timeBlocks])
+        case let .getWeightAndMembers(_, dayOfWeek, time):
+            return .requestParameters(
+                parameters: ["dayOfWeek": dayOfWeek, "time": time],
+                encoding: JSONEncoding.default
+            )
         }
     }
+    
     var headers: [String : String]? {
         var headers = ["Content-Type": "application/json"]
         if let token = KeychainManager.shared.accessToken, !token.isEmpty {

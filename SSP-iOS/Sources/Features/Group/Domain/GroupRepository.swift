@@ -15,4 +15,5 @@ protocol GroupRepository {
     func fetchGroupTimetable(groupKey: String) async throws -> [TimeBlockDTO]
     func fetchUserSchedule(groupKey: String) async throws -> [UserTimeBlockDTO]
     func saveUserSchedule(groupKey: String, timeBlocks: [UserTimeBlockDTO]) async throws
+    func fetchWeightAndMembers(groupKey: String, dayOfWeek: String, time: String) async throws -> (weight: Int, members: [String])
 }

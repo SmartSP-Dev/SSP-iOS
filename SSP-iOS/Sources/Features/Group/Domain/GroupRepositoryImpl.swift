@@ -60,4 +60,9 @@ final class GroupRepositoryImpl: GroupRepository {
         _ = try await provider.request(.saveUserSchedule(groupKey: groupKey, timeBlocks: requestBody))
     }
 
+    func fetchWeightAndMembers(groupKey: String, dayOfWeek: String, time: String) async throws -> (weight: Int, members: [String]) {
+           let response = try await provider.request(.getWeightAndMembers(groupKey: groupKey, dayOfWeek: dayOfWeek, time: time))
+           let decoded = try JSONDecoder().decode(WeightAndMembersResponse.self, from: response.data)
+           return (decoded.weight, decoded.members)
+       }
 }

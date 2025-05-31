@@ -105,6 +105,8 @@ final class DIContainer: ObservableObject {
 
     private lazy var fetchGroupTimetableUseCase = DefaultFetchGroupTimetableUseCase(repository: groupRepository)
 
+    private lazy var fetchWeightAndMembersUseCase = DefaultFetchWeightAndMembersUseCase(repository: groupRepository)
+
     // MARK: - ViewModel Factory
 
     /// 로그인 뷰모델 생성
@@ -200,5 +202,18 @@ final class DIContainer: ObservableObject {
             fetchGroupTimetableUseCase: fetchGroupTimetableUseCase,
             timetableRepository: timetableRepository
         )
-    }    
+    }
+    
+    @MainActor
+    func makeGroupAvailabilityViewModel(group: ScheduleGroup) -> GroupAvailabilityViewModel {
+        GroupAvailabilityViewModel(
+            group: group,
+            fetchWeightAndMembersUseCase: fetchWeightAndMembersUseCase, groupRepository: groupRepository
+        )
+    }
+    
+    @MainActor
+    func makeFetchWeightAndMembersUseCase() -> FetchWeightAndMembersUseCase {
+        return fetchWeightAndMembersUseCase
+    }
 }
