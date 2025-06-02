@@ -20,10 +20,11 @@ struct GroupCreateSheet: View {
             Text("만날 날짜를 지정해주세요!")
                 .font(.headline)
 
-            Text("선택한 날짜가 포함된 일주일이 약속 기간으로 설정됩니다!")
+            Text("선택한 날짜가 포함된 일주일이\n약속 기간으로 설정됩니다!")
                 .font(.caption)
-                .foregroundColor(.blue)
+                .foregroundColor(.black)
                 .padding(.horizontal)
+                .multilineTextAlignment(.center)
 
             DatePicker("날짜 선택", selection: $selectedDate, displayedComponents: .date)
                 .datePickerStyle(.compact)
@@ -32,18 +33,21 @@ struct GroupCreateSheet: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
 
-            Button("확인") {
+            Button(action: {
                 let (startOfWeek, endOfWeek) = selectedDate.weekBounds()
                 let name = groupName.isEmpty ? "이름 없는 약속" : groupName
 
                 onCreate(startOfWeek, endOfWeek, name)
                 dismiss()
+            }) {
+                Text("확인")
+                    .foregroundStyle(Color.white)
+                
             }
-
             .padding(.horizontal)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity)
-            .background(Color.gray.opacity(0.2))
+            .background(Color.black.opacity(0.7))
             .cornerRadius(8)
         }
         .padding()

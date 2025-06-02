@@ -22,16 +22,19 @@ struct GroupJoinSheet: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
 
-            Button("확인") {
+            Button(action: {
                 guard !groupCode.isEmpty else { return }
                 onJoin(groupCode)
-                dismiss()
+            }) {
+                Text("확인")
+                    .foregroundStyle(Color.white)
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity)
-            .background(Color.gray.opacity(0.2))
+            .background(Color.black.opacity(0.7))
             .cornerRadius(8)
+            
         }
         .padding()
     }
