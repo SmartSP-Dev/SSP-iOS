@@ -11,7 +11,9 @@ struct GroupScheduleView: View {
     @EnvironmentObject var router: NavigationRouter
     let group: ScheduleGroup
     @StateObject private var viewModel: GroupScheduleViewModel
-
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
     private let hours = Array(8...22)
 
     init(group: ScheduleGroup) {
@@ -87,6 +89,9 @@ struct GroupScheduleView: View {
             .background(Color.black.opacity(0.7))
             .foregroundColor(.white)
             .cornerRadius(10)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertMessage))
+            }
         }
         .padding()
         .navigationTitle("시간 선택")
@@ -110,6 +115,10 @@ struct GroupScheduleView: View {
                         .foregroundColor(.black.opacity(0.7))
                 }
             }
+        }
+        .onReceive(viewModel.$isSaveSuccess.compactMap { $0 }) { isSuccess in
+            alertMessage = isSuccess ? "시간이 저장되었어요!" : "시간 저장에 실패했어요. 다시 시도해주세요."
+            showAlert = true
         }
     }
 }

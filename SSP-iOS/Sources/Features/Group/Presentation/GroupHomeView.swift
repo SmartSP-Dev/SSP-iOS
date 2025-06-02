@@ -17,11 +17,12 @@ struct GroupHomeView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 16) {
-                HStack {
-                    Text("친구들과 약속을 잡아보세요!")
-                        .font(.PretendardBold24)
-                    Image(systemName: "info.circle")
-                }
+                Text("친구들과 약속을 함께 정해보세요!")
+                    .font(.PretendardBold24)
+
+                Text("참여 코드를 공유해 약속을 쉽게 정할 수 있어요.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.black)
 
                 HStack(spacing: 12) {
                     Button("그룹 참여하기") {
@@ -42,7 +43,7 @@ struct GroupHomeView: View {
                         VStack(alignment: .leading) {
                             Text(group.groupName)
                                 .font(.headline)
-                            Text("Group Key: \(group.groupKey)")
+                            Text("참여 코드: \(group.groupKey)")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }

@@ -18,6 +18,7 @@ final class GroupScheduleViewModel: ObservableObject {
     @Published var busyFromSchedule: Set<TimeSlot> = []
     @Published var busyFromEvent: Set<TimeSlot> = []
     @Published var calendarSlots: Set<TimeSlot> = []
+    @Published var isSaveSuccess: Bool? = nil
     
     private let eventStore = EKEventStore()
 
@@ -79,11 +80,17 @@ final class GroupScheduleViewModel: ObservableObject {
         do {
             try await saveUserScheduleUseCase.execute(groupKey: groupKey, blocks: blocks)
             print("시간표 저장 성공")
+            DispatchQueue.main.async {
+                self.isSaveSuccess = true
+            }
         } catch {
             print("시간표 저장 실패:", error)
+            DispatchQueue.main.async {
+                self.isSaveSuccess = false
+            }
         }
     }
-
+    
     func toggle(_ slot: TimeSlot) {
         if selectedSlots.contains(slot) {
             selectedSlots.remove(slot)
