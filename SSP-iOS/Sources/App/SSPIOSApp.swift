@@ -13,6 +13,15 @@ struct SSPIOSApp: App {
         } else {
             fatalError("Kakao Native App Key가 설정되지 않았습니다.")
         }
+        
+        AlarmNotificationManager.shared.requestPermission()
+
+        if UserDefaults.standard.bool(forKey: AlarmKeys.routine) {
+            AlarmNotificationManager.shared.scheduleRoutineAlarm()
+        }
+        if UserDefaults.standard.bool(forKey: AlarmKeys.quiz) {
+            AlarmNotificationManager.shared.scheduleQuizAlarm()
+        }
     }
 
     var body: some Scene {

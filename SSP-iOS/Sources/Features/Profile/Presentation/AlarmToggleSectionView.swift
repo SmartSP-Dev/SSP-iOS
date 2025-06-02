@@ -18,8 +18,25 @@ struct AlarmToggleSectionView: View {
 
             Toggle("루틴 알람 설정", isOn: $isRoutineAlarmOn)
                 .tint(.black.opacity(0.7))
+                .onChange(of: isRoutineAlarmOn) { oldValue, newValue in
+                    UserDefaults.standard.set(newValue, forKey: AlarmKeys.routine)
+                    if newValue {
+                        AlarmNotificationManager.shared.scheduleRoutineAlarm()
+                    } else {
+                        AlarmNotificationManager.shared.cancelRoutineAlarm()
+                    }
+                }
+
             Toggle("퀴즈 복습 알람 설정", isOn: $isQuizAlarmOn)
                 .tint(.black.opacity(0.7))
+                .onChange(of: isQuizAlarmOn) { oldValue, newValue in
+                    UserDefaults.standard.set(newValue, forKey: AlarmKeys.quiz)
+                    if newValue {
+                        AlarmNotificationManager.shared.scheduleQuizAlarm()
+                    } else {
+                        AlarmNotificationManager.shared.cancelQuizAlarm()
+                    }
+                }
         }
         .padding()
         .background(Color.white)
@@ -27,12 +44,3 @@ struct AlarmToggleSectionView: View {
     }
 }
 
-#Preview {
-    @State var isRoutineAlarmOn = true
-    @State var isQuizAlarmOn = true
-
-    return AlarmToggleSectionView(
-        isRoutineAlarmOn: $isRoutineAlarmOn,
-        isQuizAlarmOn: $isQuizAlarmOn
-    )
-}

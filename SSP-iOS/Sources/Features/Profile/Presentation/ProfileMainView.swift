@@ -15,8 +15,8 @@ struct ProfileMainView: View {
     @State private var rawTimetableLink: String = ""
     @State private var myTimetableLink: String? = nil
     @State private var isLinkEditPresented: Bool = false
-    @State private var isRoutineAlarmOn = true
-    @State private var isQuizAlarmOn = false
+    @State private var isRoutineAlarmOn = UserDefaults.standard.bool(forKey: AlarmKeys.routine)
+    @State private var isQuizAlarmOn = UserDefaults.standard.bool(forKey: AlarmKeys.quiz)
     @State private var isProfileEditPresented: Bool = false
 
     @State private var isLogoutAlertPresented = false
