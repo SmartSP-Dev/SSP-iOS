@@ -66,9 +66,9 @@ struct QuizSolveView: View {
                     }
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                     Text("Back")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                 }
             }
         }
@@ -163,7 +163,7 @@ struct QuizSolveView: View {
                 .bold()
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.black)
+                .background(Color.black.opacity(0.7))
                 .foregroundColor(.white)
                 .cornerRadius(12)
         }
@@ -183,7 +183,7 @@ struct QuizSolveView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.black)
+                .background(Color.black.opacity(0.7))
                 .foregroundColor(.white)
                 .cornerRadius(12)
             }

@@ -39,9 +39,9 @@ struct QuizResultView: View {
                     DIContainer.shared.makeAppRouter().goBack()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                     Text("Back")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                 }
             }
         }

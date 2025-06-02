@@ -27,7 +27,7 @@ struct CalendarDayCellView: View {
                 if isToday {
                     // 오늘 날짜: 배경에 메인컬러 원, 텍스트는 흰색
                     Circle()
-                        .fill(Color.black)
+                        .fill(Color.black.opacity(0.7))
                         .frame(width: 23, height: 23)
                     
                     Text("\(Calendar.current.component(.day, from: date))")
@@ -41,13 +41,13 @@ struct CalendarDayCellView: View {
 
                     Text("\(Calendar.current.component(.day, from: date))")
                         .font(.PretendardRegular13)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.black.opacity(0.7))
                 }
                 else {
                     // 일반 날짜
                     Text("\(Calendar.current.component(.day, from: date))")
                         .font(.PretendardRegular13)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.black.opacity(0.7))
                 }
             }
             .frame(height: 23)

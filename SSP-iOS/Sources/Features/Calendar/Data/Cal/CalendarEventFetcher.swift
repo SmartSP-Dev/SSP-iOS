@@ -50,7 +50,7 @@ final class CalendarEventFetcher {
                 id: UUID(),
                 date: $0.startDate,
                 title: $0.title,
-                color: Color.black,
+                color: Color.black.opacity(0.7),
                 startDate: $0.startDate,
                 endDate: $0.endDate,
                 isAllDay: $0.isAllDay,

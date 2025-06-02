@@ -122,7 +122,7 @@ struct StudyView: View {
         HStack(spacing: 4) {
             Text("오늘도 활기차게 공부를 시작해볼까요?")
                 .font(.PretendardBold16)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.black.opacity(0.7))
                 .padding(.top, 10)
         }
     }
@@ -137,7 +137,7 @@ struct StudyView: View {
                 .font(.PretendardBold20)
                 .padding()
                 .foregroundStyle(.white)
-                .background(.black)
+                .background(.black.opacity(0.7))
                 .clipShape(.buttonBorder)
         }
     }

@@ -32,7 +32,7 @@ struct CalendarMainBody: View {
                 Text(symbol)
                     .font(.PretendardMedium16)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.black.opacity(0.7))
             }
         }
         .padding(.horizontal, 2)

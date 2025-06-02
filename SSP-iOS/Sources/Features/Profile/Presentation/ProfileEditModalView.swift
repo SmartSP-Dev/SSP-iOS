@@ -55,7 +55,7 @@ struct ProfileEditModalView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color.black)
+                        .background(Color.black.opacity(0.7))
                         .cornerRadius(8)
                 }
             }

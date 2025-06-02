@@ -22,7 +22,7 @@ struct GroupCreateSheet: View {
 
             Text("선택한 날짜가 포함된 일주일이\n약속 기간으로 설정됩니다!")
                 .font(.caption)
-                .foregroundColor(.black)
+                .foregroundColor(.black.opacity(0.7))
                 .padding(.horizontal)
                 .multilineTextAlignment(.center)
 

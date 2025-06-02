@@ -15,7 +15,7 @@ struct QuizRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(quiz.title)
                     .font(.subheadline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.black.opacity(0.7))
                     .lineLimit(1)
 
                 Text(formattedDate(quiz.createdAt))
@@ -39,7 +39,7 @@ struct QuizRowView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color.black)
+                    .background(Color.black.opacity(0.7))
                     .cornerRadius(4)
             }
         }

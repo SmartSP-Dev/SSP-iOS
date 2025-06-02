@@ -53,7 +53,7 @@ struct RoutineCalendarView: View {
                         .frame(width: 36, height: 36)
                         .background(
                             Circle()
-                                .fill(isToday ? Color.blue : Color.clear)
+                                .fill(isToday ? Color.black.opacity(0.7) : Color.clear)
                         )
 
                     Circle()
@@ -101,11 +101,11 @@ struct RoutineCalendarView: View {
 
         switch ratio {
         case 1.0:
-            return .blue
+            return .black
         case 0.5..<1.0:
-            return .blue.opacity(0.5)
+            return .black.opacity(0.5)
         case 0..<0.5:
-            return .blue.opacity(0.2)
+            return .black.opacity(0.2)
         default:
             return .gray.opacity(0.1)
         }

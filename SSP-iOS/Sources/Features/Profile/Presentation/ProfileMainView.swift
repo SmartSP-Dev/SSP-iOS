@@ -66,7 +66,7 @@ struct ProfileMainView: View {
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.black)
+                                .background(Color.black.opacity(0.7))
                                 .cornerRadius(12)
                         }
                         .alert("로그아웃 하시겠어요?", isPresented: $isLogoutAlertPresented) {
@@ -87,7 +87,7 @@ struct ProfileMainView: View {
                             isProfileEditPresented = true
                         } label: {
                             Image(systemName: "pencil")
-                                .foregroundColor(.black)
+                                .foregroundColor(.black.opacity(0.7))
                         }
                     }
                 }

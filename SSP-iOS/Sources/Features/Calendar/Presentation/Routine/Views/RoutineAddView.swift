@@ -40,7 +40,7 @@ struct RoutineAddView: View {
                         }
                     }
                     .padding()
-                    .background(RoundedRectangle(cornerRadius: 8).stroke(Color.blue.opacity(0.5), lineWidth: 1))
+                    .background(RoundedRectangle(cornerRadius: 8).stroke(Color.black.opacity(0.5), lineWidth: 1))
                 }
 
                 TextField("루틴 추가", text: $inputText)
@@ -62,7 +62,7 @@ struct RoutineAddView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.black.opacity(0.7))
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }

@@ -17,9 +17,9 @@ struct AlarmToggleSectionView: View {
                 .font(.headline)
 
             Toggle("루틴 알람 설정", isOn: $isRoutineAlarmOn)
-                .tint(.black)
+                .tint(.black.opacity(0.7))
             Toggle("퀴즈 복습 알람 설정", isOn: $isQuizAlarmOn)
-                .tint(.black)
+                .tint(.black.opacity(0.7))
         }
         .padding()
         .background(Color.white)

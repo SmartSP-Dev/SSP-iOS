@@ -55,7 +55,7 @@ struct GroupScheduleView: View {
             HStack {
                 HStack(spacing: 4) {
                     Rectangle()
-                        .fill(Color.blue.opacity(0.2))
+                        .fill(Color.black.opacity(0.2))
                         .frame(width: 12, height: 12)
                         .cornerRadius(2)
                     Text("에타 시간표")
@@ -84,7 +84,7 @@ struct GroupScheduleView: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.blue)
+            .background(Color.black.opacity(0.7))
             .foregroundColor(.white)
             .cornerRadius(10)
         }
@@ -105,9 +105,9 @@ struct GroupScheduleView: View {
                     router.goBack()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                     Text("Back")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                 }
             }
         }

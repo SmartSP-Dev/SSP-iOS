@@ -24,7 +24,7 @@ struct RoutineView: View {
                     .foregroundColor(.gray)
 
                 ProgressView(value: viewModel.completionRatio)
-                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                    .progressViewStyle(LinearProgressViewStyle(tint: .black.opacity(0.7)))
 
                 Text("달성도 \(Int(viewModel.completionRatio * 100))%")
                     .font(.headline)
@@ -66,7 +66,7 @@ struct RoutineView: View {
                     .font(.title)
                     .foregroundColor(.white)
                     .frame(width: 56, height: 56)
-                    .background(Color.blue)
+                    .background(Color.black.opacity(0.7))
                     .clipShape(Circle())
                     .shadow(radius: 4)
             }

@@ -40,7 +40,7 @@ struct SectionView<Content: View>: View {
             HStack {
                 Text(title)
                     .font(.title3.bold())
-                    .foregroundColor(.black)
+                    .foregroundColor(.black.opacity(0.7))
 
                 Spacer()
 
@@ -50,7 +50,7 @@ struct SectionView<Content: View>: View {
                             .font(.subheadline.bold())
                             .foregroundColor(.white)
                             .padding(5)
-                            .background(Color.black)
+                            .background(Color.black.opacity(0.7))
                             .clipShape(Circle())
                     }
                 }

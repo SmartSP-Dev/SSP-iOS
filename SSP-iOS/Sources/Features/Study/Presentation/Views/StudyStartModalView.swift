@@ -32,7 +32,7 @@ struct StudyStartModalView: View {
                     if subjectViewModel.subjects.indices .contains(selectedIndex) {
                         Text(subjectViewModel.subjects[selectedIndex].name)
                             .font(.PretendardMedium16)
-                            .foregroundColor(.black)
+                            .foregroundColor(.black.opacity(0.7))
                     } else {
                         Text("과목 없음")
                             .font(.PretendardMedium16)
@@ -59,7 +59,7 @@ struct StudyStartModalView: View {
                     .font(.PretendardMedium16)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(subjectViewModel.subjects.isEmpty ? Color.gray : Color.black)
+                    .background(subjectViewModel.subjects.isEmpty ? Color.gray : Color.black.opacity(0.7))
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }

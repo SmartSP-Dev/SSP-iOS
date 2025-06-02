@@ -16,7 +16,7 @@ struct QuizSummaryView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("이번 주 퀴즈 요약")
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundColor(.black.opacity(0.7))
 
             HStack(spacing: 16) {
                 summaryItem(title: "총 퀴즈", value: total)
@@ -36,7 +36,7 @@ struct QuizSummaryView: View {
             Text("\(value)")
                 .font(.title2)
                 .bold()
-                .foregroundColor(.black)
+                .foregroundColor(.black.opacity(0.7))
             Text(title)
                 .font(.caption)
                 .foregroundColor(.gray)

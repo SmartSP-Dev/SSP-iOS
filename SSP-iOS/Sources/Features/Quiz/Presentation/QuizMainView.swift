@@ -33,13 +33,13 @@ struct QuizMainView: View {
                 }) {
                     Text("퀴즈 만들기")
                         .font(.body.weight(.bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 1)
+                                .stroke(Color.black.opacity(0.7), lineWidth: 1)
                         )
                         .cornerRadius(10)
                         .padding(.horizontal)
@@ -48,7 +48,7 @@ struct QuizMainView: View {
                 // 최근 퀴즈 목록 (5개)
                 Text("내 퀴즈 목록")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.black.opacity(0.7))
                     .padding(.horizontal)
 
                 VStack(spacing: 0) {
@@ -63,7 +63,7 @@ struct QuizMainView: View {
                     }) {
                         Text("더보기")
                             .font(.caption)
-                            .foregroundColor(.black)
+                            .foregroundColor(.black.opacity(0.7))
                             .padding(.vertical, 8)
                             .frame(maxWidth: .infinity)
                     }

@@ -33,7 +33,7 @@ struct EventRowView: View {
 
                     Text(event.title)
                         .font(.PretendardSemiBold16)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.black.opacity(0.7))
                 }
 
                 Spacer()
@@ -41,7 +41,7 @@ struct EventRowView: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.black.opacity(0.3), lineWidth: 1)
+                    .stroke(Color.black.opacity(0.5), lineWidth: 1)
             )
             .contentShape(Rectangle())
             .padding(.horizontal)
@@ -58,15 +58,3 @@ struct EventRowView: View {
     }
 }
 
-//
-//#Preview {
-//    EventRowView(event: CalendarEvent(
-//        id: UUID(),
-//        date: Date(), title: "테스트 일정입니다.",
-//        color: .blue,
-//        startDate: Date(),
-//        endDate: Calendar.current.date(byAdding: .hour, value: 1, to: Date())!,
-//        isAllDay: true,
-//        ekEventID: 12345.description
-//    ))
-//}

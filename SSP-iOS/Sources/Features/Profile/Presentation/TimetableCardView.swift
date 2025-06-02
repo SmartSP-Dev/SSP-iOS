@@ -21,7 +21,7 @@ struct TimetableCardView: View {
                 Button(action: onEdit) {
                     Text("수정")
                         .font(.subheadline)
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                 }
             }
 

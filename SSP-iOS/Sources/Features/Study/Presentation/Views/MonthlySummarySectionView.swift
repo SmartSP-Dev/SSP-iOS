@@ -37,7 +37,7 @@ struct MonthlySummarySectionView: View {
             Spacer()
             Text(value)
                 .font(.subheadline.bold())
-                .foregroundColor(.black)
+                .foregroundColor(.black.opacity(0.7))
         }
     }
 }

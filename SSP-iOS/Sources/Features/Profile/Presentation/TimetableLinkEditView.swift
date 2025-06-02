@@ -29,7 +29,7 @@ struct TimetableLinkEditView: View {
                         .padding()
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.black.opacity(0.7))
                 }
 
                 Button(action: {
@@ -38,7 +38,7 @@ struct TimetableLinkEditView: View {
                     Text("저장")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.black)
+                        .background(Color.black.opacity(0.7))
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }

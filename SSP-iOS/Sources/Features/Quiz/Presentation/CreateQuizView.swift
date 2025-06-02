@@ -55,9 +55,9 @@ struct CreateQuizView: View {
                     DIContainer.shared.makeAppRouter().goBack()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                     Text("Back")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                 }
             }
         }
@@ -117,7 +117,7 @@ struct CreateQuizView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.black)
+                                .background(Color.black.opacity(0.7))
                                 .cornerRadius(8)
                         }
 
@@ -161,7 +161,7 @@ struct CreateQuizView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.black)
+                                .background(Color.black.opacity(0.7))
                                 .cornerRadius(8)
                         }
                         .disabled(viewModel.fileURL == nil)
@@ -203,7 +203,7 @@ struct CreateQuizView: View {
                 ForEach(QuizType.allCases, id: \.self) { type in
                     HStack {
                         Image(systemName: viewModel.selectedType == type ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(.black)
+                            .foregroundColor(.black.opacity(0.7))
                             .onTapGesture {
                                 viewModel.selectedType = type
                             }

@@ -68,7 +68,7 @@ struct CustomTabBar: View {
                 let tabWidth = geometry.size.width / CGFloat(tabs.count)
 
                 Rectangle()
-                    .fill(Color.black) // 메인 테마 색상
+                    .fill(Color.black.opacity(0.7)) // 메인 테마 색상
                     .frame(width: tabWidth * 0.6, height: 4)
                     .cornerRadius(2)
                     .offset(x: tabOffset(for: selectedTab, totalWidth: geometry.size.width))
@@ -87,7 +87,7 @@ struct CustomTabBar: View {
             Text(title)
                 .font(.PretendardBold20)
                 .fontWeight(selected ? .bold : .regular)
-                .foregroundColor(selected ? Color.black : Color.black.opacity(0.2))
+                .foregroundColor(selected ? Color.black.opacity(0.7) : Color.black.opacity(0.2))
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 2)

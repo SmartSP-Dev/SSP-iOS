@@ -38,7 +38,7 @@ struct MainTabView: View {
                 Label("Profile", systemImage: selectedTab == 3 ? "person.crop.circle.fill" : "person.crop.circle")
             }
         }
-        .tint(Color.black)
+        .tint(Color.black.opacity(0.7))
     }
 }
 

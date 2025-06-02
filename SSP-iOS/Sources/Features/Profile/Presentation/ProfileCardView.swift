@@ -60,7 +60,7 @@ struct ProfileCardView: View {
             }
         }
         .padding()
-        .background(Color.black)
+        .background(Color.black.opacity(0.7))
         .cornerRadius(12)
     }
 }

@@ -71,7 +71,7 @@ struct SubjectManageView: View {
                                 .font(.subheadline.bold())
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 10)
-                                .background(Color.black)
+                                .background(Color.black.opacity(0.7))
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                         }

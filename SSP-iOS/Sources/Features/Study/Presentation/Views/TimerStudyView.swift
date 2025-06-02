@@ -40,7 +40,7 @@ struct TimerStudyView: View {
                 Text("종료")
                     .padding()
                     .frame(width: 100)
-                    .background(interpolatedColor(from: .black, to: .red, progress: pressProgress))
+                    .background(interpolatedColor(from: .black.opacity(0.7), to: .red, progress: pressProgress))
                     .foregroundColor(.white)
                     .clipShape(Capsule())
                     .onLongPressGesture(minimumDuration: 2.0) {

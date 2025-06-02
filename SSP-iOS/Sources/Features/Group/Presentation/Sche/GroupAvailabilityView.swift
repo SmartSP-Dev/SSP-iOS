@@ -67,7 +67,7 @@ struct GroupAvailabilityView: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.blue.opacity(0.6))
+            .background(Color.black.opacity(0.6))
             .foregroundStyle(Color.white)
             .cornerRadius(10)
         }
@@ -84,9 +84,9 @@ struct GroupAvailabilityView: View {
                     router.goBack()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                     Text("Back")
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                 }
             }
         }
@@ -171,7 +171,7 @@ struct ScheduleSlotGrid: View {
                                 .font(.caption2)
                         }
                         .frame(width: max(1, cellWidth), height: 36)
-                        .background(Color.blue.opacity(0.6))
+                        .background(Color.black.opacity(0.6))
                         .foregroundStyle(Color.white)
                     }
                 }
@@ -181,7 +181,7 @@ struct ScheduleSlotGrid: View {
                         Text("\(hour)시")
                             .font(.caption2)
                             .frame(width: timeLabelWidth, height: 28)
-                            .background(Color.blue.opacity(0.6))
+                            .background(Color.black.opacity(0.6))
                             .foregroundStyle(Color.white)
 
                         VStack(spacing: 1) {

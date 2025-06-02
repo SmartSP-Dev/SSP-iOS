@@ -14,7 +14,7 @@ struct RoutineCardView: View {
     var body: some View {
         HStack {
             Image(systemName: routine.isCompleted ? "checkmark.circle.fill" : "circle")
-                .foregroundColor(routine.isCompleted ? .blue : .gray)
+                .foregroundColor(routine.isCompleted ? .black.opacity(0.7) : .gray)
                 .font(.title2)
                 .onTapGesture {
                     Task {

@@ -19,7 +19,7 @@ struct QuizCardView: View {
             HStack {
                 Text(quiz.title)
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.black.opacity(0.7))
                     .lineLimit(2)
                 Spacer()
                 Text(quiz.type.rawValue)
@@ -29,7 +29,7 @@ struct QuizCardView: View {
 
             Text("키워드: \(quiz.keyword)")
                 .font(.subheadline)
-                .foregroundColor(.black)
+                .foregroundColor(.black.opacity(0.7))
 
             Text("생성일: \(formattedDate(quiz.createdAt))")
                 .font(.caption2)
@@ -48,7 +48,7 @@ struct QuizCardView: View {
                         .foregroundColor(.white)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity)
-                        .background(Color.black)
+                        .background(Color.black.opacity(0.7))
                         .cornerRadius(8)
                 }
 
@@ -59,7 +59,7 @@ struct QuizCardView: View {
                 }) {
                     Text("결과 보기")
                         .font(.caption)
-                        .foregroundColor(.black)
+                        .foregroundColor(.black.opacity(0.7))
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity)
                         .background(Color.gray.opacity(0.2))

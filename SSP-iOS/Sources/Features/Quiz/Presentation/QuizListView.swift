@@ -81,7 +81,7 @@ struct QuizListView: View {
                 Image(systemName: "chevron.left")
                 Text("Back")
             }
-            .foregroundColor(.black)
+            .foregroundColor(.black.opacity(0.7))
         }
     }
 

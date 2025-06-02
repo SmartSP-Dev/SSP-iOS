@@ -21,7 +21,7 @@ struct CalendarMonthHeader: View {
 
             Text(viewModel.currentMonth, formatter: monthOnlyFormatter)
                 .font(.PretendardBold24)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.black.opacity(0.7))
 
             Button(action: { viewModel.changeMonth(by: 1) }) {
                 Image(systemName: "chevron.right")
@@ -54,7 +54,7 @@ struct CalendarMonthHeader: View {
             } label: {
                 Image(systemName: "person.3.sequence")
                     .font(.title2)
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.black.opacity(0.7))
                     .padding(.leading, 4)
             }
         }
