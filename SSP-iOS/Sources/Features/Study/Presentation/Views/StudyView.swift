@@ -120,12 +120,7 @@ struct StudyView: View {
 
     private var greetingSection: some View {
         HStack(spacing: 4) {
-            Text("루디")
-                .font(.PretendardExtraBold24)
-                .underline()
-                .foregroundStyle(Color.black)
-
-            Text("님 오늘도 공부를 시작해볼까요?")
+            Text("오늘도 활기차게 공부를 시작해볼까요?")
                 .font(.PretendardBold16)
                 .foregroundStyle(Color.black)
                 .padding(.top, 10)

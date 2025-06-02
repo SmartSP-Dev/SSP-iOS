@@ -62,8 +62,10 @@ final class GroupScheduleViewModel: ObservableObject {
         do {
             let blocks = try await fetchUserScheduleUseCase.execute(groupKey: groupKey)
             print("내 시간표 응답: \(blocks)")
-            DispatchQueue.main.async {
-                self.selectedSlots = Set(blocks.compactMap { $0.toTimeSlot(reference: self.group.startDate) })
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                let reference = self.group.startDate.startOfWeek()
+                self.selectedSlots = Set(blocks.compactMap { $0.toTimeSlot(reference: reference) })
             }
         } catch {
             print("내 시간표 불러오기 실패:", error)

@@ -23,7 +23,7 @@ struct UserTimeBlockDTO: Codable {
     }
 
     func toTimeSlot(reference: Date) -> TimeSlot? {
-        guard let date = reference.getDateOfWeek(dayOfWeek: dayOfWeek) else { return nil }
+        guard let date = reference.getDateOfWeek(dayOfWeek: dayOfWeek)?.onlyDate else { return nil }
 
         let parts = time.split(separator: ":")
         guard parts.count == 2,

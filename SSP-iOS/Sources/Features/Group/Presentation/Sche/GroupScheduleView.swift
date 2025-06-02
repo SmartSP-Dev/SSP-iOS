@@ -20,13 +20,17 @@ struct GroupScheduleView: View {
     }
 
     private var weekDates: [Date] {
-        var dates: [Date] = []
-        var current = viewModel.group.startDate
-        while current <= viewModel.group.endDate {
-            dates.append(current)
-            current = Calendar.current.date(byAdding: .day, value: 1, to: current)!
+        let calendar = Calendar(identifier: .gregorian)
+        var calendarMondayStart = calendar
+        calendarMondayStart.firstWeekday = 2  // 월요일을 주 시작일로 설정
+
+        guard let startOfWeek = calendarMondayStart.dateInterval(of: .weekOfYear, for: viewModel.group.startDate)?.start else {
+            return []
         }
-        return dates
+
+        return (0..<7).compactMap {
+            calendarMondayStart.date(byAdding: .day, value: $0, to: startOfWeek)
+        }
     }
 
     var body: some View {

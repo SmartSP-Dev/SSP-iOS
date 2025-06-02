@@ -83,20 +83,39 @@ extension String {
 
 extension Date {
     func getDateOfWeek(dayOfWeek: String) -> Date? {
-        let calendar = Calendar.current
-        guard let weekdayIndex = Self.dayOfWeekIndex(for: dayOfWeek.uppercased()) else {
+        let calendar = Calendar(identifier: .gregorian)
+
+        // 현재 self가 속한 주의 시작일 (주의: 이건 기본적으로 일요일)
+        guard let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else {
             return nil
         }
 
-        let currentWeekday = calendar.component(.weekday, from: self)
+        let weekdayMap: [String: Int] = [
+            "SUN": 0,
+            "MON": 1,
+            "TUE": 2,
+            "WED": 3,
+            "THU": 4,
+            "FRI": 5,
+            "SAT": 6
+        ]
 
-        // 몇 일 차이나는지 계산
-        let difference = weekdayIndex - currentWeekday
-        return calendar.date(byAdding: .day, value: difference, to: self)
+        guard let offset = weekdayMap[dayOfWeek.uppercased()] else {
+            return nil
+        }
+
+        return calendar.date(byAdding: .day, value: offset, to: startOfWeek)
     }
 
     private static func dayOfWeekIndex(for day: String) -> Int? {
         let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
         return days.firstIndex(of: day).map { $0 + 1 }  // Sunday = 1 in iOS
+    }
+    
+    func startOfWeek(using calendar: Calendar = Calendar(identifier: .gregorian)) -> Date {
+        var calendarMonday = calendar
+        calendarMonday.firstWeekday = 2  // 월요일을 주 시작일로 강제
+        let components = calendarMonday.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
+        return calendarMonday.date(from: components)!
     }
 }
