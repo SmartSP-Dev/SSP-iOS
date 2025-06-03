@@ -28,7 +28,7 @@ struct StudyView: View {
             }
         }
         .onAppear {
-           statsViewModel.loadWeeklyStudyFromServer()
+            statsViewModel.loadWeeklyStudyFromServer()
             statsViewModel.loadMonthlyStats()
        }
     }
@@ -68,7 +68,9 @@ struct StudyView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .sheet(isPresented: $isPresentingSubjectManageSheet) {
+            .sheet(isPresented: $isPresentingSubjectManageSheet, onDismiss: {
+                statsViewModel.loadWeeklyStudyFromServer()
+            }) {
                 SubjectManageView(viewModel: subjectViewModel)
             }
             Spacer()
