@@ -96,14 +96,3 @@ struct SubjectManageView: View {
         .ignoresSafeArea(edges: .bottom)
     }
 }
-
-//#Preview {
-//    let mockViewModel = SubjectManageViewModel()
-//    mockViewModel.subjects = [
-//        StudySubject(name: "수학", time: 120),
-//        StudySubject(name: "영어", time: 90),
-//        StudySubject(name: "과학", time: 45),
-//        StudySubject(name: "테스트", time: 45)
-//    ]
-//    return SubjectManageView(viewModel: mockViewModel)
-//}
