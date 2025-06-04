@@ -11,6 +11,7 @@ struct TimetableCardView: View {
     let schedules: [ScheduleDay]
     var onEdit: () -> Void
     var timetableLink: String? // 조회용 링크
+    let dayOrder: [String] = ["월", "화", "수", "목", "금", "토", "일"]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -35,13 +36,19 @@ struct TimetableCardView: View {
                     .cornerRadius(12)
                     .padding(.top, 8)
             } else {
-                ForEach(schedules) { day in
+                ForEach(
+                    schedules.sorted { lhs, rhs in
+                        let lhsIndex = dayOrder.firstIndex(of: lhs.timePoint) ?? 99
+                        let rhsIndex = dayOrder.firstIndex(of: rhs.timePoint) ?? 99
+                        return lhsIndex < rhsIndex
+                    }
+                ) { day in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(day.timePoint)
                             .font(.subheadline)
                             .fontWeight(.bold)
 
-                        ForEach(day.subjects.sorted(by: { $0.times.first ?? "" < $1.times.first ?? "" }), id: \.subject) { subject in
+                        ForEach(day.subjects.sorted(by: { $0.times.first ?? "" < $1.times.first ?? "" }), id: \ .subject) { subject in
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(subject.titleLine)
                                     .font(.body)
