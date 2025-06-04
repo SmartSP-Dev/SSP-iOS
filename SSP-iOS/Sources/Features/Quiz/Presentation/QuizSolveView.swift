@@ -176,10 +176,12 @@ struct QuizSolveView: View {
                 Text(viewModel.selectedAnswer == viewModel.currentQuestion.answer ? "정답입니다!" : "오답입니다.")
                     .font(.headline)
                     .foregroundColor(viewModel.selectedAnswer == viewModel.currentQuestion.answer ? .green : .red)
-
-                Button("다음 문제") {
+                
+                Button(action : {
                     viewModel.nextQuestion()
                     showModal = false
+                }) {
+                    Text("다음 문제")
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
