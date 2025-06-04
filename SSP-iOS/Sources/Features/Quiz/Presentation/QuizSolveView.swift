@@ -13,6 +13,7 @@ struct QuizSolveView: View {
     @StateObject var viewModel: QuizSolveViewModel
     @State private var showModal: Bool = false
     @State private var showExitAlert: Bool = false
+    @State private var shuffledOptionsMap: [Int: [String]] = [:]
 
     var body: some View {
 
@@ -72,6 +73,12 @@ struct QuizSolveView: View {
                 }
             }
         }
+        .onChange(of: viewModel.currentIndex) {
+            let questionNumber = viewModel.currentQuestion.quizNumber
+            if shuffledOptionsMap[questionNumber] == nil {
+                shuffledOptionsMap[questionNumber] = viewModel.currentQuestion.options.shuffled()
+            }
+        }
         .alert(isPresented: $showExitAlert) {
             Alert(
                 title: Text("정말 나가시겠습니까?"),
@@ -96,21 +103,22 @@ struct QuizSolveView: View {
         switch viewModel.currentQuestion.type {
         case .multipleChoice:
             VStack(spacing: 12) {
-                ForEach(viewModel.currentQuestion.options, id: \.self) { option in
+                ForEach(currentShuffledOptions, id: \.self) { option in
                     Button(action: {
                         viewModel.selectedAnswer = option
                     }) {
-                        HStack {
-                            Text(option)
-                            Spacer()
-                            if viewModel.selectedAnswer == option {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(12)
+                        Text(option)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(
+                                        viewModel.selectedAnswer == option ? Color.blue : Color.clear,
+                                        lineWidth: 2
+                                    )
+                            )
                     }
                 }
             }
@@ -195,5 +203,10 @@ struct QuizSolveView: View {
             .cornerRadius(16)
             .shadow(radius: 10)
         }
+    }
+    
+    private var currentShuffledOptions: [String] {
+        let questionNumber = viewModel.currentQuestion.quizNumber
+        return shuffledOptionsMap[questionNumber] ?? viewModel.currentQuestion.options
     }
 }
