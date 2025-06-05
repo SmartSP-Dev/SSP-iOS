@@ -36,67 +36,64 @@ struct StudyView: View {
     // MARK: - Main Content
 
     private var mainContent: some View {
-        VStack(spacing: 24) {
-            Spacer()
-            Spacer()
-            greetingSection
+        ScrollView {
+            VStack(spacing: 24) {
+                greetingSection
 
-            // 이번 주 통계
-            SectionView(
-                title: "이번 주 통계",
-                showsButton: true,
-                contentHeight: 250,
-                isEmpty: statsViewModel.weeklyRecords.isEmpty,
-                emptyMessage: "이번 주 학습 기록이 아직 없어요!",
-                buttonAction: {
-                    isPresentingSubjectManageSheet = true
-                }
-            ) {
-                ForEach(statsViewModel.weeklyRecords) { record in
-                    HStack {
-                        Text(record.subjectName)
-                            .font(.body.weight(.semibold))
-                        Spacer()
-                        Text("\(record.totalMinutes)분")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
+                SectionView(
+                    title: "이번 주 통계",
+                    showsButton: true,
+                    contentHeight: 250,
+                    isEmpty: statsViewModel.weeklyRecords.isEmpty,
+                    emptyMessage: "이번 주 학습 기록이 아직 없어요!",
+                    buttonAction: {
+                        isPresentingSubjectManageSheet = true
                     }
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(12)
-                    .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                ) {
+                    ForEach(statsViewModel.weeklyRecords) { record in
+                        HStack {
+                            Text(record.subjectName)
+                                .font(.body.weight(.semibold))
+                            Spacer()
+                            Text("\(record.totalMinutes)분")
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(12)
+                        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .sheet(isPresented: $isPresentingSubjectManageSheet, onDismiss: {
+                    statsViewModel.loadWeeklyStudyFromServer()
+                }) {
+                    SubjectManageView(viewModel: subjectViewModel)
+                }
+
+                if let summary = statsViewModel.monthlySummary {
+                    MonthlySummarySectionView(
+                        daysStudied: summary.studyDay,
+                        totalMinutes: summary.studyTime / 60,
+                        averageMinutes: summary.averageStudyTime.asMinutesDouble,
+                        bestDay: summary.maxStudyDay.dayOnly,
+                        bestDayMinutes: summary.maxStudyTime / 60
+                    )
+                } else {
+                    MonthlySummarySectionView(
+                        daysStudied: 0,
+                        totalMinutes: 0,
+                        averageMinutes: 0,
+                        bestDay: "-",
+                        bestDayMinutes: 0
+                    )
+                }
+
+                startButton
             }
-            .frame(maxWidth: .infinity)
-            .sheet(isPresented: $isPresentingSubjectManageSheet, onDismiss: {
-                statsViewModel.loadWeeklyStudyFromServer()
-            }) {
-                SubjectManageView(viewModel: subjectViewModel)
-            }
-            Spacer()
-            // 이번 달 학습량 요약
-            if let summary = statsViewModel.monthlySummary {
-                MonthlySummarySectionView(
-                    daysStudied: summary.studyDay,
-                    totalMinutes: summary.studyTime / 60,
-                    averageMinutes: summary.averageStudyTime.asMinutesDouble,
-                    bestDay: summary.maxStudyDay.dayOnly,
-                    bestDayMinutes: summary.maxStudyTime / 60
-                )
-            } else {
-                MonthlySummarySectionView(
-                    daysStudied: 0,
-                    totalMinutes: 0,
-                    averageMinutes: 0,
-                    bestDay: "-",
-                    bestDayMinutes: 0
-                )
-            }
-            startButton
-            Spacer()
-            Spacer()
+            .padding()
         }
-        .padding()
         .disabled(isPresentingStartModal)
         .blur(radius: isPresentingStartModal ? 3 : 0)
         .fullScreenCover(isPresented: $isStudyingModeActive) {
