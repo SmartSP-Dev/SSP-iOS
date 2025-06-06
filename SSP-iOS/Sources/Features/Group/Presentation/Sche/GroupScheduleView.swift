@@ -57,7 +57,7 @@ struct GroupScheduleView: View {
             HStack {
                 HStack(spacing: 4) {
                     Rectangle()
-                        .fill(Color.black.opacity(0.2))
+                        .fill(Color.blue.opacity(0.2))
                         .frame(width: 12, height: 12)
                         .cornerRadius(2)
                     Text("에타 시간표")
