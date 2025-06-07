@@ -10,6 +10,6 @@ import Foundation
 struct QuizGenerateQuestion: Decodable {
     let question: String
     let correct_answer: String
-    let incorrect_answers: [String]
+    let incorrect_answers: [String]?
     let type: String
 }
