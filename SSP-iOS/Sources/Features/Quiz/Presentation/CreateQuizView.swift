@@ -90,8 +90,8 @@ struct CreateQuizView: View {
 
             Text("- 파일은 jpg, jpeg, png, pdf 파일만 지원됩니다.\n- 파일 업로드 후 저장 버튼을 꼭 눌러주세요!\n- 키워드는 문제를 생성하는 데 사용됩니다.\n- 문제 유형을 정확히 선택하세요.")
                 .font(.subheadline)
-                .foregroundColor(.gray)
-                .padding()
+                .foregroundColor(.black)
+                .padding(10)
                 .frame(maxWidth: .infinity)
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(8)
