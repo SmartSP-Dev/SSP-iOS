@@ -13,6 +13,7 @@ struct GroupHomeView: View {
 
     @State private var showJoinSheet = false
     @State private var showCreateSheet = false
+    @State private var showCopiedToast = false
 
     var body: some View {
         ZStack {
@@ -37,9 +38,7 @@ struct GroupHomeView: View {
                 }
 
                 List(viewModel.groups, id: \.groupId) { group in
-                    Button(action: {
-                        router.navigate(to: .groupAvailability(group: group.toScheduleGroup()))
-                    }) {
+                    HStack {
                         VStack(alignment: .leading) {
                             Text(group.groupName)
                                 .font(.headline)
@@ -47,12 +46,56 @@ struct GroupHomeView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
+                        Spacer()
+                        Button(action: {
+                            UIPasteboard.general.string = group.groupKey
+                            withAnimation {
+                                showCopiedToast = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                withAnimation {
+                                    showCopiedToast = false
+                                }
+                            }
+                        }) {
+                            Text("코드 복사")
+                                .font(.caption)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Color.black.opacity(0.7))
+                                .foregroundColor(.white)
+                                .cornerRadius(6)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        // 버튼 자체에만 터치가 가도록 명시
+                        .buttonStyle(PlainButtonStyle())
+                        .contentShape(Rectangle())
+                    }
+                    // 셀 전체 터치 → 라우팅은 여기
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        router.navigate(to: .groupAvailability(group: group.toScheduleGroup()))
                     }
                 }
                 .listStyle(.plain)
             }
             .padding()
-
+            
+            // 토스트 메세지
+            if showCopiedToast {
+                VStack {
+                    Spacer()
+                    Text("참여 코드가 복사되었어요!")
+                        .font(.footnote)
+                        .padding()
+                        .background(Color.black.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .padding(.bottom, 40)
+                }
+            }
+            
             // 모달: 그룹 참여
             if showJoinSheet {
                 modalBackground {
