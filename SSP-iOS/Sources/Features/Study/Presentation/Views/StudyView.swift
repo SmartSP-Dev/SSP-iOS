@@ -91,6 +91,7 @@ struct StudyView: View {
                 }
 
                 startButton
+                    .padding(.top, 20)
             }
             .padding()
         }

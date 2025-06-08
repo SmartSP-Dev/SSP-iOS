@@ -112,10 +112,11 @@ struct QuizSolveView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(12)
+                            .foregroundStyle(Color.black)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(
-                                        viewModel.selectedAnswer == option ? Color.blue : Color.clear,
+                                        viewModel.selectedAnswer == option ? Color.black : Color.clear,
                                         lineWidth: 2
                                     )
                             )
@@ -134,8 +135,8 @@ struct QuizSolveView: View {
                             .padding()
                             .background(
                                 viewModel.selectedAnswer == option
-                                ? Color.blue.opacity(0.4)
-                                : Color.blue.opacity(0.1)
+                                ? Color.black.opacity(0.4)
+                                : Color.black.opacity(0.1)
                             )
                             .foregroundColor(
                                 viewModel.selectedAnswer == option
@@ -145,7 +146,7 @@ struct QuizSolveView: View {
                             .cornerRadius(12)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.blue, lineWidth: viewModel.selectedAnswer == option ? 2 : 1)
+                                    .stroke(Color.black, lineWidth: viewModel.selectedAnswer == option ? 2 : 1)
                             )
                     }
                 }
