@@ -10,7 +10,8 @@ import SwiftUI
 struct RoutineView: View {
     @StateObject var viewModel: RoutineViewModel
     @State private var isPresentingAddSheet = false
-
+    @State private var isPresentingStatsSheet = false
+    
     var body: some View {
         VStack(spacing: 0) {
             // 1. 드래그 가능한 주간 달력
@@ -59,22 +60,43 @@ struct RoutineView: View {
             }
         }
         .overlay(
-            Button(action: {
-                isPresentingAddSheet = true
-            }) {
-                Image(systemName: "plus")
-                    .font(.title)
-                    .foregroundColor(.white)
-                    .frame(width: 56, height: 56)
-                    .background(Color.black.opacity(0.7))
-                    .clipShape(Circle())
-                    .shadow(radius: 4)
+            VStack {
+                // 통계 버튼
+                Button(action: {
+                    viewModel.fetchSummary()
+                    isPresentingStatsSheet = true
+                }) {
+                    Image(systemName: "chart.bar.fill")
+                        .font(.title2)
+                        .foregroundColor(.white)
+                        .frame(width: 48, height: 48)
+                        .background(Color.black.opacity(0.7))
+                        .clipShape(Circle())
+                        .shadow(radius: 4)
+                }
+                .padding(.bottom, 12)
+
+                // 기존 루틴 추가 버튼
+                Button(action: {
+                    isPresentingAddSheet = true
+                }) {
+                    Image(systemName: "plus")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.black.opacity(0.7))
+                        .clipShape(Circle())
+                        .shadow(radius: 4)
+                }
             }
             .padding(),
             alignment: .bottomTrailing
         )
         .sheet(isPresented: $isPresentingAddSheet) {
             RoutineAddView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $isPresentingStatsSheet) {
+            RoutineStatisticsSheetView(summaryList: viewModel.summaryList)
         }
         .onChange(of: viewModel.selectedDate) {
             Task {

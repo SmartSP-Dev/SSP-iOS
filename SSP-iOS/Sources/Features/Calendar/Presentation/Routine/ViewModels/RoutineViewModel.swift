@@ -13,6 +13,8 @@ final class RoutineViewModel: ObservableObject {
     @Published var routines: [Routine] = []
     @Published var selectedDate: Date = Date()
     @Published var isLoading = false
+    @Published var summaryList: [RoutineSummaryDTO] = []
+    @Published var isShowingSummaryError: Bool = false
 
     private let repository: RoutineRepository
 
@@ -82,5 +84,21 @@ final class RoutineViewModel: ObservableObject {
         guard !routines.isEmpty else { return 0 }
         let done = routines.filter(\.isCompleted).count
         return Double(done) / Double(routines.count)
+    }
+    
+    func fetchSummary() {
+        repository.fetchSummary { result in
+            switch result {
+            case .success(let summary):
+                DispatchQueue.main.async {
+                    self.summaryList = summary
+                }
+            case .failure:
+                DispatchQueue.main.async {
+                    self.summaryList = []
+                    self.isShowingSummaryError = true
+                }
+            }
+        }
     }
 }
