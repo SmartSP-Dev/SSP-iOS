@@ -19,6 +19,10 @@ struct RoutineStatisticsSheetView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
+                
+                Text("루틴은 일일 기준 80% 이상일 경우만 성공으로 판단해요!")
+                    .font(.subheadline)
+                
                 ProgressView(value: successRate)
                     .progressViewStyle(.linear)
                     .padding(.horizontal)
