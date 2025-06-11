@@ -47,10 +47,7 @@ struct RoutineStatisticsSheetView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        Text("닫기")
-                            .foregroundStyle(Color.black)
-                    }) {
+                    Button("닫기") {
                         dismiss()
                     }
                 }
