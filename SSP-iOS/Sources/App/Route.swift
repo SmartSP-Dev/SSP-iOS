@@ -8,9 +8,6 @@
 import Foundation
 
 enum Route: Hashable {
-    case quizList
-    case quizDetail(id: String)
-    case quizCreate
     case study
     case calendar
     case login
@@ -19,4 +16,7 @@ enum Route: Hashable {
     case quizResult(quizId: Int)
     case groupSchedule(group: ScheduleGroup)
     case groupAvailability(group: ScheduleGroup)
+    case quizList
+    case quizDetail(id: String)
+    case quizCreate
 }
